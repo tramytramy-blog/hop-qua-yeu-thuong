@@ -777,17 +777,31 @@
             <!-- Copy Link Chia Sẻ -->
             <div class="space-y-2 pt-1">
                 <label class="block text-xs font-bold text-pastel-text">
-                    🔗 Đường dẫn chia sẻ Hộp Quà này (Kèm sẵn Mã Hộp):
+                    🔗 Link mời bạn bè cùng thêm lời chúc (Có nút Thêm/Sửa):
                 </label>
                 <div class="flex items-center gap-2">
                     <input type="text" id="share-link-input" readonly
                         class="flex-1 px-3.5 py-2 rounded-xl border border-gray-200 bg-gray-50 text-xs text-gray-600 select-all focus:outline-none">
-                    <button type="button" onclick="copyShareRoomLink()"
+                    <button type="button" onclick="copyShareRoomLink(false)"
                         class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 shrink-0 active:scale-95">
                         <i class="fa-solid fa-copy"></i>
                         <span>Copy Link</span>
                     </button>
                 </div>
+
+                <label class="block text-xs font-bold text-pastel-text pt-2">
+                    🎁 Link gửi tặng Cô / Người nhận (Tự động ẩn hết nút chỉnh sửa):
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="recipient-link-input" readonly
+                        class="flex-1 px-3.5 py-2 rounded-xl border border-pink-200 bg-pink-50/50 text-xs text-pink-700 font-medium select-all focus:outline-none">
+                    <button type="button" onclick="copyShareRoomLink(true)"
+                        class="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-blue-400 hover:from-teal-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 shrink-0 active:scale-95">
+                        <i class="fa-solid fa-gift"></i>
+                        <span>Copy Gửi Cô</span>
+                    </button>
+                </div>
+            </div>
                 <p class="text-[11px] text-gray-500 italic">
                     💡 Mẹo: Nếu bạn đưa file HTML này lên <strong>tiiny.host</strong> hoặc <strong>netlify</strong>, chỉ cần gửi link đó kèm <code>?box=MA-CUA-BAN</code> là cả nhóm ở bất kỳ đâu cũng vào thả bóng chung được!
                 </p>
@@ -943,136 +957,164 @@
 
         // EMBEDDED_CONFIG_START
         const EMBEDDED_GIFT_MODE = false;
+        window.EMBEDDED_GIFT_MODE = EMBEDDED_GIFT_MODE;
         const DEFAULT_WISHES = [
             {
                 id: 'w1',
-                sender: 'Điều ước ngọt ngào 🍓',
-                message: 'Chúc bạn mỗi ngày thức dậy đều tràn ngập năng lượng tích cực, nụ cười luôn nở trên môi và mọi dự định ấp ủ đều sớm thành hiện thực nhé!',
+                sender: 'Từ cả lớp yêu quý 🌸',
+                message: 'Chúc Cô luôn rạng rỡ, tràn đầy năng lượng và hạnh phúc trên hành trình gieo mầm tri thức. Chúng em yêu Cô rất nhiều!',
                 color: 'pink',
-                image: PRESET_ILLUSTRATIONS[0].url,
-                createdAt: 1001
+                image: PRESET_ILLUSTRATIONS[3].url
             },
             {
                 id: 'w2',
-                sender: 'Cái ôm ấm áp 🧸',
-                message: 'Dù ngoài kia có đôi lúc bận rộn hay mệt mỏi, hãy nhớ rằng bạn luôn xứng đáng với những điều dịu dàng và tuyệt vời nhất thế gian!',
+                sender: 'Một học trò nhỏ 🧸',
+                message: 'Cảm ơn những bài giảng dịu dàng và sự kiên nhẫn của Cô. Chúc Cô mỗi ngày đến trường đều là một ngày vui!',
                 color: 'lavender',
-                image: PRESET_ILLUSTRATIONS[1].url,
-                createdAt: 1002
+                image: PRESET_ILLUSTRATIONS[1].url
             },
             {
                 id: 'w3',
-                sender: 'Bầu trời bình yên 🌈',
-                message: 'Chúc tâm hồn bạn luôn trong trẻo như mây trời pastel, đi qua những cơn mưa rào đều sẽ thấy cầu vồng rực rỡ đón chờ phía trước.',
-                color: 'blue',
-                image: PRESET_ILLUSTRATIONS[2].url,
-                createdAt: 1003
+                sender: 'Lời chúc ngọt ngào 🎂',
+                message: 'Chúc mọi điều tốt đẹp, may mắn và ngọt ngào nhất sẽ luôn mỉm cười với bạn hôm nay và mãi về sau!',
+                color: 'mint',
+                image: PRESET_ILLUSTRATIONS[0].url
             },
             {
                 id: 'w4',
-                sender: 'Hoa nở bốn mùa 🌷',
-                message: 'Gửi đến bạn một bó hoa tươi thắm cùng lời chúc sức khỏe, may mắn và luôn được bao quanh bởi những người yêu thương bạn thật lòng.',
-                color: 'mint',
-                image: PRESET_ILLUSTRATIONS[3].url,
-                createdAt: 1004
+                sender: 'Cầu vồng may mắn 🌈',
+                message: 'Mong bạn luôn giữ vững nụ cười tươi tắn như ánh nắng ban mai, vượt qua mọi thử thách thật nhẹ nhàng!',
+                color: 'blue',
+                image: PRESET_ILLUSTRATIONS[2].url
             },
             {
                 id: 'w5',
-                sender: 'Ngôi sao may mắn ⭐',
-                message: 'Hãy luôn tự tin tỏa sáng theo cách riêng của chính mình nhé! Bạn là một phiên bản độc nhất vô nhị và vô cùng đáng quý.',
+                sender: 'Ngôi sao ước nguyện ⭐',
+                message: 'Mọi ước mơ ấp ủ của bạn chắc chắn sẽ sớm nở hoa rực rỡ. Hãy luôn tin vào chính mình nhé!',
                 color: 'yellow',
-                image: PRESET_ILLUSTRATIONS[4].url,
-                createdAt: 1005
+                image: PRESET_ILLUSTRATIONS[4].url
             },
             {
                 id: 'w6',
-                sender: 'Trọn vẹn yêu thương 💌',
-                message: 'Cảm ơn bạn vì đã luôn dịu dàng và mang lại niềm vui cho mọi người xung quanh. Chúc bạn một hành trình mới thật rực rỡ và hạnh phúc!',
+                sender: 'Gửi ngàn yêu thương 💕',
+                message: 'Cảm ơn vì đã luôn là một phần tuyệt vời trong thanh xuân của chúng mình. Mãi bên nhau bạn nhé!',
                 color: 'peach',
-                image: PRESET_ILLUSTRATIONS[0].url,
-                createdAt: 1006
+                image: PRESET_ILLUSTRATIONS[3].url
             }
         ];
         // EMBEDDED_CONFIG_END
 
         /* -----------------------------------------------------------
-         * 3. TRẠNG THÁI ỨNG DỤNG & MÃ PHÒNG (STATE & ROOM CODE)
+         * 3. TRẠNG THÁI ỨNG DỤNG & QUẢN LÝ PHÒNG (ROOM CODE / VIEW MODE)
          * ----------------------------------------------------------- */
-        const STORAGE_KEY_PREFIX = 'pastel_wish_bubbles_room_';
-        let currentRoomCode = 'HOP-QUA-CHUNG';
+        const urlParams = new URLSearchParams(window.location.search);
+        const IS_VIEW_ONLY_MODE = EMBEDDED_GIFT_MODE || urlParams.get('view') === '1' || urlParams.get('mode') === 'gift';
+        let currentRoomCode = (urlParams.get('box') || 'CHUNG').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '') || 'CHUNG';
+
         let wishes = [];
-        let activeBubbles = []; // Các đối tượng bong bóng đang bay trên màn hình
-        let openedWishIds = new Set();
-        let currentViewingWishId = null;
+        let poppedIds = new Set();
         let currentStage = 'box'; // 'box' | 'bubbles' | 'summary'
-        let selectedFormColor = 'pink';
-        let selectedFormImage = PRESET_ILLUSTRATIONS[0].url;
+        let activeBubbleId = null;
+        let selectedBubbleColor = 'pink';
+        let currentUploadedImgData = PRESET_ILLUSTRATIONS[0].url;
+        let soundEnabled = true;
+        let bubblePhysicsList = [];
         let animationFrameId = null;
 
-        // Biến cầu nối với Firebase Cloud Module
+        // Cầu nối đồng bộ đám mây (nếu có)
         window.cloudSyncBridge = {
             isConnected: false,
-            userId: null,
-            saveWishToCloud: null,
-            deleteWishFromCloud: null,
-            seedDefaultToCloud: null,
+            saveWishesToCloud: null,
             switchRoomListener: null
         };
 
-        function sanitizeRoomCode(raw) {
-            if (!raw) return 'HOP-QUA-CHUNG';
-            const cleaned = raw.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '-').replace(/-+/g, '-').slice(0, 28);
-            return cleaned || 'HOP-QUA-CHUNG';
+        function getStorageKey() {
+            return `SWEETBOX_WISHES_V2_${currentRoomCode}`;
         }
 
-        function initRoomCodeFromUrl() {
+        function loadWishesLocalFallback() {
+            if (EMBEDDED_GIFT_MODE) {
+                wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+                updateUIAllStages();
+                return;
+            }
             try {
-                const params = new URLSearchParams(window.location.search);
-                const boxParam = params.get('box');
-                if (boxParam) {
-                    currentRoomCode = sanitizeRoomCode(boxParam);
-                } else {
-                    const savedRoom = localStorage.getItem('pastel_last_room_code');
-                    if (savedRoom) currentRoomCode = sanitizeRoomCode(savedRoom);
+                const raw = localStorage.getItem(getStorageKey());
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        wishes = parsed;
+                        updateUIAllStages();
+                        return;
+                    }
                 }
             } catch (e) {
-                currentRoomCode = 'HOP-QUA-CHUNG';
+                console.warn('LocalStorage bị hạn chế trong khung nhúng:', e);
             }
-            updateRoomBadgeUI();
+            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+            updateUIAllStages();
         }
 
-        function updateRoomBadgeUI() {
-            const label = document.getElementById('current-room-label');
-            if (label) label.textContent = currentRoomCode;
-            const input = document.getElementById('room-code-input');
-            if (input) input.value = currentRoomCode;
-            updateShareLinkInput();
-        }
-
-        function updateShareLinkInput() {
-            const linkInput = document.getElementById('share-link-input');
-            if (!linkInput) return;
+        function saveWishesData() {
             try {
-                const url = new URL(window.location.href);
-                url.searchParams.set('box', currentRoomCode);
-                linkInput.value = url.toString();
+                localStorage.setItem(getStorageKey(), JSON.stringify(wishes));
             } catch (e) {
-                linkInput.value = window.location.href + '?box=' + encodeURIComponent(currentRoomCode);
+                console.warn('Không thể ghi LocalStorage:', e);
             }
+            if (window.cloudSyncBridge && window.cloudSyncBridge.isConnected && window.cloudSyncBridge.saveWishesToCloud) {
+                window.cloudSyncBridge.saveWishesToCloud(currentRoomCode, wishes);
+            }
+            updateUIAllStages();
+        }
+
+        function applyViewOnlyModeUI() {
+            const roomLabel = document.getElementById('current-room-label');
+            if (roomLabel) roomLabel.textContent = currentRoomCode;
+
+            const roomInput = document.getElementById('room-code-input');
+            if (roomInput) roomInput.value = currentRoomCode;
+
+            if (IS_VIEW_ONLY_MODE) {
+                const hideIds = [
+                    'header-customize-btn',
+                    'header-share-btn',
+                    'header-export-btn',
+                    'room-badge-btn',
+                    'box-add-wish-btn',
+                    'summary-customize-btn'
+                ];
+                hideIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+            }
+        }
+
+        function updateUIAllStages() {
+            const introCount = document.getElementById('intro-bubble-count');
+            if (introCount) introCount.textContent = wishes.length;
+
+            const totalCount = document.getElementById('total-count');
+            if (totalCount) totalCount.textContent = wishes.length;
+
+            const openedCount = document.getElementById('opened-count');
+            if (openedCount) openedCount.textContent = poppedIds.size;
+
+            const manageCount = document.getElementById('manage-count');
+            if (manageCount) manageCount.textContent = wishes.length;
+
+            const exportCount = document.getElementById('export-wish-count');
+            if (exportCount) exportCount.textContent = wishes.length;
         }
 
         /* -----------------------------------------------------------
-         * 4. HỆ THỐNG ÂM THANH WEB AUDIO API (KHÔNG CẦN FILE NGOÀI)
+         * 4. HỆ THỐNG ÂM THANH TỔNG HỢP WEB AUDIO API (KHÔNG CẦN FILE MP3)
          * ----------------------------------------------------------- */
-        let soundEnabled = true;
         let audioCtx = null;
-
         function getAudioContext() {
             if (!audioCtx) {
                 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                if (AudioContextClass) {
-                    audioCtx = new AudioContextClass();
-                }
+                if (AudioContextClass) audioCtx = new AudioContextClass();
             }
             if (audioCtx && audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -1083,153 +1125,82 @@
         function toggleSound() {
             soundEnabled = !soundEnabled;
             const icon = document.getElementById('sound-icon');
-            if (soundEnabled) {
-                icon.className = 'fa-solid fa-volume-high text-sm sm:text-base';
-                playChimeSound();
-            } else {
-                icon.className = 'fa-solid fa-volume-xmark text-sm sm:text-base text-gray-400';
+            if (icon) {
+                icon.className = soundEnabled
+                    ? 'fa-solid fa-volume-high text-sm sm:text-base'
+                    : 'fa-solid fa-volume-xmark text-sm sm:text-base text-gray-400';
             }
+            showToast(soundEnabled ? 'Đã bật hiệu ứng âm thanh 🔊' : 'Đã tắt âm thanh 🔇');
         }
 
-        // Âm thanh lấp lánh khi mở hộp quà
-        function playGiftOpenSound() {
+        function playSoundEffect(type) {
             if (!soundEnabled) return;
             const ctx = getAudioContext();
             if (!ctx) return;
 
-            const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-            notes.forEach((freq, idx) => {
+            const now = ctx.currentTime;
+
+            if (type === 'open') {
+                // Âm thanh lấp lánh mở hộp quà
+                const notes = [523.25, 659.25, 783.99, 1046.5];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.46);
+                });
+            } else if (type === 'chime') {
+                // Âm thanh chạm vào bong bóng
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+                gain.gain.setValueAtTime(0.14, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.26);
+            } else if (type === 'pop') {
+                // Âm thanh nổ bóng "Bụp!"
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.07);
-
-                gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.07);
-                gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + idx * 0.07 + 0.02);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.07 + 0.45);
-
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.exponentialRampToValueAtTime(60, now + 0.14);
+                gain.gain.setValueAtTime(0.28, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.start(ctx.currentTime + idx * 0.07);
-                osc.stop(ctx.currentTime + idx * 0.07 + 0.46);
-            });
-        }
-
-        // Âm thanh chạm nhẹ vào bong bóng
-        function playChimeSound() {
-            if (!soundEnabled) return;
-            const ctx = getAudioContext();
-            if (!ctx) return;
-
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(680, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(980, ctx.currentTime + 0.15);
-
-            gain.gain.setValueAtTime(0.14, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.19);
-        }
-
-        // Âm thanh "Bụp!" khi bóng vỡ
-        function playBubblePopSound() {
-            if (!soundEnabled) return;
-            const ctx = getAudioContext();
-            if (!ctx) return;
-
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(420, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.11);
-
-            gain.gain.setValueAtTime(0.28, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.13);
-        }
-
-        /* -----------------------------------------------------------
-         * 5. LƯU TRỮ DỮ LIỆU CỤC BỘ & ĐỒNG BỘ ĐÁM MÂY (LOCAL + CLOUD)
-         * ----------------------------------------------------------- */
-        function getRoomStorageKey() {
-            return STORAGE_KEY_PREFIX + currentRoomCode;
-        }
-
-        function loadWishesLocalFallback() {
-            try {
-                const raw = localStorage.getItem(getRoomStorageKey());
-                if (raw) {
-                    const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        wishes = parsed;
-                        return;
-                    }
-                }
-            } catch (e) {
-                console.warn('Không thể đọc localStorage:', e);
-            }
-            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
-        }
-
-        function saveWishesLocalCache() {
-            try {
-                localStorage.setItem(getRoomStorageKey(), JSON.stringify(wishes));
-            } catch (e) {
-                console.warn('Bộ nhớ trình duyệt đã đầy:', e);
-            }
-            updateCountersUI();
-        }
-
-        // Hàm được gọi mỗi khi dữ liệu từ Cloud hoặc Local thay đổi
-        function applyRealtimeWishesUpdate(newWishesList) {
-            const prevIds = new Set(wishes.map(w => w.id));
-            wishes = newWishesList;
-            saveWishesLocalCache();
-            renderManageWishList();
-
-            // Nếu đang ở màn hình bong bóng, tự động thả thêm các bong bóng mới chưa từng xuất hiện
-            if (currentStage === 'bubbles') {
-                wishes.forEach((w, idx) => {
-                    const alreadyOnScreen = activeBubbles.some(b => b.wish.id === w.id);
-                    const alreadyPopped = openedWishIds.has(w.id);
-                    if (!alreadyOnScreen && !alreadyPopped) {
-                        spawnSingleBubble(w, idx, false);
-                        if (prevIds.size > 0 && !prevIds.has(w.id)) {
-                            showToast(`🎈 Có bong bóng mới từ "${w.sender}" vừa bay vào!`);
-                        }
-                    }
+                osc.start(now);
+                osc.stop(now + 0.16);
+            } else if (type === 'fanfare') {
+                // Âm thanh hoàn thành mở hết bóng
+                const chord = [523.25, 659.25, 783.99, 987.77, 1046.5];
+                chord.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.09);
+                    gain.gain.setValueAtTime(0.14, now + i * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.65);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i * 0.09);
+                    osc.stop(now + i * 0.09 + 0.66);
                 });
-            } else if (currentStage === 'summary') {
-                renderSummaryGrid();
             }
-            updateCountersUI();
-        }
-
-        function updateCountersUI() {
-            const total = wishes.length;
-            const opened = openedWishIds.size;
-            const introCountEl = document.getElementById('intro-bubble-count');
-            const totalCountEl = document.getElementById('total-count');
-            const openedCountEl = document.getElementById('opened-count');
-            const manageCountEl = document.getElementById('manage-count');
-
-            if (introCountEl) introCountEl.textContent = total;
-            if (totalCountEl) totalCountEl.textContent = total;
-            if (openedCountEl) openedCountEl.textContent = Math.min(opened, total);
-            if (manageCountEl) manageCountEl.textContent = total;
         }
 
         /* -----------------------------------------------------------
-         * 6. HIỆU ỨNG HẠT PHÁO GIẤY & BÓNG VỠ (CANVAS PARTICLES)
+         * 5. HIỆU ỨNG HẠT PHÁO GIẤY & BÓNG NỔ (CANVAS FX)
          * ----------------------------------------------------------- */
         const fxCanvas = document.getElementById('fx-canvas');
         const fxCtx = fxCanvas.getContext('2d');
@@ -1242,22 +1213,21 @@
         window.addEventListener('resize', resizeFxCanvas);
         resizeFxCanvas();
 
-        const PASTEL_PARTICLE_COLORS = ['#FFB5C2', '#D8B4F8', '#A8E6CF', '#A0C4FF', '#FFD3B6', '#FDFFB6', '#FF8DA1'];
-
-        function createBurstParticles(x, y, count = 32) {
+        function createBurstParticles(x, y, count = 32, customColor = null) {
+            const palette = ['#FFB5C2', '#D8B4F8', '#A8E6CF', '#A0C4FF', '#FFD3B6', '#FDFFB6'];
             for (let i = 0; i < count; i++) {
-                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
-                const speed = 3 + Math.random() * 7;
+                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+                const speed = 2.5 + Math.random() * 6.5;
                 particles.push({
                     x,
                     y,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed - 1.5,
                     radius: 4 + Math.random() * 5,
-                    color: PASTEL_PARTICLE_COLORS[Math.floor(Math.random() * PASTEL_PARTICLE_COLORS.length)],
+                    color: customColor || palette[Math.floor(Math.random() * palette.length)],
                     alpha: 1,
-                    decay: 0.018 + Math.random() * 0.015,
-                    shape: Math.random() > 0.4 ? 'circle' : 'heart'
+                    decay: 0.016 + Math.random() * 0.015,
+                    shape: Math.random() > 0.4 ? 'circle' : 'star'
                 });
             }
         }
@@ -1269,6 +1239,7 @@
                 p.x += p.vx;
                 p.y += p.vy;
                 p.vy += 0.14; // Trọng lực nhẹ
+                p.vx *= 0.98;
                 p.alpha -= p.decay;
 
                 if (p.alpha <= 0) {
@@ -1279,21 +1250,9 @@
                 fxCtx.save();
                 fxCtx.globalAlpha = Math.max(0, p.alpha);
                 fxCtx.fillStyle = p.color;
-
-                if (p.shape === 'circle') {
-                    fxCtx.beginPath();
-                    fxCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    fxCtx.fill();
-                } else {
-                    const s = p.radius * 0.9;
-                    fxCtx.beginPath();
-                    fxCtx.moveTo(p.x, p.y + s);
-                    fxCtx.lineTo(p.x - s, p.y);
-                    fxCtx.lineTo(p.x, p.y - s);
-                    fxCtx.lineTo(p.x + s, p.y);
-                    fxCtx.closePath();
-                    fxCtx.fill();
-                }
+                fxCtx.beginPath();
+                fxCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                fxCtx.fill();
                 fxCtx.restore();
             }
             requestAnimationFrame(updateAndDrawParticles);
@@ -1301,156 +1260,148 @@
         requestAnimationFrame(updateAndDrawParticles);
 
         /* -----------------------------------------------------------
-         * 7. LUỒNG CHUYỂN CẢNH: MỞ HỘP QUÀ -> BONG BÓNG BAY -> TỔNG HỢP
+         * 6. LUỒNG TƯƠNG TÁC MỞ HỘP QUÀ -> BONG BÓNG BAY -> NỔ BÓNG -> TỔNG HỢP
          * ----------------------------------------------------------- */
         function openGiftBox() {
             if (currentStage !== 'box') return;
-            if (wishes.length === 0) {
-                wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
-                saveWishesLocalCache();
+            playSoundEffect('open');
+
+            const animBox = document.getElementById('gift-anim-box');
+            if (animBox) {
+                animBox.classList.remove('gift-bounce');
+                animBox.classList.add('gift-opened');
             }
 
-            playGiftOpenSound();
-
-            const boxWrapper = document.getElementById('gift-box-wrapper');
-            const animBox = document.getElementById('gift-anim-box');
-            animBox.classList.remove('gift-bounce');
-            boxWrapper.classList.add('gift-opened');
-
-            const rect = boxWrapper.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            createBurstParticles(centerX, centerY, 55);
+            // Pháo giấy tung ra từ giữa màn hình
+            createBurstParticles(window.innerWidth / 2, window.innerHeight / 2, 55);
 
             setTimeout(() => {
                 currentStage = 'bubbles';
                 document.getElementById('stage-box').classList.add('hidden');
                 document.getElementById('stage-bubbles').classList.remove('hidden');
-                document.getElementById('progress-badge').classList.remove('hidden');
-                document.getElementById('progress-badge').classList.add('flex');
+                const badge = document.getElementById('progress-badge');
+                badge.classList.remove('hidden');
+                badge.classList.add('flex');
 
                 spawnAllBubbles();
-                startBubblePhysicsLoop();
-            }, 720);
+                startBubbleFloatingLoop();
+            }, 780);
         }
 
         function spawnAllBubbles() {
             const arena = document.getElementById('bubble-arena');
-            arena.innerHTML = '';
-            activeBubbles = [];
-
-            wishes.forEach((wish, index) => {
-                if (openedWishIds.has(wish.id)) return;
-                spawnSingleBubble(wish, index, true);
-            });
-            updateCountersUI();
-        }
-
-        function spawnSingleBubble(wish, index = 0, fromCenter = false) {
-            const arena = document.getElementById('bubble-arena');
             if (!arena) return;
-            const arenaWidth = arena.clientWidth || window.innerWidth;
-            const arenaHeight = arena.clientHeight || (window.innerHeight - 150);
+            arena.innerHTML = '';
+            bubblePhysicsList = [];
 
+            const arenaW = arena.clientWidth || window.innerWidth;
+            const arenaH = arena.clientHeight || (window.innerHeight - 150);
             const isMobile = window.innerWidth < 640;
-            const size = isMobile ? (96 + (index % 3) * 10) : (118 + (index % 3) * 14);
-            const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+            const baseSize = isMobile ? 96 : 122;
 
-            const el = document.createElement('div');
-            el.className = 'wish-bubble';
-            el.style.width = `${size}px`;
-            el.style.height = `${size}px`;
-            el.style.backgroundColor = theme.bg;
-            el.style.borderColor = theme.border;
+            const unpoppedWishes = wishes.filter(w => !poppedIds.has(w.id));
+            updateUIAllStages();
 
-            el.innerHTML = `
-                <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white shadow-sm mb-1 pointer-events-none">
-                    <img src="${wish.image}" alt="" class="w-full h-full object-cover" onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
-                </div>
-                <span class="px-2 text-[11px] sm:text-xs font-bold text-pastel-text text-center line-clamp-1 max-w-[90%] pointer-events-none drop-shadow-sm">
-                    ${escapeHtml(wish.sender)}
-                </span>
-                <div class="bubble-knot" style="background-color: ${theme.knot}"></div>
-                <div class="bubble-string"></div>
-            `;
-
-            const pad = 16;
-            const targetX = pad + Math.random() * Math.max(40, arenaWidth - size - pad * 2);
-            const targetY = pad + Math.random() * Math.max(40, arenaHeight - size - pad * 2 - 35);
-
-            el.style.left = `${targetX}px`;
-            el.style.top = `${targetY}px`;
-
-            if (fromCenter) {
-                el.style.animation = `spawnFromBox ${0.45 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1) backwards`;
+            if (unpoppedWishes.length === 0 && wishes.length > 0) {
+                transitionToSummaryStage();
+                return;
             }
 
-            el.addEventListener('click', () => onBubbleClicked(wish.id));
-            arena.appendChild(el);
+            unpoppedWishes.forEach((wish, index) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const size = baseSize + (index % 3) * 10;
 
-            const speed = 0.45 + Math.random() * 0.55;
-            const dir = Math.random() * Math.PI * 2;
-            activeBubbles.push({
-                wish,
-                el,
-                x: targetX,
-                y: targetY,
-                vx: Math.cos(dir) * speed,
-                vy: Math.sin(dir) * speed,
-                size,
-                wobbleOffset: Math.random() * 100
+                const bubbleEl = document.createElement('div');
+                bubbleEl.className = 'wish-bubble';
+                bubbleEl.id = `bubble-el-${wish.id}`;
+                bubbleEl.style.width = `${size}px`;
+                bubbleEl.style.height = `${size}px`;
+                bubbleEl.style.background = theme.bg;
+                bubbleEl.style.borderColor = theme.border;
+                bubbleEl.style.animation = `spawnFromBox 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.08}s backwards`;
+
+                // Nội dung bên trong quả bóng
+                const shortSender = wish.sender.length > 16 ? wish.sender.slice(0, 15) + '…' : wish.sender;
+                bubbleEl.innerHTML = `
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white shadow-sm mb-1 pointer-events-none">
+                        <img src="${wish.image}" alt="" class="w-full h-full object-cover"
+                             onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                    </div>
+                    <span class="px-2 text-[10px] sm:text-xs font-bold text-pastel-text text-center leading-tight line-clamp-2 pointer-events-none">
+                        ${escapeHtml(shortSender)}
+                    </span>
+                    <div class="bubble-knot" style="background: ${theme.knot}"></div>
+                    <div class="bubble-string"></div>
+                `;
+
+                bubbleEl.addEventListener('click', () => openWishModalForBubble(wish.id));
+                arena.appendChild(bubbleEl);
+
+                // Tọa độ khởi tạo phân bổ đều trong vùng bay
+                const pad = 20;
+                const maxX = Math.max(pad + 10, arenaW - size - pad);
+                const maxY = Math.max(pad + 10, arenaH - size - pad - 35);
+                const startX = pad + Math.random() * (maxX - pad);
+                const startY = pad + Math.random() * (maxY - pad);
+
+                bubblePhysicsList.push({
+                    id: wish.id,
+                    el: bubbleEl,
+                    x: startX,
+                    y: startY,
+                    vx: (Math.random() - 0.5) * 1.15,
+                    vy: (Math.random() - 0.5) * 1.05,
+                    size: size,
+                    phase: Math.random() * Math.PI * 2
+                });
             });
         }
 
-        function startBubblePhysicsLoop() {
+        function startBubbleFloatingLoop() {
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            const arena = document.getElementById('bubble-arena');
 
-            function step(timestamp) {
+            function step() {
                 if (currentStage !== 'bubbles') return;
+                const arena = document.getElementById('bubble-arena');
+                if (arena) {
+                    const arenaW = arena.clientWidth || window.innerWidth;
+                    const arenaH = arena.clientHeight || (window.innerHeight - 150);
 
-                const maxW = arena.clientWidth || window.innerWidth;
-                const maxH = arena.clientHeight || (window.innerHeight - 150);
+                    bubblePhysicsList.forEach(b => {
+                        b.phase += 0.025;
+                        b.x += b.vx + Math.sin(b.phase) * 0.25;
+                        b.y += b.vy + Math.cos(b.phase) * 0.22;
 
-                activeBubbles.forEach(b => {
-                    if (b.popping) return;
+                        const pad = 12;
+                        const maxX = Math.max(pad, arenaW - b.size - pad);
+                        const maxY = Math.max(pad, arenaH - b.size - 38);
 
-                    b.x += b.vx + Math.sin(timestamp * 0.0015 + b.wobbleOffset) * 0.22;
-                    b.y += b.vy + Math.cos(timestamp * 0.0012 + b.wobbleOffset) * 0.18;
+                        if (b.x <= pad) { b.x = pad; b.vx = Math.abs(b.vx); }
+                        if (b.x >= maxX) { b.x = maxX; b.vx = -Math.abs(b.vx); }
+                        if (b.y <= pad) { b.y = pad; b.vy = Math.abs(b.vy); }
+                        if (b.y >= maxY) { b.y = maxY; b.vy = -Math.abs(b.vy); }
 
-                    const rightBound = Math.max(20, maxW - b.size - 10);
-                    const bottomBound = Math.max(20, maxH - b.size - 38);
-
-                    if (b.x <= 10) { b.x = 10; b.vx = Math.abs(b.vx); }
-                    if (b.x >= rightBound) { b.x = rightBound; b.vx = -Math.abs(b.vx); }
-                    if (b.y <= 10) { b.y = 10; b.vy = Math.abs(b.vy); }
-                    if (b.y >= bottomBound) { b.y = bottomBound; b.vy = -Math.abs(b.vy); }
-
-                    b.el.style.left = `${b.x}px`;
-                    b.el.style.top = `${b.y}px`;
-                });
-
+                        b.el.style.left = `${b.x}px`;
+                        b.el.style.top = `${b.y}px`;
+                    });
+                }
                 animationFrameId = requestAnimationFrame(step);
             }
-
             animationFrameId = requestAnimationFrame(step);
         }
 
-        /* -----------------------------------------------------------
-         * 8. XEM LỜI CHÚC -> NỔ BÓNG -> KIỂM TRA HOÀN TẤT
-         * ----------------------------------------------------------- */
-        function onBubbleClicked(wishId) {
-            const wishIndex = wishes.findIndex(w => w.id === wishId);
-            if (wishIndex === -1) return;
-            const wish = wishes[wishIndex];
+        function openWishModalForBubble(wishId) {
+            const wish = wishes.find(w => w.id === wishId);
+            if (!wish) return;
 
-            currentViewingWishId = wishId;
-            playChimeSound();
+            playSoundEffect('chime');
+            activeBubbleId = wishId;
 
-            document.getElementById('modal-wish-img').src = wish.image || PRESET_ILLUSTRATIONS[0].url;
-            document.getElementById('modal-wish-badge').textContent = `🎈 Bong bóng #${wishIndex + 1}`;
+            const idx = wishes.findIndex(w => w.id === wishId) + 1;
+            document.getElementById('modal-wish-badge').textContent = `🎈 Bong bóng #${idx}`;
             document.getElementById('modal-wish-sender').textContent = wish.sender;
             document.getElementById('modal-wish-text').textContent = wish.message;
+            document.getElementById('modal-wish-img').src = wish.image || PRESET_ILLUSTRATIONS[0].url;
 
             const modal = document.getElementById('wish-modal');
             modal.classList.remove('hidden');
@@ -1462,117 +1413,100 @@
             modal.classList.add('hidden');
             modal.classList.remove('flex');
 
-            if (!currentViewingWishId) return;
-            const wishId = currentViewingWishId;
-            currentViewingWishId = null;
+            if (!activeBubbleId) return;
+            const targetId = activeBubbleId;
+            activeBubbleId = null;
 
-            const bubbleObj = activeBubbles.find(b => b.wish.id === wishId);
-            if (bubbleObj && !bubbleObj.popping) {
-                bubbleObj.popping = true;
-                openedWishIds.add(wishId);
-                updateCountersUI();
+            const bubbleObj = bubblePhysicsList.find(b => b.id === targetId);
+            const wish = wishes.find(w => w.id === targetId);
+            const theme = wish ? (BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink) : BUBBLE_THEMES.pink;
 
-                playBubblePopSound();
-
+            if (bubbleObj && bubbleObj.el) {
                 const rect = bubbleObj.el.getBoundingClientRect();
-                const cx = rect.left + rect.width / 2;
-                const cy = rect.top + rect.height / 2;
-                createBurstParticles(cx, cy, 38);
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
 
+                playSoundEffect('pop');
+                createBurstParticles(centerX, centerY, 36, theme.knot);
                 bubbleObj.el.classList.add('bubble-popping');
 
                 setTimeout(() => {
                     if (bubbleObj.el && bubbleObj.el.parentNode) {
                         bubbleObj.el.parentNode.removeChild(bubbleObj.el);
                     }
-                    activeBubbles = activeBubbles.filter(b => b.wish.id !== wishId);
+                    bubblePhysicsList = bubblePhysicsList.filter(b => b.id !== targetId);
+                    poppedIds.add(targetId);
+                    updateUIAllStages();
 
-                    if (activeBubbles.length === 0 || openedWishIds.size >= wishes.length) {
-                        setTimeout(() => transitionToSummaryStage(), 400);
+                    // Kiểm tra nếu đã nổ hết tất cả bong bóng
+                    if (bubblePhysicsList.length === 0) {
+                        setTimeout(() => {
+                            transitionToSummaryStage();
+                        }, 450);
                     }
-                }, 420);
+                }, 400);
+            } else {
+                poppedIds.add(targetId);
+                updateUIAllStages();
+                if (bubblePhysicsList.length === 0) {
+                    transitionToSummaryStage();
+                }
             }
         }
 
         function skipToSummary() {
-            activeBubbles.forEach((b, idx) => {
-                setTimeout(() => {
-                    const rect = b.el.getBoundingClientRect();
-                    createBurstParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
-                    b.el.classList.add('bubble-popping');
-                }, idx * 60);
-            });
-            playBubblePopSound();
-            wishes.forEach(w => openedWishIds.add(w.id));
-            updateCountersUI();
-
-            setTimeout(() => {
-                activeBubbles = [];
-                transitionToSummaryStage();
-            }, Math.min(700, activeBubbles.length * 60 + 350));
+            wishes.forEach(w => poppedIds.add(w.id));
+            updateUIAllStages();
+            transitionToSummaryStage();
         }
 
         function transitionToSummaryStage() {
             currentStage = 'summary';
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
 
+            playSoundEffect('fanfare');
+            createBurstParticles(window.innerWidth * 0.3, window.innerHeight * 0.35, 40);
+            createBurstParticles(window.innerWidth * 0.7, window.innerHeight * 0.35, 40);
+
             document.getElementById('stage-box').classList.add('hidden');
             document.getElementById('stage-bubbles').classList.add('hidden');
             document.getElementById('progress-badge').classList.add('hidden');
             document.getElementById('progress-badge').classList.remove('flex');
 
-            const summarySection = document.getElementById('stage-summary');
-            summarySection.classList.remove('hidden');
-
-            playGiftOpenSound();
-            createBurstParticles(window.innerWidth * 0.25, window.innerHeight * 0.3, 40);
-            createBurstParticles(window.innerWidth * 0.75, window.innerHeight * 0.3, 40);
-
+            const summaryEl = document.getElementById('stage-summary');
+            summaryEl.classList.remove('hidden');
             renderSummaryGrid();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderSummaryGrid() {
             const grid = document.getElementById('summary-grid');
+            if (!grid) return;
             grid.innerHTML = '';
-
-            const rotations = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2', 'rotate-0'];
 
             wishes.forEach((wish, idx) => {
                 const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
-                const rotClass = rotations[idx % rotations.length];
+                const tiltAngle = (idx % 2 === 0 ? -1.4 : 1.4);
 
-                const card = document.createElement('article');
-                card.className = `polaroid-card rounded-3xl p-4 sm:p-5 flex flex-col justify-between ${rotClass}`;
+                const card = document.createElement('div');
+                card.className = 'polaroid-card rounded-3xl p-4 sm:p-5 flex flex-col justify-between';
+                card.style.transform = `rotate(${tiltAngle}deg)`;
 
                 card.innerHTML = `
                     <div>
-                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] mb-4 bg-pink-50 border border-pink-100 shadow-inner group">
-                            <img src="${wish.image}" alt="${escapeHtml(wish.sender)}" 
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
-                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-white/90 text-pink-500">
+                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] mb-4 bg-pink-50 border border-pink-100 shadow-inner">
+                            <img src="${wish.image}" alt="${escapeHtml(wish.sender)}"
+                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                 onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${theme.badge}">
                                 🎈 #${idx + 1}
                             </span>
                         </div>
-
-                        <div class="flex items-center justify-between gap-2 mb-2">
-                            <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text">
-                                ${escapeHtml(wish.sender)}
-                            </h3>
-                            <span class="w-4 h-4 rounded-full shrink-0 border border-white shadow-sm" style="background-color: ${theme.bg}"></span>
-                        </div>
-
-                        <p class="text-sm sm:text-base text-purple-950/80 leading-relaxed bg-pink-50/40 p-3.5 rounded-2xl border border-pink-100/60">
-                            "${escapeHtml(wish.message)}"
+                        <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text mb-2 flex items-center gap-1.5">
+                            <span>${escapeHtml(wish.sender)}</span>
+                        </h3>
+                        <p class="text-sm text-purple-950/80 leading-relaxed whitespace-pre-line bg-pink-50/40 p-3.5 rounded-2xl border border-pink-100/60">
+                            ${escapeHtml(wish.message)}
                         </p>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-t border-pink-100/80 flex items-center justify-between text-xs text-purple-400 font-semibold">
-                        <span>Sweet Memory 💕</span>
-                        ${EMBEDDED_GIFT_MODE ? '' : `<button onclick="editWishFromSummary('${wish.id}')" class="hover:text-pink-500 transition-colors flex items-center gap-1">
-                            <i class="fa-solid fa-pen-to-square"></i> Sửa
-                        </button>`}
                     </div>
                 `;
                 grid.appendChild(card);
@@ -1580,50 +1514,51 @@
         }
 
         function replayExperience() {
-            openedWishIds.clear();
-            activeBubbles = [];
+            poppedIds.clear();
             currentStage = 'box';
 
-            const boxWrapper = document.getElementById('gift-box-wrapper');
             const animBox = document.getElementById('gift-anim-box');
-            boxWrapper.classList.remove('gift-opened');
-            animBox.classList.add('gift-bounce');
+            if (animBox) {
+                animBox.classList.remove('gift-opened');
+                animBox.classList.add('gift-bounce');
+            }
 
             document.getElementById('stage-summary').classList.add('hidden');
             document.getElementById('stage-bubbles').classList.add('hidden');
-            document.getElementById('progress-badge').classList.add('hidden');
-            document.getElementById('progress-badge').classList.remove('flex');
             document.getElementById('stage-box').classList.remove('hidden');
-
-            updateCountersUI();
-            playChimeSound();
+            updateUIAllStages();
         }
 
         /* -----------------------------------------------------------
-         * 9. QUẢN LÝ THÊM / SỬA / XÓA LỜI CHÚC, HÌNH ẢNH & BONG BÓNG
+         * 7. THÊM / SỬA / XÓA LỜI CHÚC & HÌNH ẢNH
          * ----------------------------------------------------------- */
         function renderPresetStickers() {
             const container = document.getElementById('preset-stickers');
+            if (!container) return;
             container.innerHTML = '';
-            PRESET_ILLUSTRATIONS.forEach((item, idx) => {
+
+            PRESET_ILLUSTRATIONS.forEach((item, index) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = 'shrink-0 group relative rounded-xl overflow-hidden border-2 border-pink-200 hover:border-pink-400 transition-all w-16 h-12 bg-white shadow-sm';
+                btn.className = 'shrink-0 group relative rounded-xl overflow-hidden border-2 border-pink-200 hover:border-pink-400 transition-all focus:outline-none';
                 btn.title = item.name;
                 btn.onclick = () => {
-                    selectedFormImage = item.url;
+                    currentUploadedImgData = item.url;
                     document.getElementById('input-img-url').value = '';
-                    updateFormImagePreview(selectedFormImage);
+                    document.getElementById('form-img-preview').src = item.url;
+                    showToast(`Đã chọn tranh: ${item.name} 🎨`);
                 };
-                btn.innerHTML = `<img src="${item.url}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">`;
+                btn.innerHTML = `
+                    <img src="${item.url}" alt="${item.name}" class="w-16 h-12 object-cover group-hover:scale-110 transition-transform">
+                `;
                 container.appendChild(btn);
             });
         }
 
         function selectBubbleColor(colorKey) {
-            selectedFormColor = colorKey;
+            selectedBubbleColor = colorKey;
             document.querySelectorAll('.color-swatch').forEach(btn => {
-                if (btn.dataset.color === colorKey) {
+                if (btn.getAttribute('data-color') === colorKey) {
                     btn.classList.add('ring-2', 'ring-offset-2', 'ring-pink-400', 'scale-110');
                 } else {
                     btn.classList.remove('ring-2', 'ring-offset-2', 'ring-pink-400', 'scale-110');
@@ -1631,238 +1566,37 @@
             });
         }
 
-        function updateFormImagePreview(src) {
-            const preview = document.getElementById('form-img-preview');
-            preview.src = src || PRESET_ILLUSTRATIONS[0].url;
-        }
-
-        function previewCustomUrl(url) {
-            if (url && url.trim().length > 5) {
-                selectedFormImage = url.trim();
-                updateFormImagePreview(selectedFormImage);
-            }
-        }
-
         function handleImageUpload(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
 
+            // Nén ảnh nhẹ qua Canvas để lưu trữ và xuất HTML nhẹ nhàng
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const maxDim = 650;
-                    let w = img.width;
-                    let h = img.height;
-                    if (w > maxDim || h > maxDim) {
-                        if (w > h) {
-                            h = Math.round((h * maxDim) / w);
-                            w = maxDim;
-                        } else {
-                            w = Math.round((w * maxDim) / h);
-                            h = maxDim;
-                        }
-                    }
-                    canvas.width = w;
-                    canvas.height = h;
+                    const maxW = 700;
+                    const scale = img.width > maxW ? maxW / img.width : 1;
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, w, h);
-                    selectedFormImage = canvas.toDataURL('image/jpeg', 0.80);
-                    document.getElementById('input-img-url').value = '';
-                    updateFormImagePreview(selectedFormImage);
-                    showToast('Đã tải ảnh lên thành công! 📸');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    currentUploadedImgData = canvas.toDataURL('image/jpeg', 0.82);
+                    document.getElementById('form-img-preview').src = currentUploadedImgData;
+                    showToast('Đã tải ảnh lên thành công 📸');
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
 
-        async function handleAddWish(event) {
-            event.preventDefault();
-            const editId = document.getElementById('edit-wish-id').value;
-            const sender = document.getElementById('input-sender').value.trim();
-            const message = document.getElementById('input-message').value.trim();
-            if (!sender || !message) return;
-
-            const submitBtn = document.getElementById('submit-wish-btn');
-            submitBtn.disabled = true;
-
-            let targetWishObj = null;
-
-            if (editId) {
-                const idx = wishes.findIndex(w => w.id === editId);
-                if (idx !== -1) {
-                    wishes[idx] = {
-                        ...wishes[idx],
-                        sender,
-                        message,
-                        color: selectedFormColor,
-                        image: selectedFormImage || PRESET_ILLUSTRATIONS[0].url
-                    };
-                    targetWishObj = wishes[idx];
-                }
-            } else {
-                targetWishObj = {
-                    id: 'w_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-                    sender,
-                    message,
-                    color: selectedFormColor,
-                    image: selectedFormImage || PRESET_ILLUSTRATIONS[0].url,
-                    createdAt: Date.now()
-                };
-                wishes.push(targetWishObj);
-
-                if (currentStage === 'bubbles') {
-                    spawnSingleBubble(targetWishObj, wishes.length - 1, false);
-                }
+        function previewCustomUrl(url) {
+            const trimmed = url.trim();
+            if (trimmed) {
+                currentUploadedImgData = trimmed;
+                document.getElementById('form-img-preview').src = trimmed;
             }
-
-            saveWishesLocalCache();
-            renderManageWishList();
-            if (currentStage === 'summary') {
-                renderSummaryGrid();
-            }
-
-            // Đồng bộ lên Đám mây nếu đã kết nối Firebase
-            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.saveWishToCloud && targetWishObj) {
-                try {
-                    await window.cloudSyncBridge.saveWishToCloud(targetWishObj);
-                    showToast(editId ? '☁️ Đã cập nhật lời chúc lên Hộp quà chung!' : '🎈 Đã thả bong bóng lên Hộp quà chung!');
-                } catch (err) {
-                    console.warn('Lỗi lưu Cloud:', err);
-                    showToast('Đã lưu trên máy của bạn!');
-                }
-            } else {
-                showToast(editId ? 'Đã cập nhật lời chúc! ✨' : 'Đã thả thêm 1 bong bóng mới! 🎈');
-            }
-
-            submitBtn.disabled = false;
-            resetWishForm();
-            playChimeSound();
-        }
-
-        function resetWishForm() {
-            document.getElementById('edit-wish-id').value = '';
-            document.getElementById('input-sender').value = '';
-            document.getElementById('input-message').value = '';
-            document.getElementById('input-img-url').value = '';
-            document.getElementById('form-mode-title').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i><span>Tạo bong bóng lời chúc mới</span>`;
-            document.getElementById('submit-wish-btn').textContent = '+ Thêm Bong Bóng Này Vào Hộp Quà';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-
-            const randomPreset = PRESET_ILLUSTRATIONS[Math.floor(Math.random() * PRESET_ILLUSTRATIONS.length)];
-            selectedFormImage = randomPreset.url;
-            updateFormImagePreview(selectedFormImage);
-            selectBubbleColor('pink');
-        }
-
-        function startEditWish(wishId) {
-            const wish = wishes.find(w => w.id === wishId);
-            if (!wish) return;
-
-            document.getElementById('edit-wish-id').value = wish.id;
-            document.getElementById('input-sender').value = wish.sender;
-            document.getElementById('input-message').value = wish.message;
-            selectedFormImage = wish.image;
-            updateFormImagePreview(selectedFormImage);
-            selectBubbleColor(wish.color || 'pink');
-
-            document.getElementById('form-mode-title').innerHTML = `<i class="fa-solid fa-pen"></i><span>Đang chỉnh sửa bong bóng</span>`;
-            document.getElementById('submit-wish-btn').textContent = 'Lưu Thay Đổi Bong Bóng ✨';
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-
-            document.getElementById('add-wish-form').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function editWishFromSummary(wishId) {
-            openCustomizeModal();
-            setTimeout(() => startEditWish(wishId), 100);
-        }
-
-        async function deleteWish(wishId) {
-            if (wishes.length <= 1) {
-                showToast('Cần giữ lại ít nhất 1 bong bóng trong hộp quà nhé! 💕');
-                return;
-            }
-            wishes = wishes.filter(w => w.id !== wishId);
-            openedWishIds.delete(wishId);
-
-            const bubbleObj = activeBubbles.find(b => b.wish.id === wishId);
-            if (bubbleObj && bubbleObj.el && bubbleObj.el.parentNode) {
-                bubbleObj.el.parentNode.removeChild(bubbleObj.el);
-            }
-            activeBubbles = activeBubbles.filter(b => b.wish.id !== wishId);
-
-            saveWishesLocalCache();
-            renderManageWishList();
-            if (currentStage === 'summary') renderSummaryGrid();
-
-            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.deleteWishFromCloud) {
-                try {
-                    await window.cloudSyncBridge.deleteWishFromCloud(wishId);
-                } catch (e) {
-                    console.warn('Lỗi xóa trên Cloud:', e);
-                }
-            }
-            showToast('Đã xóa bong bóng lời chúc!');
-        }
-
-        async function resetDefaultWishes() {
-            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
-            openedWishIds.clear();
-            saveWishesLocalCache();
-            renderManageWishList();
-
-            if (currentStage === 'bubbles') {
-                spawnAllBubbles();
-            } else if (currentStage === 'summary') {
-                renderSummaryGrid();
-            }
-
-            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.seedDefaultToCloud) {
-                try {
-                    await window.cloudSyncBridge.seedDefaultToCloud(wishes);
-                } catch (e) {
-                    console.warn(e);
-                }
-            }
-            showToast('Đã khôi phục 6 bong bóng mẫu ban đầu! ✨');
-        }
-
-        function renderManageWishList() {
-            const listEl = document.getElementById('manage-wish-list');
-            listEl.innerHTML = '';
-            document.getElementById('manage-count').textContent = wishes.length;
-
-            wishes.forEach((wish, idx) => {
-                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-white border border-pink-100 shadow-sm hover:border-pink-200 transition-all';
-                item.innerHTML = `
-                    <div class="flex items-center gap-3 min-w-0">
-                        <img src="${wish.image}" alt="" class="w-11 h-11 rounded-xl object-cover border border-pink-100 shrink-0" onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
-                        <div class="min-w-0">
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${theme.bg}"></span>
-                                <p class="font-bold text-xs sm:text-sm text-pastel-text truncate">${escapeHtml(wish.sender)}</p>
-                            </div>
-                            <p class="text-xs text-gray-500 truncate">${escapeHtml(wish.message)}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" onclick="startEditWish('${wish.id}')" title="Chỉnh sửa"
-                            class="w-8 h-8 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-600 flex items-center justify-center text-xs transition-colors">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button type="button" onclick="deleteWish('${wish.id}')" title="Xóa"
-                            class="w-8 h-8 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-500 flex items-center justify-center text-xs transition-colors">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                listEl.appendChild(item);
-            });
         }
 
         function openCustomizeModal() {
@@ -1880,11 +1614,154 @@
             modal.classList.remove('flex');
         }
 
+        function resetWishForm() {
+            document.getElementById('edit-wish-id').value = '';
+            document.getElementById('input-sender').value = '';
+            document.getElementById('input-message').value = '';
+            document.getElementById('input-img-url').value = '';
+            currentUploadedImgData = PRESET_ILLUSTRATIONS[Math.floor(Math.random() * PRESET_ILLUSTRATIONS.length)].url;
+            document.getElementById('form-img-preview').src = currentUploadedImgData;
+            selectBubbleColor('pink');
+
+            document.getElementById('form-mode-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i><span>Tạo bong bóng lời chúc mới</span>';
+            document.getElementById('submit-wish-btn').textContent = '+ Thêm Bong Bóng Này Vào Hộp Quà';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        function handleAddWish(event) {
+            event.preventDefault();
+            const editId = document.getElementById('edit-wish-id').value;
+            const sender = document.getElementById('input-sender').value.trim();
+            const message = document.getElementById('input-message').value.trim();
+            if (!sender || !message) return;
+
+            if (editId) {
+                const idx = wishes.findIndex(w => w.id === editId);
+                if (idx !== -1) {
+                    wishes[idx] = {
+                        ...wishes[idx],
+                        sender,
+                        message,
+                        color: selectedBubbleColor,
+                        image: currentUploadedImgData || PRESET_ILLUSTRATIONS[0].url
+                    };
+                    showToast('Đã cập nhật bong bóng lời chúc ✨');
+                }
+            } else {
+                const newWish = {
+                    id: 'w_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                    sender,
+                    message,
+                    color: selectedBubbleColor,
+                    image: currentUploadedImgData || PRESET_ILLUSTRATIONS[0].url
+                };
+                wishes.push(newWish);
+                showToast('Đã thả thêm bong bóng mới vào hộp quà 🎈');
+            }
+
+            saveWishesData();
+            renderManageWishList();
+            resetWishForm();
+
+            if (currentStage === 'bubbles') spawnAllBubbles();
+            if (currentStage === 'summary') renderSummaryGrid();
+        }
+
+        function startEditWish(id) {
+            const wish = wishes.find(w => w.id === id);
+            if (!wish) return;
+
+            document.getElementById('edit-wish-id').value = wish.id;
+            document.getElementById('input-sender').value = wish.sender;
+            document.getElementById('input-message').value = wish.message;
+            currentUploadedImgData = wish.image;
+            document.getElementById('form-img-preview').src = wish.image;
+            selectBubbleColor(wish.color || 'pink');
+
+            document.getElementById('form-mode-title').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Chỉnh sửa bong bóng lời chúc</span>';
+            document.getElementById('submit-wish-btn').textContent = 'Lưu Thay Đổi Bong Bóng';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+        }
+
+        function deleteWishItem(id) {
+            if (wishes.length <= 1) {
+                showToast('Cần giữ lại ít nhất 1 bong bóng trong hộp quà nhé!');
+                return;
+            }
+            wishes = wishes.filter(w => w.id !== id);
+            poppedIds.delete(id);
+            saveWishesData();
+            renderManageWishList();
+
+            if (currentStage === 'bubbles') spawnAllBubbles();
+            if (currentStage === 'summary') renderSummaryGrid();
+            showToast('Đã xóa bong bóng lời chúc 🗑️');
+        }
+
+        function resetDefaultWishes() {
+            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+            poppedIds.clear();
+            saveWishesData();
+            renderManageWishList();
+            if (currentStage === 'bubbles') spawnAllBubbles();
+            if (currentStage === 'summary') renderSummaryGrid();
+            showToast('Đã khôi phục danh sách lời chúc mặc định 🌸');
+        }
+
+        function renderManageWishList() {
+            const listEl = document.getElementById('manage-wish-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            updateUIAllStages();
+
+            wishes.forEach((wish, index) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-white border border-pink-100 shadow-sm';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img src="${wish.image}" alt="" class="w-12 h-10 rounded-xl object-cover border border-pink-100 shrink-0"
+                             onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${theme.badge}">#${index + 1}</span>
+                                <h5 class="font-bold text-xs sm:text-sm text-pastel-text truncate">${escapeHtml(wish.sender)}</h5>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">${escapeHtml(wish.message)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="startEditWish('${wish.id}')" title="Sửa"
+                            class="w-8 h-8 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-600 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" onclick="deleteWishItem('${wish.id}')" title="Xóa"
+                            class="w-8 h-8 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-500 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
         /* -----------------------------------------------------------
-         * 10. MODAL CHIA SẺ LINK & ĐỔI MÃ HỘP QUÀ (CLOUD ROOM)
+         * 8. TÍNH NĂNG CHIA SẺ LINK & MÃ HỘP QUÀ (CLOUD ROOM & ?view=1)
          * ----------------------------------------------------------- */
+        function buildShareUrls() {
+            const baseUrl = window.location.origin + window.location.pathname;
+            const collabUrl = `${baseUrl}?box=${encodeURIComponent(currentRoomCode)}`;
+            const recipientUrl = `${baseUrl}?box=${encodeURIComponent(currentRoomCode)}&view=1`;
+
+            const shareInput = document.getElementById('share-link-input');
+            if (shareInput) shareInput.value = collabUrl;
+
+            const recipientInput = document.getElementById('recipient-link-input');
+            if (recipientInput) recipientInput.value = recipientUrl;
+        }
+
         function openShareRoomModal() {
-            updateRoomBadgeUI();
+            buildShareUrls();
             const modal = document.getElementById('share-room-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -1897,54 +1774,68 @@
         }
 
         function generateRandomRoomCode() {
-            const prefixes = ['SINH-NHAT', 'YEU-THUONG', 'KY-NIEM', 'BESTIE', 'SWEETBOX'];
-            const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const prefixes = ['LOP-12A', 'TANG-CO', 'SINH-NHAT', 'YEU-THUONG', 'KY-NIEM'];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
             const num = Math.floor(100 + Math.random() * 900);
-            document.getElementById('room-code-input').value = `${p}-${num}`;
+            const input = document.getElementById('room-code-input');
+            if (input) input.value = `${prefix}-${num}`;
         }
 
         function switchRoomCode() {
-            const rawInput = document.getElementById('room-code-input').value;
-            const newCode = sanitizeRoomCode(rawInput);
-            currentRoomCode = newCode;
+            const input = document.getElementById('room-code-input');
+            if (!input) return;
+            const cleaned = input.value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+            if (!cleaned) {
+                showToast('Vui lòng nhập Mã Hộp Quà hợp lệ!');
+                return;
+            }
+            currentRoomCode = cleaned;
+            input.value = currentRoomCode;
+
+            const label = document.getElementById('current-room-label');
+            if (label) label.textContent = currentRoomCode;
+
             try {
-                localStorage.setItem('pastel_last_room_code', currentRoomCode);
-                const url = new URL(window.location.href);
-                url.searchParams.set('box', currentRoomCode);
-                window.history.replaceState({}, '', url.toString());
+                const newUrl = `${window.location.pathname}?box=${encodeURIComponent(currentRoomCode)}`;
+                window.history.replaceState({}, '', newUrl);
             } catch (e) {}
 
-            openedWishIds.clear();
-            updateRoomBadgeUI();
+            buildShareUrls();
+            poppedIds.clear();
 
-            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.switchRoomListener) {
+            if (window.cloudSyncBridge && window.cloudSyncBridge.isConnected && window.cloudSyncBridge.switchRoomListener) {
                 window.cloudSyncBridge.switchRoomListener(currentRoomCode);
             } else {
                 loadWishesLocalFallback();
                 if (currentStage === 'bubbles') spawnAllBubbles();
                 if (currentStage === 'summary') renderSummaryGrid();
             }
-
-            showToast(`🔑 Đã chuyển sang Hộp quà: ${currentRoomCode}`);
+            showToast(`Đã chuyển sang Hộp quà: ${currentRoomCode} 🔑`);
         }
 
-        function copyShareRoomLink() {
-            const linkInput = document.getElementById('share-link-input');
-            linkInput.select();
-            linkInput.setSelectionRange(0, 99999);
+        function copyShareRoomLink(isRecipientMode = false) {
+            buildShareUrls();
+            const inputId = isRecipientMode ? 'recipient-link-input' : 'share-link-input';
+            const inputEl = document.getElementById(inputId);
+            if (!inputEl) return;
+
+            inputEl.select();
+            inputEl.setSelectionRange(0, 99999);
             try {
                 document.execCommand('copy');
-                showToast('Đã copy đường dẫn Hộp quà! Gửi cho bạn bè ngay nhé 🔗');
-            } catch (e) {
-                showToast('Hãy bôi đen và Copy đường dẫn trong ô nhé!');
+                showToast(isRecipientMode
+                    ? 'Đã copy Link gửi tặng Cô (Đã ẩn nút chỉnh sửa) 🎁'
+                    : 'Đã copy Link mời bạn bè cùng thả lời chúc 🔗');
+            } catch (err) {
+                showToast('Hãy bôi đen và nhấn Ctrl+C để copy link nhé!');
             }
         }
 
         /* -----------------------------------------------------------
-         * 11. TÍNH NĂNG XUẤT FILE HTML ĐỘC LẬP (SELF-CONTAINED EXPORT)
+         * 9. TÍNH NĂNG XUẤT FILE HTML ĐỘC LẬP (CHỨA SẴN LỜI CHÚC & ẢNH)
          * ----------------------------------------------------------- */
         function openExportDialog() {
-            document.getElementById('export-wish-count').textContent = wishes.length;
+            updateUIAllStages();
             const modal = document.getElementById('export-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -1957,80 +1848,51 @@
         }
 
         function executeExportHtml() {
-            try {
-                const hideEdit = document.getElementById('export-hide-edit').checked;
+            const hideEdit = document.getElementById('export-hide-edit').checked;
+            const serializedWishes = JSON.stringify(wishes, null, 4);
 
-                const clone = document.documentElement.cloneNode(true);
+            // Lấy toàn bộ mã nguồn trang hiện tại và thay thế vùng EMBEDDED_CONFIG
+            let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const replacementConfig = `// EMBEDDED_CONFIG_START\n        const EMBEDDED_GIFT_MODE = ${hideEdit};\n        window.EMBEDDED_GIFT_MODE = EMBEDDED_GIFT_MODE;\n        const DEFAULT_WISHES = ${serializedWishes};\n        // EMBEDDED_CONFIG_END`;
 
-                const cloneArena = clone.querySelector('#bubble-arena');
-                if (cloneArena) cloneArena.innerHTML = '';
-                const cloneSummaryGrid = clone.querySelector('#summary-grid');
-                if (cloneSummaryGrid) cloneSummaryGrid.innerHTML = '';
-                const cloneManageList = clone.querySelector('#manage-wish-list');
-                if (cloneManageList) cloneManageList.innerHTML = '';
+            fullHtml = fullHtml.replace(
+                /\/\/ EMBEDDED_CONFIG_START[\s\S]*?\/\/ EMBEDDED_CONFIG_END/,
+                replacementConfig
+            );
 
-                const cloneBox = clone.querySelector('#stage-box');
-                if (cloneBox) cloneBox.classList.remove('hidden');
-                const cloneGiftWrapper = clone.querySelector('#gift-box-wrapper');
-                if (cloneGiftWrapper) cloneGiftWrapper.classList.remove('gift-opened');
-                const cloneGiftAnim = clone.querySelector('#gift-anim-box');
-                if (cloneGiftAnim) cloneGiftAnim.classList.add('gift-bounce');
+            const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `index.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
 
-                ['#stage-bubbles', '#stage-summary', '#progress-badge', '#wish-modal', '#customize-modal', '#export-modal', '#share-room-modal'].forEach(sel => {
-                    const el = clone.querySelector(sel);
-                    if (el) {
-                        el.classList.add('hidden');
-                        el.classList.remove('flex');
-                    }
-                });
-
-                let htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
-
-                const startMarker = '// EMBEDDED_CONFIG_START';
-                const endMarker = '// EMBEDDED_CONFIG_END';
-                const startIdx = htmlContent.indexOf(startMarker);
-                const endIdx = htmlContent.indexOf(endMarker);
-
-                if (startIdx !== -1 && endIdx !== -1) {
-                    const serializedWishes = JSON.stringify(wishes, null, 4);
-                    const replacementBlock = `${startMarker}\n        const EMBEDDED_GIFT_MODE = ${hideEdit ? 'true' : 'false'};\n        const DEFAULT_WISHES = ${serializedWishes};\n        `;
-                    htmlContent = htmlContent.slice(0, startIdx) + replacementBlock + htmlContent.slice(endIdx);
-                }
-
-                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `hop-qua-${currentRoomCode.toLowerCase()}.html`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                setTimeout(() => URL.revokeObjectURL(url), 1500);
-
-                closeExportDialog();
-                showToast('Đã tải về file HTML chứa sẵn lời chúc & ảnh! 🎁');
-                playChimeSound();
-            } catch (err) {
-                console.error('Lỗi khi xuất file HTML:', err);
-                showToast('Có lỗi khi tạo file, vui lòng thử lại!');
-            }
-        }
-
-        function applyGiftModeUI() {
-            if (!EMBEDDED_GIFT_MODE) return;
-            ['header-customize-btn', 'header-export-btn', 'header-share-btn', 'room-badge-btn', 'box-add-wish-btn', 'summary-customize-btn'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
+            closeExportDialog();
+            showToast('Đã tải xuống file index.html thành công! 🎁');
         }
 
         /* -----------------------------------------------------------
-         * 12. TIỆN ÍCH PHỤ TRỢ & KHỞI TẠO
+         * 10. TIỆN ÍCH CHUNG & KHỞI CHẠY
          * ----------------------------------------------------------- */
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         let toastTimer = null;
-        function showToast(msg) {
+        function showToast(message) {
             const toast = document.getElementById('toast-msg');
-            document.getElementById('toast-text').textContent = msg;
+            const text = document.getElementById('toast-text');
+            if (!toast || !text) return;
+
+            text.textContent = message;
             toast.classList.remove('opacity-0', 'translate-y-4');
             toast.classList.add('opacity-100', 'translate-y-0');
 
@@ -2041,182 +1903,27 @@
             }, 2800);
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        window.onload = function() {
-            initRoomCodeFromUrl();
-            loadWishesLocalFallback();
-            applyGiftModeUI();
-            updateCountersUI();
-            renderPresetStickers();
-        };
-    </script>
-
-    <!-- ================= MODULE ĐỒNG BỘ ĐÁM MÂY FIREBASE REALTIME ================= -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        let db = null;
-        let auth = null;
-        let currentUser = null;
-        let unsubscribeSnapshot = null;
-        let appId = typeof __app_id !== 'undefined' ? __app_id : 'default-sweetbox-app';
-
-        function setCloudIndicator(status, text) {
+        function setCloudIndicator(status, labelText) {
             const dot = document.getElementById('cloud-status-dot');
             const badge = document.getElementById('cloud-connection-badge');
             if (!dot || !badge) return;
 
-            if (status === 'connected') {
+            if (status === 'online') {
                 dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+                badge.textContent = '● ' + (labelText || 'Đã kết nối đám mây thời gian thực');
                 badge.className = 'text-xs font-semibold text-emerald-600';
-                badge.textContent = '● ' + text;
-            } else if (status === 'offline') {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-gray-400';
-                badge.className = 'text-xs font-semibold text-gray-500';
-                badge.textContent = '○ ' + text;
             } else {
-                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
-                badge.className = 'text-xs font-semibold text-amber-600';
-                badge.textContent = '● ' + text;
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-pink-400';
+                badge.textContent = '● ' + (labelText || 'Chế độ lưu trên trình duyệt & Xuất HTML');
+                badge.className = 'text-xs font-semibold text-pink-500';
             }
         }
 
-        function getWishesCollectionRef() {
-            return collection(db, 'artifacts', appId, 'public', 'data', 'sweetbox_wishes');
-        }
-
-        function getRoomDocId(roomCode, wishId) {
-            return `${roomCode}__${wishId}`;
-        }
-
-        function subscribeToRoomWishes(roomCode) {
-            if (!db || !currentUser) return;
-            if (unsubscribeSnapshot) {
-                unsubscribeSnapshot();
-                unsubscribeSnapshot = null;
-            }
-
-            const colRef = getWishesCollectionRef();
-            unsubscribeSnapshot = onSnapshot(colRef, async (snapshot) => {
-                const roomItems = [];
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (data && data.roomCode === roomCode) {
-                        roomItems.push({
-                            id: data.id,
-                            sender: data.sender,
-                            message: data.message,
-                            color: data.color || 'pink',
-                            image: data.image || PRESET_ILLUSTRATIONS[0].url,
-                            createdAt: data.createdAt || 1000
-                        });
-                    }
-                });
-
-                roomItems.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-
-                if (roomItems.length === 0) {
-                    const defaults = JSON.parse(JSON.stringify(DEFAULT_WISHES));
-                    applyRealtimeWishesUpdate(defaults);
-                    for (const w of defaults) {
-                        try {
-                            await setDoc(doc(colRef, getRoomDocId(roomCode, w.id)), {
-                                ...w,
-                                roomCode
-                            });
-                        } catch (e) {}
-                    }
-                } else {
-                    applyRealtimeWishesUpdate(roomItems);
-                }
-            }, (error) => {
-                console.warn('Firestore listener error:', error);
-                setCloudIndicator('offline', 'Đang dùng bộ nhớ trên máy');
-            });
-        }
-
-        async function initFirebaseCloudSync() {
-            if (EMBEDDED_GIFT_MODE) {
-                setCloudIndicator('offline', 'Bản quà tặng cố định');
-                return;
-            }
-
-            try {
-                if (typeof __firebase_config === 'undefined' || !__firebase_config) {
-                    setCloudIndicator('offline', 'Chế độ lưu trên trình duyệt');
-                    return;
-                }
-
-                const firebaseConfig = JSON.parse(__firebase_config);
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                onAuthStateChanged(auth, (user) => {
-                    currentUser = user;
-                    if (user) {
-                        const uidEl = document.getElementById('current-user-uid');
-                        if (uidEl) uidEl.textContent = user.uid;
-
-                        window.cloudSyncBridge.isConnected = true;
-                        window.cloudSyncBridge.userId = user.uid;
-
-                        window.cloudSyncBridge.saveWishToCloud = async (wishObj) => {
-                            const colRef = getWishesCollectionRef();
-                            await setDoc(doc(colRef, getRoomDocId(currentRoomCode, wishObj.id)), {
-                                ...wishObj,
-                                roomCode: currentRoomCode,
-                                updatedBy: user.uid
-                            });
-                        };
-
-                        window.cloudSyncBridge.deleteWishFromCloud = async (wishId) => {
-                            const colRef = getWishesCollectionRef();
-                            await deleteDoc(doc(colRef, getRoomDocId(currentRoomCode, wishId)));
-                        };
-
-                        window.cloudSyncBridge.seedDefaultToCloud = async (defaultList) => {
-                            const colRef = getWishesCollectionRef();
-                            for (const w of defaultList) {
-                                await setDoc(doc(colRef, getRoomDocId(currentRoomCode, w.id)), {
-                                    ...w,
-                                    roomCode: currentRoomCode
-                                });
-                            }
-                        };
-
-                        window.cloudSyncBridge.switchRoomListener = (newRoomCode) => {
-                            subscribeToRoomWishes(newRoomCode);
-                        };
-
-                        setCloudIndicator('connected', 'Đã kết nối Đám mây thời gian thực');
-                        subscribeToRoomWishes(currentRoomCode);
-                    }
-                });
-            } catch (err) {
-                console.warn('Khởi tạo Cloud Sync không khả dụng:', err);
-                setCloudIndicator('offline', 'Chế độ lưu trên trình duyệt');
-            }
-        }
-
-        initFirebaseCloudSync();
+        window.addEventListener('DOMContentLoaded', () => {
+            applyViewOnlyModeUI();
+            loadWishesLocalFallback();
+            setCloudIndicator('local', 'Sẵn sàng lưu & xuất file HTML');
+        });
     </script>
 </body>
 </html>
