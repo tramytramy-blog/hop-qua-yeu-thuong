@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hộp Quà Bong Bóng Yêu Thương ✨</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand & Comfortaa cho phong cách dễ thương, tròn trịa -->
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                        display: ['Comfortaa', 'cursive'],
+                    },
+                    colors: {
+                        pastel: {
+                            bg1: '#FFF5F7',
+                            bg2: '#F3E8FF',
+                            bg3: '#E0F2FE',
+                            pink: '#FFB5C2',
+                            pinkDark: '#FF8DA1',
+                            lavender: '#D8B4F8',
+                            lavenderDark: '#B784F0',
+                            mint: '#A8E6CF',
+                            mintDark: '#76D7B4',
+                            blue: '#A0C4FF',
+                            blueDark: '#74A8FF',
+                            peach: '#FFD3B6',
+                            peachDark: '#FFB085',
+                            yellow: '#FDFFB6',
+                            text: '#5A4A66'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: #5A4A66;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #FFF0F5 0%, #F3E8FF 50%, #E0F7FA 100%);
+            min-height: 100vh;
+        }
+
+        /* Hiệu ứng nền mây & sao lấp lánh */
+        .dreamy-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.6;
+            animation: floatSlow 14s infinite ease-in-out alternate;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -40px) scale(1.12); }
+        }
+
+        /* ================= HỘP QUÀ 3D PASTEL ================= */
+        .gift-container {
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-container:hover {
+            transform: scale(1.04);
+        }
+
+        .gift-bounce {
+            animation: giftShake 2.4s infinite ease-in-out;
+            transform-origin: bottom center;
+        }
+
+        @keyframes giftShake {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+            15% { transform: translateY(-14px) rotate(-4deg) scale(0.96, 1.05); }
+            30% { transform: translateY(0) rotate(4deg) scale(1.04, 0.96); }
+            45% { transform: translateY(-7px) rotate(-2deg) scale(0.98, 1.02); }
+            60% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+        }
+
+        .gift-lid {
+            transition: all 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: top right;
+        }
+
+        .gift-opened .gift-lid {
+            transform: translateY(-130px) translateX(45px) rotate(28deg) scale(0.9);
+            opacity: 0;
+        }
+
+        .gift-opened .gift-body {
+            transform: scale(0.88) translateY(30px);
+            opacity: 0;
+            transition: all 0.9s ease 0.25s;
+        }
+
+        .gift-glow {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255,181,194,0.65) 0%, rgba(216,180,248,0.3) 50%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+        }
+
+        /* ================= BONG BÓNG 3D PASTEL ================= */
+        .wish-bubble {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                inset -10px -10px 24px rgba(255, 255, 255, 0.85),
+                inset 10px 10px 20px rgba(255, 255, 255, 0.6),
+                0 12px 28px -6px rgba(149, 117, 205, 0.28);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+            will-change: transform, left, top;
+            z-index: 20;
+        }
+
+        .wish-bubble:hover {
+            transform: scale(1.12) !important;
+            box-shadow: 
+                inset -10px -10px 26px rgba(255, 255, 255, 0.95),
+                0 16px 32px -4px rgba(255, 141, 161, 0.45);
+            z-index: 30;
+        }
+
+        /* Vệt sáng bóng gương trên bong bóng */
+        .wish-bubble::before {
+            content: '';
+            position: absolute;
+            top: 14%;
+            left: 18%;
+            width: 26%;
+            height: 14%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            transform: rotate(-35deg);
+            pointer-events: none;
+        }
+
+        .wish-bubble::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 12%;
+            width: 8%;
+            height: 6%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            transform: rotate(-35deg);
+            pointer-events: none;
+        }
+
+        /* Nút thắt đuôi bóng bay nhỏ xinh bên dưới */
+        .bubble-knot {
+            position: absolute;
+            bottom: -7px;
+            width: 12px;
+            height: 8px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .bubble-string {
+            position: absolute;
+            bottom: -36px;
+            width: 1.5px;
+            height: 30px;
+            background: rgba(160, 140, 180, 0.35);
+            transform-origin: top center;
+            animation: stringWave 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes stringWave {
+            0%, 100% { transform: rotate(-6deg); }
+            50% { transform: rotate(6deg); }
+        }
+
+        /* Hiệu ứng khi bóng xuất hiện từ hộp quà */
+        @keyframes spawnFromBox {
+            0% {
+                transform: translate(-50%, -50%) scale(0.1);
+                opacity: 0;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Hiệu ứng bóng vỡ (Pop) */
+        .bubble-popping {
+            animation: popBurst 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            pointer-events: none !important;
+        }
+
+        @keyframes popBurst {
+            0% { transform: scale(1); opacity: 1; }
+            40% { transform: scale(1.38); opacity: 0.9; filter: brightness(1.2); }
+            100% { transform: scale(1.75); opacity: 0; }
+        }
+
+        /* ================= THẺ POLAROID TRANG TỔNG HỢP ================= */
+        .polaroid-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 30px -8px rgba(130, 105, 160, 0.15);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .polaroid-card:hover {
+            transform: translateY(-8px) rotate(0deg) !important;
+            box-shadow: 0 20px 38px -8px rgba(255, 141, 161, 0.28);
+        }
+
+        /* Thanh cuộn tùy chỉnh dịu mắt */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 240, 245, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFB5C2;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF8DA1;
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            animation: modalPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between selection:bg-pastel-pink selection:text-white">
+
+    <!-- NỀN MÂY PASTEL MỘNG MƠ -->
+    <div class="dreamy-bg">
+        <div class="bg-blob w-80 h-80 bg-pink-200 top-[-5%] left-[-5%]"></div>
+        <div class="bg-blob w-96 h-96 bg-purple-200 bottom-[-10%] right-[-5%]" style="animation-delay: -5s;"></div>
+        <div class="bg-blob w-72 h-72 bg-teal-100 top-[35%] right-[15%]" style="animation-delay: -9s;"></div>
+        <div class="bg-blob w-64 h-64 bg-blue-100 bottom-[20%] left-[12%]" style="animation-delay: -3s;"></div>
+    </div>
+
+    <!-- CANVAS HẠT PHÁO GIẤY & BÓNG VỠ -->
+    <canvas id="fx-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+    <!-- THANH ĐIỀU KHIỂN TRÊN CÙNG (HEADER) -->
+    <header class="relative z-40 w-full max-w-6xl mx-auto px-4 pt-4 pb-2 flex flex-wrap items-center justify-between gap-2">
+        <!-- Logo & Trạng thái Phòng Đám Mây -->
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 bg-white/80 backdrop-blur-md px-3.5 py-2 rounded-full shadow-sm border border-white">
+                <span class="text-lg sm:text-xl animate-bounce">🎁</span>
+                <span class="font-display font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 bg-clip-text text-transparent">
+                    SweetBox
+                </span>
+            </div>
+
+            <!-- Nút Mã Hộp Quà & Trạng thái Cloud Sync -->
+            <button id="room-badge-btn" onclick="openShareRoomModal()" title="Đổi Mã Hộp Quà hoặc Chia sẻ Link cho bạn bè"
+                class="flex items-center gap-2 bg-white/85 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-full shadow-sm border border-pink-100 transition-all active:scale-95">
+                <span id="cloud-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                <span class="text-xs font-bold text-pastel-text">
+                    Mã hộp: <span id="current-room-label" class="text-pink-500 font-extrabold uppercase">CHUNG</span>
+                </span>
+                <i class="fa-solid fa-share-nodes text-xs text-purple-500"></i>
+            </button>
+        </div>
+
+        <!-- Bộ đếm tiến độ bong bóng (Chỉ hiện ở màn hình 2) -->
+        <div id="progress-badge" class="hidden items-center gap-2 bg-white/85 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-pink-100 transition-all">
+            <span class="text-base">🎈</span>
+            <span class="font-bold text-xs sm:text-sm text-pastel-text">
+                Đã mở: <span id="opened-count" class="text-pink-500 font-extrabold">0</span> / <span id="total-count">0</span>
+            </span>
+        </div>
+
+        <!-- Cụm nút công cụ góc phải -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            <!-- Nút Gửi lời chúc mới vào hộp chung -->
+            <button id="header-customize-btn" onclick="openCustomizeModal()" 
+                class="flex items-center gap-1.5 bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm px-3.5 py-2 rounded-full shadow-md hover:shadow-lg transition-all active:scale-95">
+                <i class="fa-solid fa-plus"></i>
+                <span>Gửi lời chúc mới</span>
+                <span class="hidden sm:inline">🎈</span>
+            </button>
+
+            <!-- Nút Chia sẻ Link Mời Bạn Bè -->
+            <button id="header-share-btn" onclick="openShareRoomModal()" title="Lấy link gửi cho mọi người cùng thêm lời chúc"
+                class="flex items-center gap-1.5 bg-white/90 hover:bg-white text-purple-600 border border-purple-200 font-bold text-xs sm:text-sm px-3 py-2 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95">
+                <i class="fa-solid fa-link"></i>
+                <span class="hidden lg:inline">Chia sẻ Link</span>
+            </button>
+
+            <!-- Nút Xuất file HTML độc lập -->
+            <button id="header-export-btn" onclick="openExportDialog()" title="Tải về file HTML chứa sẵn toàn bộ lời chúc & ảnh"
+                class="flex items-center gap-1.5 bg-gradient-to-r from-teal-400 to-blue-400 hover:from-teal-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm px-3 py-2 rounded-full shadow-md hover:shadow-lg transition-all active:scale-95">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span class="hidden md:inline">Xuất HTML</span>
+            </button>
+
+            <!-- Nút bật/tắt âm thanh -->
+            <button id="sound-btn" onclick="toggleSound()" title="Bật/Tắt âm thanh"
+                class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 backdrop-blur-md border border-white shadow-sm flex items-center justify-center text-pink-500 hover:bg-pink-50 transition-all active:scale-90">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-sm sm:text-base"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= MÀN HÌNH 1: HỘP QUÀ BÍ MẬT ================= -->
+    <main id="stage-box" class="relative z-20 flex-1 flex flex-col items-center justify-center px-4 text-center select-none">
+        <div class="mb-6 space-y-2 max-w-md mx-auto">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-pink-100/90 text-pink-600 font-bold text-xs tracking-wide uppercase shadow-sm">
+                <span>✨ Hộp quà trực tuyến thời gian thực ✨</span>
+            </span>
+            <h1 class="font-display text-2xl sm:text-4xl font-bold text-pastel-text leading-tight">
+                Một Hộp Quà Chứa Đầy Yêu Thương
+            </h1>
+            <p class="text-sm sm:text-base text-purple-900/70 font-medium">
+                Bên trong đang có <span id="intro-bubble-count" class="font-bold text-pink-500">6</span> bong bóng lời chúc từ mọi người gửi tặng!
+            </p>
+        </div>
+
+        <!-- Hộp quà 3D SVG Tương Tác -->
+        <div id="gift-box-wrapper" onclick="openGiftBox()" class="gift-container relative my-4 p-6">
+            <div class="gift-glow"></div>
+            
+            <div id="gift-anim-box" class="gift-bounce relative w-48 h-48 sm:w-56 sm:h-56 mx-auto flex flex-col items-center justify-end">
+                
+                <!-- Nắp hộp quà + Nơ Ruy Băng -->
+                <div class="gift-lid relative z-20 w-52 sm:w-60 -mb-3">
+                    <svg viewBox="0 0 240 95" class="w-full h-auto drop-shadow-md overflow-visible">
+                        <!-- Nơ trái & phải -->
+                        <path d="M120 42 C90 5, 45 15, 65 45 C80 62, 110 48, 120 42 Z" fill="#FF8DA1" stroke="#FFF" stroke-width="3"/>
+                        <path d="M120 42 C150 5, 195 15, 175 45 C160 62, 130 48, 120 42 Z" fill="#FF8DA1" stroke="#FFF" stroke-width="3"/>
+                        <!-- Dải ruy băng rủ xuống -->
+                        <path d="M112 44 L92 72 L106 75 L118 48 Z" fill="#FF708A"/>
+                        <path d="M128 44 L148 72 L134 75 L122 48 Z" fill="#FF708A"/>
+                        <!-- Tâm nút thắt nơ -->
+                        <ellipse cx="120" cy="42" rx="13" ry="11" fill="#FFB5C2" stroke="#FFF" stroke-width="3"/>
+                        <!-- Thân nắp hộp -->
+                        <rect x="10" y="45" width="220" height="44" rx="12" fill="#FFB5C2" stroke="#FFF" stroke-width="4"/>
+                        <!-- Ruy băng dọc nắp hộp -->
+                        <rect x="102" y="45" width="36" height="44" fill="#FF8DA1"/>
+                        <!-- Ánh sáng bóng trên nắp -->
+                        <rect x="24" y="53" width="60" height="8" rx="4" fill="#FFF" opacity="0.6"/>
+                    </svg>
+                </div>
+
+                <!-- Thân hộp quà -->
+                <div class="gift-body relative z-10 w-44 sm:w-52">
+                    <svg viewBox="0 0 200 155" class="w-full h-auto drop-shadow-xl">
+                        <!-- Thân chính -->
+                        <rect x="10" y="5" width="180" height="142" rx="16" fill="#FCE7F3" stroke="#FFF" stroke-width="4"/>
+                        <!-- Họa tiết chấm bi pastel trên hộp -->
+                        <circle cx="45" cy="40" r="8" fill="#FBCFE8"/>
+                        <circle cx="155" cy="45" r="10" fill="#E9D5FF"/>
+                        <circle cx="55" cy="105" r="11" fill="#DDD6FE"/>
+                        <circle cx="150" cy="110" r="8" fill="#FBCFE8"/>
+                        <!-- Ruy băng dọc thân hộp -->
+                        <rect x="83" y="5" width="34" height="142" fill="#FF8DA1"/>
+                        <!-- Ruy băng ngang thân hộp -->
+                        <rect x="10" y="60" width="180" height="30" fill="#FFB5C2"/>
+                        <!-- Điểm giao ruy băng -->
+                        <rect x="83" y="60" width="34" height="30" fill="#FF758F"/>
+                        <!-- Khuôn mặt cute trên hộp quà -->
+                        <circle cx="62" cy="50" r="4.5" fill="#5A4A66"/>
+                        <circle cx="138" cy="50" r="4.5" fill="#5A4A66"/>
+                        <ellipse cx="52" cy="56" rx="6" ry="3.5" fill="#FF8DA1" opacity="0.6"/>
+                        <ellipse cx="148" cy="56" rx="6" ry="3.5" fill="#FF8DA1" opacity="0.6"/>
+                        <path d="M93 52 Q100 59 107 52" fill="none" stroke="#5A4A66" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lời nhắc chạm mở hộp & Nút thả nhanh lời chúc -->
+        <div class="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button onclick="openGiftBox()" class="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/95 hover:bg-white text-pink-500 font-bold text-sm sm:text-base shadow-lg hover:shadow-xl border-2 border-pink-200 transition-all active:scale-95">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-300 opacity-25"></span>
+                <span>🎁 Chạm mở hộp quà ngay</span>
+                <span class="text-lg group-hover:rotate-12 transition-transform">✨</span>
+            </button>
+
+            <button id="box-add-wish-btn" onclick="openCustomizeModal()" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all active:scale-95">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thả thêm bong bóng lời chúc 🎈</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- ================= MÀN HÌNH 2: BONG BÓNG BAY LƠ LỬNG ================= -->
+    <section id="stage-bubbles" class="hidden relative z-20 flex-1 w-full overflow-hidden select-none">
+        <!-- Hướng dẫn nhỏ phía trên -->
+        <div class="relative z-30 text-center pt-2 px-4 pointer-events-none">
+            <p class="inline-block bg-white/75 backdrop-blur-md px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold text-purple-800 shadow-sm border border-white">
+                👆 Chạm vào từng bong bóng để xem lời chúc và làm nổ bóng nhé!
+            </p>
+        </div>
+
+        <!-- Vùng chứa bong bóng bay -->
+        <div id="bubble-arena" class="relative w-full h-[calc(100vh-145px)] overflow-hidden">
+            <!-- Bong bóng sẽ được render tự động bằng JS tại đây -->
+        </div>
+
+        <!-- Nút điều khiển phụ dưới đáy màn hình bong bóng -->
+        <div class="fixed bottom-4 right-4 z-30 flex items-center gap-2">
+            <button onclick="skipToSummary()" 
+                class="bg-white/85 hover:bg-white text-purple-600 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-md border border-purple-200 backdrop-blur-md flex items-center gap-1.5 transition-all active:scale-95">
+                <span>Mở nhanh tất cả</span>
+                <i class="fa-solid fa-forward-fast text-xs"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- ================= MÀN HÌNH 3: TRANG TỔNG HỢP LỜI CHÚC & HÌNH ẢNH ================= -->
+    <section id="stage-summary" class="hidden relative z-20 flex-1 w-full max-w-6xl mx-auto px-4 py-6">
+        <!-- Header chúc mừng -->
+        <div class="text-center max-w-2xl mx-auto mb-8 space-y-3">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600 font-bold text-xs sm:text-sm shadow-sm border border-white">
+                <span>🎉 Bạn đã khám phá hết tất cả bong bóng!</span>
+            </div>
+            <h2 class="font-display text-2xl sm:text-4xl font-bold text-pastel-text">
+                Góc Lưu Giữ Yêu Thương 💌
+            </h2>
+            <p class="text-sm sm:text-base text-purple-900/75">
+                Tất cả những lời chúc ngọt ngào và kỷ niệm đẹp nhất đều được lưu giữ tại đây. Bạn có thể thêm lời chúc hoặc hình ảnh mới bất cứ lúc nào!
+            </p>
+
+            <!-- Các nút hành động trên trang tổng hợp -->
+            <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+                <button onclick="replayExperience()" 
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-pink-50 text-pink-500 font-bold text-sm shadow-md border-2 border-pink-200 transition-all active:scale-95">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Đóng hộp & Mở lại từ đầu</span>
+                </button>
+                <button id="summary-customize-btn" onclick="openCustomizeModal()" 
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm shadow-md transition-all active:scale-95">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Gửi thêm lời chúc mới 🎈</span>
+                </button>
+                <button onclick="openShareRoomModal()" 
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold text-sm shadow-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Mời bạn bè cùng viết lời chúc</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Lưới Polaroid Tổng Hợp Lời Chúc & Hình Ảnh -->
+        <div id="summary-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+            <!-- Cards được render tự động bằng JS -->
+        </div>
+    </section>
+
+    <!-- ================= MODAL 1: HIỂN THỊ LỜI CHÚC KHI BẤM VÀO BONG BÓNG ================= -->
+    <div id="wish-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-purple-950/30 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-md rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden p-5 sm:p-6 text-center">
+            <!-- Trang trí góc -->
+            <div id="modal-color-bar" class="h-3 w-full absolute top-0 left-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300"></div>
+
+            <!-- Hình ảnh lời chúc -->
+            <div class="relative mt-2 mb-4 rounded-2xl overflow-hidden bg-pink-50/60 border-2 border-pink-100 aspect-[4/3] flex items-center justify-center shadow-inner">
+                <img id="modal-wish-img" src="" alt="Hình ảnh lời chúc" 
+                    class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                    onerror="this.src='https://placehold.co/600x450/FFE4E9/FF8DA1?text=Sweet+Wishes+%E2%9C%A8'">
+                <span id="modal-wish-badge" class="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-xs font-bold text-pink-500 shadow-sm">
+                    🎈 Bong bóng #1
+                </span>
+            </div>
+
+            <!-- Nội dung lời chúc -->
+            <div class="space-y-2.5 my-4 px-1">
+                <h3 id="modal-wish-sender" class="font-display text-lg sm:text-xl font-bold text-pink-500">
+                    Gửi bạn yêu thương 💕
+                </h3>
+                <p id="modal-wish-text" class="text-pastel-text text-sm sm:text-base leading-relaxed font-medium bg-pink-50/50 p-4 rounded-2xl border border-pink-100/80">
+                    Lời chúc sẽ hiện ở đây...
+                </p>
+            </div>
+
+            <!-- Nút đóng & làm vỡ bóng -->
+            <button onclick="confirmReadAndPopBubble()" 
+                class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                <span>Nhận lời chúc & Chạm nổ bóng</span>
+                <span class="text-lg">💥✨</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 2: THÊM / QUẢN LÝ LỜI CHÚC, HÌNH ẢNH & BONG BÓNG ================= -->
+    <div id="customize-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-purple-950/35 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden">
+            
+            <!-- Header Modal -->
+            <div class="px-6 py-4 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 flex items-center justify-between border-b border-pink-100">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🎈</span>
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text">
+                            Gửi & Quản Lý Bong Bóng Lời Chúc
+                        </h3>
+                        <p id="modal-sync-subtitle" class="text-xs text-purple-700/80 font-medium">
+                            ☁️ Tự động đồng bộ trực tiếp lên Hộp quà chung cho tất cả mọi người cùng xem
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeCustomizeModal()" class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-500 hover:text-pink-500 flex items-center justify-center shadow-sm transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Body Modal (Cuộn được) -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
+                
+                <!-- Form thêm lời chúc mới -->
+                <form id="add-wish-form" onsubmit="handleAddWish(event)" class="bg-pink-50/50 border-2 border-pink-100 rounded-2xl p-4 sm:p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 id="form-mode-title" class="font-bold text-sm sm:text-base text-pink-600 flex items-center gap-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Tạo bong bóng lời chúc mới</span>
+                        </h4>
+                        <button type="button" id="cancel-edit-btn" onclick="resetWishForm()" class="hidden text-xs font-bold text-gray-500 hover:text-pink-500 underline">
+                            Hủy chỉnh sửa
+                        </button>
+                    </div>
+
+                    <input type="hidden" id="edit-wish-id" value="">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Người gửi / Tiêu đề -->
+                        <div>
+                            <label class="block text-xs font-bold text-pastel-text mb-1">Tiêu đề / Người gửi 🌸</label>
+                            <input type="text" id="input-sender" required placeholder="VD: Từ một người bạn bí mật..."
+                                class="w-full px-3.5 py-2 rounded-xl border border-pink-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        </div>
+
+                        <!-- Chọn màu bong bóng Pastel -->
+                        <div>
+                            <label class="block text-xs font-bold text-pastel-text mb-1">Màu sắc bong bóng 🎨</label>
+                            <div id="color-picker-group" class="flex items-center gap-2 pt-1 flex-wrap">
+                                <button type="button" onclick="selectBubbleColor('pink')" data-color="pink" class="color-swatch w-7 h-7 rounded-full bg-[#FFB5C2] ring-2 ring-offset-2 ring-pink-400 transition-transform scale-110" title="Hồng Pastel"></button>
+                                <button type="button" onclick="selectBubbleColor('lavender')" data-color="lavender" class="color-swatch w-7 h-7 rounded-full bg-[#D8B4F8] transition-transform" title="Tím Lavender"></button>
+                                <button type="button" onclick="selectBubbleColor('mint')" data-color="mint" class="color-swatch w-7 h-7 rounded-full bg-[#A8E6CF] transition-transform" title="Xanh Mint"></button>
+                                <button type="button" onclick="selectBubbleColor('blue')" data-color="blue" class="color-swatch w-7 h-7 rounded-full bg-[#A0C4FF] transition-transform" title="Xanh Dương"></button>
+                                <button type="button" onclick="selectBubbleColor('yellow')" data-color="yellow" class="color-swatch w-7 h-7 rounded-full bg-[#FDF0A6] transition-transform" title="Vàng Kem"></button>
+                                <button type="button" onclick="selectBubbleColor('peach')" data-color="peach" class="color-swatch w-7 h-7 rounded-full bg-[#FFD3B6] transition-transform" title="Cam Đào"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nội dung lời chúc -->
+                    <div>
+                        <label class="block text-xs font-bold text-pastel-text mb-1">Nội dung lời chúc 💌</label>
+                        <textarea id="input-message" rows="3" required placeholder="Nhập lời chúc ngọt ngào của bạn vào đây..."
+                            class="w-full px-3.5 py-2 rounded-xl border border-pink-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"></textarea>
+                    </div>
+
+                    <!-- Tùy chọn hình ảnh: Tải ảnh lên, dán link, hoặc chọn Sticker có sẵn -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-bold text-pastel-text">Hình ảnh đính kèm 📸 (Tải ảnh từ máy, dán Link hoặc chọn mẫu Cute)</label>
+                        
+                        <div class="flex flex-col sm:flex-row gap-2.5">
+                            <!-- Nút tải file ảnh từ thiết bị -->
+                            <label class="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white border border-purple-200 hover:bg-purple-50 text-xs font-bold text-purple-600 shadow-sm transition-all shrink-0">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Chọn ảnh từ máy</span>
+                                <input type="file" id="input-file-img" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            </label>
+
+                            <!-- Hoặc dán URL ảnh -->
+                            <input type="text" id="input-img-url" placeholder="Hoặc dán đường dẫn (URL) hình ảnh..."
+                                oninput="previewCustomUrl(this.value)"
+                                class="flex-1 px-3.5 py-2 rounded-xl border border-pink-200 bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        </div>
+
+                        <!-- Bộ sưu tập hình minh họa Pastel có sẵn -->
+                        <div class="pt-1">
+                            <span class="block text-[11px] text-purple-700/70 mb-1.5 font-medium">Hoặc chọn nhanh tranh vẽ Pastel dễ thương:</span>
+                            <div id="preset-stickers" class="flex items-center gap-2 overflow-x-auto pb-1">
+                                <!-- Render bằng JS -->
+                            </div>
+                        </div>
+
+                        <!-- Xem trước ảnh nhỏ -->
+                        <div id="img-preview-box" class="flex items-center gap-3 pt-1">
+                            <img id="form-img-preview" src="" alt="Preview" class="w-16 h-12 rounded-lg object-cover border border-pink-200 bg-white shadow-sm">
+                            <span class="text-xs text-gray-500">Hình ảnh sẽ hiển thị cùng lời chúc</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-wish-btn"
+                        class="w-full py-2.5 px-5 rounded-xl bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm shadow-md transition-all active:scale-95">
+                        + Thêm Bong Bóng Này Vào Hộp Quà
+                    </button>
+                </form>
+
+                <!-- Danh sách các bong bóng lời chúc hiện có -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-sm text-pastel-text">
+                            Danh sách bong bóng hiện có (<span id="manage-count">0</span>)
+                        </h4>
+                        <button onclick="resetDefaultWishes()" class="text-xs font-semibold text-purple-500 hover:text-pink-500 underline">
+                            Khôi phục mẫu mặc định
+                        </button>
+                    </div>
+
+                    <div id="manage-wish-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                        <!-- Render bằng JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="px-5 sm:px-6 py-3.5 bg-gray-50 border-t border-pink-100 flex flex-wrap items-center justify-between gap-2">
+                <button type="button" onclick="openExportDialog()"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-teal-400 to-blue-400 hover:from-teal-500 hover:to-blue-500 text-white text-xs sm:text-sm font-bold shadow-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Xuất file HTML ⬇️</span>
+                </button>
+                <button onclick="closeCustomizeModal()" class="px-5 py-2 rounded-full bg-pastel-text text-white text-xs sm:text-sm font-bold hover:opacity-90 transition-all">
+                    Hoàn tất
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 3: TÙY CHỌN XUẤT FILE HTML ĐỘC LẬP ================= -->
+    <div id="export-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-purple-950/40 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-md rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📦</span>
+                    <h3 class="font-display font-bold text-lg text-pastel-text">Xuất File Web Gửi Tặng</h3>
+                </div>
+                <button onclick="closeExportDialog()" class="w-8 h-8 rounded-full bg-pink-50 hover:bg-pink-100 text-gray-500 hover:text-pink-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs sm:text-sm text-purple-900/75 leading-relaxed mb-4">
+                Hệ thống sẽ đóng gói toàn bộ <strong><span id="export-wish-count">0</span> lời chúc</strong> và hình ảnh của bạn vào một file <code class="bg-pink-50 text-pink-600 px-1.5 py-0.5 rounded font-bold">hop-qua-loi-chuc.html</code> duy nhất. Khi gửi cho người khác hoặc đăng lên Google Sites / Tiiny.host, mọi nội dung sẽ hiện sẵn ngay lập tức!
+            </p>
+
+            <!-- Tùy chọn chế độ người nhận -->
+            <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-3.5 mb-5 space-y-2.5">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="export-hide-edit" checked class="mt-1 w-4 h-4 accent-pink-500 rounded">
+                    <div>
+                        <span class="block text-xs sm:text-sm font-bold text-pastel-text">Ẩn các nút chỉnh sửa trên bản gửi tặng 🎁</span>
+                        <span class="block text-[11px] text-gray-500">Giúp giao diện gọn gàng như một món quà hoàn chỉnh (chỉ giữ nút mở lại & âm thanh).</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <button type="button" onclick="closeExportDialog()" class="flex-1 py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-xs sm:text-sm transition-all">
+                    Hủy
+                </button>
+                <button type="button" onclick="executeExportHtml()" class="flex-[2] py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-400 via-blue-400 to-purple-400 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Tải về hop-qua-loi-chuc.html</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 4: CHIA SẺ LINK & MÃ PHÒNG HỘP QUÀ (CLOUD ROOM) ================= -->
+    <div id="share-room-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-purple-950/40 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-lg rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-pink-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">☁️</span>
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text">
+                            Chia Sẻ Hộp Quà Trực Tuyến
+                        </h3>
+                        <p id="cloud-connection-badge" class="text-xs font-semibold text-emerald-600">
+                            ● Đang kết nối đám mây thời gian thực
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeShareRoomModal()" class="w-8 h-8 rounded-full bg-pink-50 hover:bg-pink-100 text-gray-500 hover:text-pink-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Giải thích cách hoạt động -->
+            <div class="bg-gradient-to-r from-pink-50/90 to-purple-50/90 border border-pink-100 rounded-2xl p-3.5 text-xs sm:text-sm text-pastel-text space-y-1.5 leading-relaxed">
+                <p class="font-bold text-pink-600 flex items-center gap-1.5">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Làm sao để mọi người cùng vào thêm lời chúc?</span>
+                </p>
+                <p class="text-xs text-purple-900/80">
+                    1. Mỗi <strong>Mã Hộp Quà</strong> là một phòng lưu trữ đám mây riêng biệt.<br>
+                    2. Khi bạn bè truy cập cùng đường link (hoặc nhập cùng Mã Hộp Quà) và bấm <strong>"+ Gửi lời chúc mới"</strong>, quả bóng của họ sẽ tự động bay vào hộp quà này ngay lập tức!
+                </p>
+            </div>
+
+            <!-- Đổi hoặc Tạo Mã Hộp Quà Riêng -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-pastel-text">
+                    🔑 Mã Hộp Quà hiện tại (Bạn có thể đặt mã riêng cho nhóm/người nhận):
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="room-code-input" placeholder="VD: SINH-NHAT-LINH-2025"
+                        class="flex-1 px-3.5 py-2.5 rounded-xl border-2 border-purple-200 bg-white font-bold text-sm uppercase text-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    <button type="button" onclick="switchRoomCode()"
+                        class="px-4 py-2.5 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-bold text-xs sm:text-sm shadow-sm transition-all shrink-0 active:scale-95">
+                        Đổi / Tạo Hộp
+                    </button>
+                    <button type="button" onclick="generateRandomRoomCode()" title="Tạo mã ngẫu nhiên mới"
+                        class="px-3 py-2.5 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-bold text-xs sm:text-sm transition-all shrink-0">
+                        <i class="fa-solid fa-dice"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Copy Link Chia Sẻ -->
+            <div class="space-y-2 pt-1">
+                <label class="block text-xs font-bold text-pastel-text">
+                    🔗 Đường dẫn chia sẻ Hộp Quà này (Kèm sẵn Mã Hộp):
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="share-link-input" readonly
+                        class="flex-1 px-3.5 py-2 rounded-xl border border-gray-200 bg-gray-50 text-xs text-gray-600 select-all focus:outline-none">
+                    <button type="button" onclick="copyShareRoomLink()"
+                        class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 shrink-0 active:scale-95">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copy Link</span>
+                    </button>
+                </div>
+                <p class="text-[11px] text-gray-500 italic">
+                    💡 Mẹo: Nếu bạn đưa file HTML này lên <strong>tiiny.host</strong> hoặc <strong>netlify</strong>, chỉ cần gửi link đó kèm <code>?box=MA-CUA-BAN</code> là cả nhóm ở bất kỳ đâu cũng vào thả bóng chung được!
+                </p>
+            </div>
+
+            <!-- ID phiên kết nối -->
+            <div class="pt-2 border-t border-pink-100 flex items-center justify-between text-[11px] text-gray-400">
+                <span>ID người dùng: <code id="current-user-uid" class="text-purple-500 font-mono">Đang kết nối...</code></span>
+                <button onclick="closeShareRoomModal()" class="px-4 py-1.5 rounded-full bg-pastel-text text-white font-bold text-xs hover:opacity-90">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- THÔNG BÁO TOAST NHỎ XINH -->
+    <div id="toast-msg" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+        <div class="bg-pastel-text text-white px-5 py-2.5 rounded-full shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2">
+            <span>✨</span>
+            <span id="toast-text">Đã lưu thành công!</span>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        /* -----------------------------------------------------------
+         * 1. BỘ SƯU TẬP TRANH MINH HỌA SVG PASTEL (DATA URI TỰ CHỨA)
+         * Giúp web luôn có hình ảnh siêu nét, đúng chuẩn Pastel mà không sợ lỗi mạng
+         * ----------------------------------------------------------- */
+        function createPastelSvgDataUri(bg1, bg2, iconSvg, label) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450">
+                <defs>
+                    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${bg1}"/>
+                        <stop offset="100%" stop-color="${bg2}"/>
+                    </linearGradient>
+                </defs>
+                <rect width="600" height="450" fill="url(#g)"/>
+                <circle cx="90" cy="80" r="55" fill="#FFFFFF" opacity="0.35"/>
+                <circle cx="520" cy="380" r="85" fill="#FFFFFF" opacity="0.35"/>
+                <circle cx="480" cy="90" r="35" fill="#FFFFFF" opacity="0.4"/>
+                <g transform="translate(300, 200)">
+                    ${iconSvg}
+                </g>
+                <rect x="170" y="345" width="260" height="44" rx="22" fill="#FFFFFF" opacity="0.8"/>
+                <text x="300" y="373" font-family="Quicksand, sans-serif" font-size="20" font-weight="bold" fill="#5A4A66" text-anchor="middle">${label}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        const PRESET_ILLUSTRATIONS = [
+            {
+                name: 'Bánh Kem Dâu',
+                url: createPastelSvgDataUri('#FFE4E9', '#FAD0C4', `
+                    <rect x="-70" y="10" width="140" height="75" rx="16" fill="#FFF" stroke="#FF8DA1" stroke-width="5"/>
+                    <path d="M-70 35 Q-52 55 -35 35 Q-17 55 0 35 Q17 55 35 35 Q52 55 70 35" fill="none" stroke="#FFB5C2" stroke-width="8" stroke-linecap="round"/>
+                    <rect x="-10" y="-38" width="20" height="48" rx="6" fill="#A8E6CF"/>
+                    <path d="M0 -62 C-12 -45, 12 -45, 0 -38 C-10 -45, 10 -45, 0 -62 Z" fill="#FFD166"/>
+                    <circle cx="-40" cy="8" r="12" fill="#FF6B8B"/>
+                    <circle cx="40" cy="8" r="12" fill="#FF6B8B"/>
+                `, 'Sweet Wishes ✨')
+            },
+            {
+                name: 'Gấu Bông Ôm Tim',
+                url: createPastelSvgDataUri('#F3E8FF', '#E0C3FC', `
+                    <circle cx="-42" cy="-52" r="22" fill="#D4A373"/>
+                    <circle cx="42" cy="-52" r="22" fill="#D4A373"/>
+                    <circle cx="-42" cy="-52" r="12" fill="#FAEDCD"/>
+                    <circle cx="42" cy="-52" r="12" fill="#FAEDCD"/>
+                    <circle cx="0" cy="-15" r="55" fill="#E6B88A"/>
+                    <ellipse cx="0" cy="-3" rx="22" ry="16" fill="#FFF"/>
+                    <circle cx="-20" cy="-25" r="6" fill="#4A3B32"/>
+                    <circle cx="20" cy="-25" r="6" fill="#4A3B32"/>
+                    <circle cx="0" cy="-8" r="6" fill="#4A3B32"/>
+                    <path d="M0 35 C-35 5, -55 45, 0 78 C55 45, 35 5, 0 35 Z" fill="#FF8DA1" stroke="#FFF" stroke-width="4"/>
+                `, 'Sending Big Hugs 🧸')
+            },
+            {
+                name: 'Cầu Vồng Mây Hồng',
+                url: createPastelSvgDataUri('#E0F2FE', '#FCE7F3', `
+                    <path d="M-95 45 A95 95 0 0 1 95 45" fill="none" stroke="#FFB5C2" stroke-width="16"/>
+                    <path d="M-79 45 A79 79 0 0 1 79 45" fill="none" stroke="#FFD3B6" stroke-width="16"/>
+                    <path d="M-63 45 A63 63 0 0 1 63 45" fill="none" stroke="#FDFFB6" stroke-width="16"/>
+                    <path d="M-47 45 A47 47 0 0 1 47 45" fill="none" stroke="#A8E6CF" stroke-width="16"/>
+                    <circle cx="-75" cy="45" r="28" fill="#FFF"/>
+                    <circle cx="-50" cy="48" r="22" fill="#FFF"/>
+                    <circle cx="75" cy="45" r="28" fill="#FFF"/>
+                    <circle cx="50" cy="48" r="22" fill="#FFF"/>
+                `, 'Always Shine Bright 🌈')
+            },
+            {
+                name: 'Bó Hoa Tulip Pastel',
+                url: createPastelSvgDataUri('#E6FFFA', '#F3E8FF', `
+                    <path d="M0 65 L-35 -20 M0 65 L0 -35 M0 65 L35 -20" stroke="#76D7B4" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M-35 -5 C-55 -5, -55 -45, -35 -35 C-25 -48, -15 -35, -35 -5 Z" fill="#FFB5C2"/>
+                    <path d="M0 -18 C-22 -18, -22 -62, 0 -50 C22 -62, 22 -18, 0 -18 Z" fill="#D8B4F8"/>
+                    <path d="M35 -5 C15 -5, 15 -45, 35 -35 C45 -48, 55 -35, 35 -5 Z" fill="#FFD3B6"/>
+                    <polygon points="-32,55 32,55 18,90 -18,90" fill="#FFF" stroke="#FFB5C2" stroke-width="4"/>
+                `, 'For Someone Special 🌷')
+            },
+            {
+                name: 'Ngôi Sao Ước Nguyện',
+                url: createPastelSvgDataUri('#FFFBEB', '#FCE7F3', `
+                    <polygon points="0,-75 22,-25 76,-18 36,18 47,72 0,45 -47,72 -36,18 -76,-18 -22,-25" fill="#FFE066" stroke="#FFF" stroke-width="5" stroke-linejoin="round"/>
+                    <circle cx="-18" cy="-8" r="5" fill="#5A4A66"/>
+                    <circle cx="18" cy="-8" r="5" fill="#5A4A66"/>
+                    <path d="M-8 8 Q0 16 8 8" fill="none" stroke="#5A4A66" stroke-width="3.5" stroke-linecap="round"/>
+                `, 'Make A Wish ⭐')
+            }
+        ];
+
+        /* -----------------------------------------------------------
+         * 2. DỮ LIỆU LỜI CHÚC MẶC ĐỊNH & CẤU HÌNH MÀU PASTEL
+         * ----------------------------------------------------------- */
+        const BUBBLE_THEMES = {
+            pink: {
+                bg: 'rgba(255, 181, 194, 0.78)',
+                border: '#FFC8D2',
+                knot: '#FF8DA1',
+                badge: 'bg-pink-100 text-pink-600'
+            },
+            lavender: {
+                bg: 'rgba(216, 180, 248, 0.78)',
+                border: '#E5CFFB',
+                knot: '#B784F0',
+                badge: 'bg-purple-100 text-purple-600'
+            },
+            mint: {
+                bg: 'rgba(168, 230, 207, 0.78)',
+                border: '#C4F0DF',
+                knot: '#65C9A8',
+                badge: 'bg-teal-100 text-teal-600'
+            },
+            blue: {
+                bg: 'rgba(160, 196, 255, 0.78)',
+                border: '#C2DAFF',
+                knot: '#74A8FF',
+                badge: 'bg-blue-100 text-blue-600'
+            },
+            yellow: {
+                bg: 'rgba(253, 240, 166, 0.85)',
+                border: '#FEF5C3',
+                knot: '#F2C94C',
+                badge: 'bg-yellow-100 text-yellow-700'
+            },
+            peach: {
+                bg: 'rgba(255, 211, 182, 0.82)',
+                border: '#FFE2CF',
+                knot: '#FFA372',
+                badge: 'bg-orange-100 text-orange-600'
+            }
+        };
+
+        // EMBEDDED_CONFIG_START
+        const EMBEDDED_GIFT_MODE = false;
+        const DEFAULT_WISHES = [
+            {
+                id: 'w1',
+                sender: 'Điều ước ngọt ngào 🍓',
+                message: 'Chúc bạn mỗi ngày thức dậy đều tràn ngập năng lượng tích cực, nụ cười luôn nở trên môi và mọi dự định ấp ủ đều sớm thành hiện thực nhé!',
+                color: 'pink',
+                image: PRESET_ILLUSTRATIONS[0].url,
+                createdAt: 1001
+            },
+            {
+                id: 'w2',
+                sender: 'Cái ôm ấm áp 🧸',
+                message: 'Dù ngoài kia có đôi lúc bận rộn hay mệt mỏi, hãy nhớ rằng bạn luôn xứng đáng với những điều dịu dàng và tuyệt vời nhất thế gian!',
+                color: 'lavender',
+                image: PRESET_ILLUSTRATIONS[1].url,
+                createdAt: 1002
+            },
+            {
+                id: 'w3',
+                sender: 'Bầu trời bình yên 🌈',
+                message: 'Chúc tâm hồn bạn luôn trong trẻo như mây trời pastel, đi qua những cơn mưa rào đều sẽ thấy cầu vồng rực rỡ đón chờ phía trước.',
+                color: 'blue',
+                image: PRESET_ILLUSTRATIONS[2].url,
+                createdAt: 1003
+            },
+            {
+                id: 'w4',
+                sender: 'Hoa nở bốn mùa 🌷',
+                message: 'Gửi đến bạn một bó hoa tươi thắm cùng lời chúc sức khỏe, may mắn và luôn được bao quanh bởi những người yêu thương bạn thật lòng.',
+                color: 'mint',
+                image: PRESET_ILLUSTRATIONS[3].url,
+                createdAt: 1004
+            },
+            {
+                id: 'w5',
+                sender: 'Ngôi sao may mắn ⭐',
+                message: 'Hãy luôn tự tin tỏa sáng theo cách riêng của chính mình nhé! Bạn là một phiên bản độc nhất vô nhị và vô cùng đáng quý.',
+                color: 'yellow',
+                image: PRESET_ILLUSTRATIONS[4].url,
+                createdAt: 1005
+            },
+            {
+                id: 'w6',
+                sender: 'Trọn vẹn yêu thương 💌',
+                message: 'Cảm ơn bạn vì đã luôn dịu dàng và mang lại niềm vui cho mọi người xung quanh. Chúc bạn một hành trình mới thật rực rỡ và hạnh phúc!',
+                color: 'peach',
+                image: PRESET_ILLUSTRATIONS[0].url,
+                createdAt: 1006
+            }
+        ];
+        // EMBEDDED_CONFIG_END
+
+        /* -----------------------------------------------------------
+         * 3. TRẠNG THÁI ỨNG DỤNG & MÃ PHÒNG (STATE & ROOM CODE)
+         * ----------------------------------------------------------- */
+        const STORAGE_KEY_PREFIX = 'pastel_wish_bubbles_room_';
+        let currentRoomCode = 'HOP-QUA-CHUNG';
+        let wishes = [];
+        let activeBubbles = []; // Các đối tượng bong bóng đang bay trên màn hình
+        let openedWishIds = new Set();
+        let currentViewingWishId = null;
+        let currentStage = 'box'; // 'box' | 'bubbles' | 'summary'
+        let selectedFormColor = 'pink';
+        let selectedFormImage = PRESET_ILLUSTRATIONS[0].url;
+        let animationFrameId = null;
+
+        // Biến cầu nối với Firebase Cloud Module
+        window.cloudSyncBridge = {
+            isConnected: false,
+            userId: null,
+            saveWishToCloud: null,
+            deleteWishFromCloud: null,
+            seedDefaultToCloud: null,
+            switchRoomListener: null
+        };
+
+        function sanitizeRoomCode(raw) {
+            if (!raw) return 'HOP-QUA-CHUNG';
+            const cleaned = raw.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '-').replace(/-+/g, '-').slice(0, 28);
+            return cleaned || 'HOP-QUA-CHUNG';
+        }
+
+        function initRoomCodeFromUrl() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const boxParam = params.get('box');
+                if (boxParam) {
+                    currentRoomCode = sanitizeRoomCode(boxParam);
+                } else {
+                    const savedRoom = localStorage.getItem('pastel_last_room_code');
+                    if (savedRoom) currentRoomCode = sanitizeRoomCode(savedRoom);
+                }
+            } catch (e) {
+                currentRoomCode = 'HOP-QUA-CHUNG';
+            }
+            updateRoomBadgeUI();
+        }
+
+        function updateRoomBadgeUI() {
+            const label = document.getElementById('current-room-label');
+            if (label) label.textContent = currentRoomCode;
+            const input = document.getElementById('room-code-input');
+            if (input) input.value = currentRoomCode;
+            updateShareLinkInput();
+        }
+
+        function updateShareLinkInput() {
+            const linkInput = document.getElementById('share-link-input');
+            if (!linkInput) return;
+            try {
+                const url = new URL(window.location.href);
+                url.searchParams.set('box', currentRoomCode);
+                linkInput.value = url.toString();
+            } catch (e) {
+                linkInput.value = window.location.href + '?box=' + encodeURIComponent(currentRoomCode);
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 4. HỆ THỐNG ÂM THANH WEB AUDIO API (KHÔNG CẦN FILE NGOÀI)
+         * ----------------------------------------------------------- */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-sm sm:text-base';
+                playChimeSound();
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-sm sm:text-base text-gray-400';
+            }
+        }
+
+        // Âm thanh lấp lánh khi mở hộp quà
+        function playGiftOpenSound() {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+            notes.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.07);
+
+                gain.gain.setValueAtTime(0.001, ctx.currentTime + idx * 0.07);
+                gain.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + idx * 0.07 + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.07 + 0.45);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(ctx.currentTime + idx * 0.07);
+                osc.stop(ctx.currentTime + idx * 0.07 + 0.46);
+            });
+        }
+
+        // Âm thanh chạm nhẹ vào bong bóng
+        function playChimeSound() {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(680, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(980, ctx.currentTime + 0.15);
+
+            gain.gain.setValueAtTime(0.14, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.19);
+        }
+
+        // Âm thanh "Bụp!" khi bóng vỡ
+        function playBubblePopSound() {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(420, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(120, ctx.currentTime + 0.11);
+
+            gain.gain.setValueAtTime(0.28, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.13);
+        }
+
+        /* -----------------------------------------------------------
+         * 5. LƯU TRỮ DỮ LIỆU CỤC BỘ & ĐỒNG BỘ ĐÁM MÂY (LOCAL + CLOUD)
+         * ----------------------------------------------------------- */
+        function getRoomStorageKey() {
+            return STORAGE_KEY_PREFIX + currentRoomCode;
+        }
+
+        function loadWishesLocalFallback() {
+            try {
+                const raw = localStorage.getItem(getRoomStorageKey());
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        wishes = parsed;
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Không thể đọc localStorage:', e);
+            }
+            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+        }
+
+        function saveWishesLocalCache() {
+            try {
+                localStorage.setItem(getRoomStorageKey(), JSON.stringify(wishes));
+            } catch (e) {
+                console.warn('Bộ nhớ trình duyệt đã đầy:', e);
+            }
+            updateCountersUI();
+        }
+
+        // Hàm được gọi mỗi khi dữ liệu từ Cloud hoặc Local thay đổi
+        function applyRealtimeWishesUpdate(newWishesList) {
+            const prevIds = new Set(wishes.map(w => w.id));
+            wishes = newWishesList;
+            saveWishesLocalCache();
+            renderManageWishList();
+
+            // Nếu đang ở màn hình bong bóng, tự động thả thêm các bong bóng mới chưa từng xuất hiện
+            if (currentStage === 'bubbles') {
+                wishes.forEach((w, idx) => {
+                    const alreadyOnScreen = activeBubbles.some(b => b.wish.id === w.id);
+                    const alreadyPopped = openedWishIds.has(w.id);
+                    if (!alreadyOnScreen && !alreadyPopped) {
+                        spawnSingleBubble(w, idx, false);
+                        if (prevIds.size > 0 && !prevIds.has(w.id)) {
+                            showToast(`🎈 Có bong bóng mới từ "${w.sender}" vừa bay vào!`);
+                        }
+                    }
+                });
+            } else if (currentStage === 'summary') {
+                renderSummaryGrid();
+            }
+            updateCountersUI();
+        }
+
+        function updateCountersUI() {
+            const total = wishes.length;
+            const opened = openedWishIds.size;
+            const introCountEl = document.getElementById('intro-bubble-count');
+            const totalCountEl = document.getElementById('total-count');
+            const openedCountEl = document.getElementById('opened-count');
+            const manageCountEl = document.getElementById('manage-count');
+
+            if (introCountEl) introCountEl.textContent = total;
+            if (totalCountEl) totalCountEl.textContent = total;
+            if (openedCountEl) openedCountEl.textContent = Math.min(opened, total);
+            if (manageCountEl) manageCountEl.textContent = total;
+        }
+
+        /* -----------------------------------------------------------
+         * 6. HIỆU ỨNG HẠT PHÁO GIẤY & BÓNG VỠ (CANVAS PARTICLES)
+         * ----------------------------------------------------------- */
+        const fxCanvas = document.getElementById('fx-canvas');
+        const fxCtx = fxCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeFxCanvas() {
+            fxCanvas.width = window.innerWidth;
+            fxCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeFxCanvas);
+        resizeFxCanvas();
+
+        const PASTEL_PARTICLE_COLORS = ['#FFB5C2', '#D8B4F8', '#A8E6CF', '#A0C4FF', '#FFD3B6', '#FDFFB6', '#FF8DA1'];
+
+        function createBurstParticles(x, y, count = 32) {
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+                const speed = 3 + Math.random() * 7;
+                particles.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 1.5,
+                    radius: 4 + Math.random() * 5,
+                    color: PASTEL_PARTICLE_COLORS[Math.floor(Math.random() * PASTEL_PARTICLE_COLORS.length)],
+                    alpha: 1,
+                    decay: 0.018 + Math.random() * 0.015,
+                    shape: Math.random() > 0.4 ? 'circle' : 'heart'
+                });
+            }
+        }
+
+        function updateAndDrawParticles() {
+            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.14; // Trọng lực nhẹ
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                fxCtx.save();
+                fxCtx.globalAlpha = Math.max(0, p.alpha);
+                fxCtx.fillStyle = p.color;
+
+                if (p.shape === 'circle') {
+                    fxCtx.beginPath();
+                    fxCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    fxCtx.fill();
+                } else {
+                    const s = p.radius * 0.9;
+                    fxCtx.beginPath();
+                    fxCtx.moveTo(p.x, p.y + s);
+                    fxCtx.lineTo(p.x - s, p.y);
+                    fxCtx.lineTo(p.x, p.y - s);
+                    fxCtx.lineTo(p.x + s, p.y);
+                    fxCtx.closePath();
+                    fxCtx.fill();
+                }
+                fxCtx.restore();
+            }
+            requestAnimationFrame(updateAndDrawParticles);
+        }
+        requestAnimationFrame(updateAndDrawParticles);
+
+        /* -----------------------------------------------------------
+         * 7. LUỒNG CHUYỂN CẢNH: MỞ HỘP QUÀ -> BONG BÓNG BAY -> TỔNG HỢP
+         * ----------------------------------------------------------- */
+        function openGiftBox() {
+            if (currentStage !== 'box') return;
+            if (wishes.length === 0) {
+                wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+                saveWishesLocalCache();
+            }
+
+            playGiftOpenSound();
+
+            const boxWrapper = document.getElementById('gift-box-wrapper');
+            const animBox = document.getElementById('gift-anim-box');
+            animBox.classList.remove('gift-bounce');
+            boxWrapper.classList.add('gift-opened');
+
+            const rect = boxWrapper.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            createBurstParticles(centerX, centerY, 55);
+
+            setTimeout(() => {
+                currentStage = 'bubbles';
+                document.getElementById('stage-box').classList.add('hidden');
+                document.getElementById('stage-bubbles').classList.remove('hidden');
+                document.getElementById('progress-badge').classList.remove('hidden');
+                document.getElementById('progress-badge').classList.add('flex');
+
+                spawnAllBubbles();
+                startBubblePhysicsLoop();
+            }, 720);
+        }
+
+        function spawnAllBubbles() {
+            const arena = document.getElementById('bubble-arena');
+            arena.innerHTML = '';
+            activeBubbles = [];
+
+            wishes.forEach((wish, index) => {
+                if (openedWishIds.has(wish.id)) return;
+                spawnSingleBubble(wish, index, true);
+            });
+            updateCountersUI();
+        }
+
+        function spawnSingleBubble(wish, index = 0, fromCenter = false) {
+            const arena = document.getElementById('bubble-arena');
+            if (!arena) return;
+            const arenaWidth = arena.clientWidth || window.innerWidth;
+            const arenaHeight = arena.clientHeight || (window.innerHeight - 150);
+
+            const isMobile = window.innerWidth < 640;
+            const size = isMobile ? (96 + (index % 3) * 10) : (118 + (index % 3) * 14);
+            const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+
+            const el = document.createElement('div');
+            el.className = 'wish-bubble';
+            el.style.width = `${size}px`;
+            el.style.height = `${size}px`;
+            el.style.backgroundColor = theme.bg;
+            el.style.borderColor = theme.border;
+
+            el.innerHTML = `
+                <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white shadow-sm mb-1 pointer-events-none">
+                    <img src="${wish.image}" alt="" class="w-full h-full object-cover" onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                </div>
+                <span class="px-2 text-[11px] sm:text-xs font-bold text-pastel-text text-center line-clamp-1 max-w-[90%] pointer-events-none drop-shadow-sm">
+                    ${escapeHtml(wish.sender)}
+                </span>
+                <div class="bubble-knot" style="background-color: ${theme.knot}"></div>
+                <div class="bubble-string"></div>
+            `;
+
+            const pad = 16;
+            const targetX = pad + Math.random() * Math.max(40, arenaWidth - size - pad * 2);
+            const targetY = pad + Math.random() * Math.max(40, arenaHeight - size - pad * 2 - 35);
+
+            el.style.left = `${targetX}px`;
+            el.style.top = `${targetY}px`;
+
+            if (fromCenter) {
+                el.style.animation = `spawnFromBox ${0.45 + index * 0.08}s cubic-bezier(0.34, 1.56, 0.64, 1) backwards`;
+            }
+
+            el.addEventListener('click', () => onBubbleClicked(wish.id));
+            arena.appendChild(el);
+
+            const speed = 0.45 + Math.random() * 0.55;
+            const dir = Math.random() * Math.PI * 2;
+            activeBubbles.push({
+                wish,
+                el,
+                x: targetX,
+                y: targetY,
+                vx: Math.cos(dir) * speed,
+                vy: Math.sin(dir) * speed,
+                size,
+                wobbleOffset: Math.random() * 100
+            });
+        }
+
+        function startBubblePhysicsLoop() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            const arena = document.getElementById('bubble-arena');
+
+            function step(timestamp) {
+                if (currentStage !== 'bubbles') return;
+
+                const maxW = arena.clientWidth || window.innerWidth;
+                const maxH = arena.clientHeight || (window.innerHeight - 150);
+
+                activeBubbles.forEach(b => {
+                    if (b.popping) return;
+
+                    b.x += b.vx + Math.sin(timestamp * 0.0015 + b.wobbleOffset) * 0.22;
+                    b.y += b.vy + Math.cos(timestamp * 0.0012 + b.wobbleOffset) * 0.18;
+
+                    const rightBound = Math.max(20, maxW - b.size - 10);
+                    const bottomBound = Math.max(20, maxH - b.size - 38);
+
+                    if (b.x <= 10) { b.x = 10; b.vx = Math.abs(b.vx); }
+                    if (b.x >= rightBound) { b.x = rightBound; b.vx = -Math.abs(b.vx); }
+                    if (b.y <= 10) { b.y = 10; b.vy = Math.abs(b.vy); }
+                    if (b.y >= bottomBound) { b.y = bottomBound; b.vy = -Math.abs(b.vy); }
+
+                    b.el.style.left = `${b.x}px`;
+                    b.el.style.top = `${b.y}px`;
+                });
+
+                animationFrameId = requestAnimationFrame(step);
+            }
+
+            animationFrameId = requestAnimationFrame(step);
+        }
+
+        /* -----------------------------------------------------------
+         * 8. XEM LỜI CHÚC -> NỔ BÓNG -> KIỂM TRA HOÀN TẤT
+         * ----------------------------------------------------------- */
+        function onBubbleClicked(wishId) {
+            const wishIndex = wishes.findIndex(w => w.id === wishId);
+            if (wishIndex === -1) return;
+            const wish = wishes[wishIndex];
+
+            currentViewingWishId = wishId;
+            playChimeSound();
+
+            document.getElementById('modal-wish-img').src = wish.image || PRESET_ILLUSTRATIONS[0].url;
+            document.getElementById('modal-wish-badge').textContent = `🎈 Bong bóng #${wishIndex + 1}`;
+            document.getElementById('modal-wish-sender').textContent = wish.sender;
+            document.getElementById('modal-wish-text').textContent = wish.message;
+
+            const modal = document.getElementById('wish-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function confirmReadAndPopBubble() {
+            const modal = document.getElementById('wish-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            if (!currentViewingWishId) return;
+            const wishId = currentViewingWishId;
+            currentViewingWishId = null;
+
+            const bubbleObj = activeBubbles.find(b => b.wish.id === wishId);
+            if (bubbleObj && !bubbleObj.popping) {
+                bubbleObj.popping = true;
+                openedWishIds.add(wishId);
+                updateCountersUI();
+
+                playBubblePopSound();
+
+                const rect = bubbleObj.el.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
+                createBurstParticles(cx, cy, 38);
+
+                bubbleObj.el.classList.add('bubble-popping');
+
+                setTimeout(() => {
+                    if (bubbleObj.el && bubbleObj.el.parentNode) {
+                        bubbleObj.el.parentNode.removeChild(bubbleObj.el);
+                    }
+                    activeBubbles = activeBubbles.filter(b => b.wish.id !== wishId);
+
+                    if (activeBubbles.length === 0 || openedWishIds.size >= wishes.length) {
+                        setTimeout(() => transitionToSummaryStage(), 400);
+                    }
+                }, 420);
+            }
+        }
+
+        function skipToSummary() {
+            activeBubbles.forEach((b, idx) => {
+                setTimeout(() => {
+                    const rect = b.el.getBoundingClientRect();
+                    createBurstParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 18);
+                    b.el.classList.add('bubble-popping');
+                }, idx * 60);
+            });
+            playBubblePopSound();
+            wishes.forEach(w => openedWishIds.add(w.id));
+            updateCountersUI();
+
+            setTimeout(() => {
+                activeBubbles = [];
+                transitionToSummaryStage();
+            }, Math.min(700, activeBubbles.length * 60 + 350));
+        }
+
+        function transitionToSummaryStage() {
+            currentStage = 'summary';
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            document.getElementById('stage-box').classList.add('hidden');
+            document.getElementById('stage-bubbles').classList.add('hidden');
+            document.getElementById('progress-badge').classList.add('hidden');
+            document.getElementById('progress-badge').classList.remove('flex');
+
+            const summarySection = document.getElementById('stage-summary');
+            summarySection.classList.remove('hidden');
+
+            playGiftOpenSound();
+            createBurstParticles(window.innerWidth * 0.25, window.innerHeight * 0.3, 40);
+            createBurstParticles(window.innerWidth * 0.75, window.innerHeight * 0.3, 40);
+
+            renderSummaryGrid();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderSummaryGrid() {
+            const grid = document.getElementById('summary-grid');
+            grid.innerHTML = '';
+
+            const rotations = ['-rotate-1', 'rotate-1', '-rotate-2', 'rotate-2', 'rotate-0'];
+
+            wishes.forEach((wish, idx) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const rotClass = rotations[idx % rotations.length];
+
+                const card = document.createElement('article');
+                card.className = `polaroid-card rounded-3xl p-4 sm:p-5 flex flex-col justify-between ${rotClass}`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] mb-4 bg-pink-50 border border-pink-100 shadow-inner group">
+                            <img src="${wish.image}" alt="${escapeHtml(wish.sender)}" 
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-white/90 text-pink-500">
+                                🎈 #${idx + 1}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text">
+                                ${escapeHtml(wish.sender)}
+                            </h3>
+                            <span class="w-4 h-4 rounded-full shrink-0 border border-white shadow-sm" style="background-color: ${theme.bg}"></span>
+                        </div>
+
+                        <p class="text-sm sm:text-base text-purple-950/80 leading-relaxed bg-pink-50/40 p-3.5 rounded-2xl border border-pink-100/60">
+                            "${escapeHtml(wish.message)}"
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-pink-100/80 flex items-center justify-between text-xs text-purple-400 font-semibold">
+                        <span>Sweet Memory 💕</span>
+                        ${EMBEDDED_GIFT_MODE ? '' : `<button onclick="editWishFromSummary('${wish.id}')" class="hover:text-pink-500 transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i> Sửa
+                        </button>`}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function replayExperience() {
+            openedWishIds.clear();
+            activeBubbles = [];
+            currentStage = 'box';
+
+            const boxWrapper = document.getElementById('gift-box-wrapper');
+            const animBox = document.getElementById('gift-anim-box');
+            boxWrapper.classList.remove('gift-opened');
+            animBox.classList.add('gift-bounce');
+
+            document.getElementById('stage-summary').classList.add('hidden');
+            document.getElementById('stage-bubbles').classList.add('hidden');
+            document.getElementById('progress-badge').classList.add('hidden');
+            document.getElementById('progress-badge').classList.remove('flex');
+            document.getElementById('stage-box').classList.remove('hidden');
+
+            updateCountersUI();
+            playChimeSound();
+        }
+
+        /* -----------------------------------------------------------
+         * 9. QUẢN LÝ THÊM / SỬA / XÓA LỜI CHÚC, HÌNH ẢNH & BONG BÓNG
+         * ----------------------------------------------------------- */
+        function renderPresetStickers() {
+            const container = document.getElementById('preset-stickers');
+            container.innerHTML = '';
+            PRESET_ILLUSTRATIONS.forEach((item, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'shrink-0 group relative rounded-xl overflow-hidden border-2 border-pink-200 hover:border-pink-400 transition-all w-16 h-12 bg-white shadow-sm';
+                btn.title = item.name;
+                btn.onclick = () => {
+                    selectedFormImage = item.url;
+                    document.getElementById('input-img-url').value = '';
+                    updateFormImagePreview(selectedFormImage);
+                };
+                btn.innerHTML = `<img src="${item.url}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">`;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectBubbleColor(colorKey) {
+            selectedFormColor = colorKey;
+            document.querySelectorAll('.color-swatch').forEach(btn => {
+                if (btn.dataset.color === colorKey) {
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-pink-400', 'scale-110');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-offset-2', 'ring-pink-400', 'scale-110');
+                }
+            });
+        }
+
+        function updateFormImagePreview(src) {
+            const preview = document.getElementById('form-img-preview');
+            preview.src = src || PRESET_ILLUSTRATIONS[0].url;
+        }
+
+        function previewCustomUrl(url) {
+            if (url && url.trim().length > 5) {
+                selectedFormImage = url.trim();
+                updateFormImagePreview(selectedFormImage);
+            }
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 650;
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) {
+                            h = Math.round((h * maxDim) / w);
+                            w = maxDim;
+                        } else {
+                            w = Math.round((w * maxDim) / h);
+                            h = maxDim;
+                        }
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    selectedFormImage = canvas.toDataURL('image/jpeg', 0.80);
+                    document.getElementById('input-img-url').value = '';
+                    updateFormImagePreview(selectedFormImage);
+                    showToast('Đã tải ảnh lên thành công! 📸');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleAddWish(event) {
+            event.preventDefault();
+            const editId = document.getElementById('edit-wish-id').value;
+            const sender = document.getElementById('input-sender').value.trim();
+            const message = document.getElementById('input-message').value.trim();
+            if (!sender || !message) return;
+
+            const submitBtn = document.getElementById('submit-wish-btn');
+            submitBtn.disabled = true;
+
+            let targetWishObj = null;
+
+            if (editId) {
+                const idx = wishes.findIndex(w => w.id === editId);
+                if (idx !== -1) {
+                    wishes[idx] = {
+                        ...wishes[idx],
+                        sender,
+                        message,
+                        color: selectedFormColor,
+                        image: selectedFormImage || PRESET_ILLUSTRATIONS[0].url
+                    };
+                    targetWishObj = wishes[idx];
+                }
+            } else {
+                targetWishObj = {
+                    id: 'w_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                    sender,
+                    message,
+                    color: selectedFormColor,
+                    image: selectedFormImage || PRESET_ILLUSTRATIONS[0].url,
+                    createdAt: Date.now()
+                };
+                wishes.push(targetWishObj);
+
+                if (currentStage === 'bubbles') {
+                    spawnSingleBubble(targetWishObj, wishes.length - 1, false);
+                }
+            }
+
+            saveWishesLocalCache();
+            renderManageWishList();
+            if (currentStage === 'summary') {
+                renderSummaryGrid();
+            }
+
+            // Đồng bộ lên Đám mây nếu đã kết nối Firebase
+            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.saveWishToCloud && targetWishObj) {
+                try {
+                    await window.cloudSyncBridge.saveWishToCloud(targetWishObj);
+                    showToast(editId ? '☁️ Đã cập nhật lời chúc lên Hộp quà chung!' : '🎈 Đã thả bong bóng lên Hộp quà chung!');
+                } catch (err) {
+                    console.warn('Lỗi lưu Cloud:', err);
+                    showToast('Đã lưu trên máy của bạn!');
+                }
+            } else {
+                showToast(editId ? 'Đã cập nhật lời chúc! ✨' : 'Đã thả thêm 1 bong bóng mới! 🎈');
+            }
+
+            submitBtn.disabled = false;
+            resetWishForm();
+            playChimeSound();
+        }
+
+        function resetWishForm() {
+            document.getElementById('edit-wish-id').value = '';
+            document.getElementById('input-sender').value = '';
+            document.getElementById('input-message').value = '';
+            document.getElementById('input-img-url').value = '';
+            document.getElementById('form-mode-title').innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i><span>Tạo bong bóng lời chúc mới</span>`;
+            document.getElementById('submit-wish-btn').textContent = '+ Thêm Bong Bóng Này Vào Hộp Quà';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+
+            const randomPreset = PRESET_ILLUSTRATIONS[Math.floor(Math.random() * PRESET_ILLUSTRATIONS.length)];
+            selectedFormImage = randomPreset.url;
+            updateFormImagePreview(selectedFormImage);
+            selectBubbleColor('pink');
+        }
+
+        function startEditWish(wishId) {
+            const wish = wishes.find(w => w.id === wishId);
+            if (!wish) return;
+
+            document.getElementById('edit-wish-id').value = wish.id;
+            document.getElementById('input-sender').value = wish.sender;
+            document.getElementById('input-message').value = wish.message;
+            selectedFormImage = wish.image;
+            updateFormImagePreview(selectedFormImage);
+            selectBubbleColor(wish.color || 'pink');
+
+            document.getElementById('form-mode-title').innerHTML = `<i class="fa-solid fa-pen"></i><span>Đang chỉnh sửa bong bóng</span>`;
+            document.getElementById('submit-wish-btn').textContent = 'Lưu Thay Đổi Bong Bóng ✨';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            document.getElementById('add-wish-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function editWishFromSummary(wishId) {
+            openCustomizeModal();
+            setTimeout(() => startEditWish(wishId), 100);
+        }
+
+        async function deleteWish(wishId) {
+            if (wishes.length <= 1) {
+                showToast('Cần giữ lại ít nhất 1 bong bóng trong hộp quà nhé! 💕');
+                return;
+            }
+            wishes = wishes.filter(w => w.id !== wishId);
+            openedWishIds.delete(wishId);
+
+            const bubbleObj = activeBubbles.find(b => b.wish.id === wishId);
+            if (bubbleObj && bubbleObj.el && bubbleObj.el.parentNode) {
+                bubbleObj.el.parentNode.removeChild(bubbleObj.el);
+            }
+            activeBubbles = activeBubbles.filter(b => b.wish.id !== wishId);
+
+            saveWishesLocalCache();
+            renderManageWishList();
+            if (currentStage === 'summary') renderSummaryGrid();
+
+            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.deleteWishFromCloud) {
+                try {
+                    await window.cloudSyncBridge.deleteWishFromCloud(wishId);
+                } catch (e) {
+                    console.warn('Lỗi xóa trên Cloud:', e);
+                }
+            }
+            showToast('Đã xóa bong bóng lời chúc!');
+        }
+
+        async function resetDefaultWishes() {
+            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+            openedWishIds.clear();
+            saveWishesLocalCache();
+            renderManageWishList();
+
+            if (currentStage === 'bubbles') {
+                spawnAllBubbles();
+            } else if (currentStage === 'summary') {
+                renderSummaryGrid();
+            }
+
+            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.seedDefaultToCloud) {
+                try {
+                    await window.cloudSyncBridge.seedDefaultToCloud(wishes);
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+            showToast('Đã khôi phục 6 bong bóng mẫu ban đầu! ✨');
+        }
+
+        function renderManageWishList() {
+            const listEl = document.getElementById('manage-wish-list');
+            listEl.innerHTML = '';
+            document.getElementById('manage-count').textContent = wishes.length;
+
+            wishes.forEach((wish, idx) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-white border border-pink-100 shadow-sm hover:border-pink-200 transition-all';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img src="${wish.image}" alt="" class="w-11 h-11 rounded-xl object-cover border border-pink-100 shrink-0" onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${theme.bg}"></span>
+                                <p class="font-bold text-xs sm:text-sm text-pastel-text truncate">${escapeHtml(wish.sender)}</p>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">${escapeHtml(wish.message)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="startEditWish('${wish.id}')" title="Chỉnh sửa"
+                            class="w-8 h-8 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-600 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" onclick="deleteWish('${wish.id}')" title="Xóa"
+                            class="w-8 h-8 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-500 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        function openCustomizeModal() {
+            renderPresetStickers();
+            renderManageWishList();
+            resetWishForm();
+            const modal = document.getElementById('customize-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCustomizeModal() {
+            const modal = document.getElementById('customize-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* -----------------------------------------------------------
+         * 10. MODAL CHIA SẺ LINK & ĐỔI MÃ HỘP QUÀ (CLOUD ROOM)
+         * ----------------------------------------------------------- */
+        function openShareRoomModal() {
+            updateRoomBadgeUI();
+            const modal = document.getElementById('share-room-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeShareRoomModal() {
+            const modal = document.getElementById('share-room-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function generateRandomRoomCode() {
+            const prefixes = ['SINH-NHAT', 'YEU-THUONG', 'KY-NIEM', 'BESTIE', 'SWEETBOX'];
+            const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const num = Math.floor(100 + Math.random() * 900);
+            document.getElementById('room-code-input').value = `${p}-${num}`;
+        }
+
+        function switchRoomCode() {
+            const rawInput = document.getElementById('room-code-input').value;
+            const newCode = sanitizeRoomCode(rawInput);
+            currentRoomCode = newCode;
+            try {
+                localStorage.setItem('pastel_last_room_code', currentRoomCode);
+                const url = new URL(window.location.href);
+                url.searchParams.set('box', currentRoomCode);
+                window.history.replaceState({}, '', url.toString());
+            } catch (e) {}
+
+            openedWishIds.clear();
+            updateRoomBadgeUI();
+
+            if (window.cloudSyncBridge.isConnected && window.cloudSyncBridge.switchRoomListener) {
+                window.cloudSyncBridge.switchRoomListener(currentRoomCode);
+            } else {
+                loadWishesLocalFallback();
+                if (currentStage === 'bubbles') spawnAllBubbles();
+                if (currentStage === 'summary') renderSummaryGrid();
+            }
+
+            showToast(`🔑 Đã chuyển sang Hộp quà: ${currentRoomCode}`);
+        }
+
+        function copyShareRoomLink() {
+            const linkInput = document.getElementById('share-link-input');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                showToast('Đã copy đường dẫn Hộp quà! Gửi cho bạn bè ngay nhé 🔗');
+            } catch (e) {
+                showToast('Hãy bôi đen và Copy đường dẫn trong ô nhé!');
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 11. TÍNH NĂNG XUẤT FILE HTML ĐỘC LẬP (SELF-CONTAINED EXPORT)
+         * ----------------------------------------------------------- */
+        function openExportDialog() {
+            document.getElementById('export-wish-count').textContent = wishes.length;
+            const modal = document.getElementById('export-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeExportDialog() {
+            const modal = document.getElementById('export-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function executeExportHtml() {
+            try {
+                const hideEdit = document.getElementById('export-hide-edit').checked;
+
+                const clone = document.documentElement.cloneNode(true);
+
+                const cloneArena = clone.querySelector('#bubble-arena');
+                if (cloneArena) cloneArena.innerHTML = '';
+                const cloneSummaryGrid = clone.querySelector('#summary-grid');
+                if (cloneSummaryGrid) cloneSummaryGrid.innerHTML = '';
+                const cloneManageList = clone.querySelector('#manage-wish-list');
+                if (cloneManageList) cloneManageList.innerHTML = '';
+
+                const cloneBox = clone.querySelector('#stage-box');
+                if (cloneBox) cloneBox.classList.remove('hidden');
+                const cloneGiftWrapper = clone.querySelector('#gift-box-wrapper');
+                if (cloneGiftWrapper) cloneGiftWrapper.classList.remove('gift-opened');
+                const cloneGiftAnim = clone.querySelector('#gift-anim-box');
+                if (cloneGiftAnim) cloneGiftAnim.classList.add('gift-bounce');
+
+                ['#stage-bubbles', '#stage-summary', '#progress-badge', '#wish-modal', '#customize-modal', '#export-modal', '#share-room-modal'].forEach(sel => {
+                    const el = clone.querySelector(sel);
+                    if (el) {
+                        el.classList.add('hidden');
+                        el.classList.remove('flex');
+                    }
+                });
+
+                let htmlContent = '<!DOCTYPE html>\n' + clone.outerHTML;
+
+                const startMarker = '// EMBEDDED_CONFIG_START';
+                const endMarker = '// EMBEDDED_CONFIG_END';
+                const startIdx = htmlContent.indexOf(startMarker);
+                const endIdx = htmlContent.indexOf(endMarker);
+
+                if (startIdx !== -1 && endIdx !== -1) {
+                    const serializedWishes = JSON.stringify(wishes, null, 4);
+                    const replacementBlock = `${startMarker}\n        const EMBEDDED_GIFT_MODE = ${hideEdit ? 'true' : 'false'};\n        const DEFAULT_WISHES = ${serializedWishes};\n        `;
+                    htmlContent = htmlContent.slice(0, startIdx) + replacementBlock + htmlContent.slice(endIdx);
+                }
+
+                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `hop-qua-${currentRoomCode.toLowerCase()}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+                closeExportDialog();
+                showToast('Đã tải về file HTML chứa sẵn lời chúc & ảnh! 🎁');
+                playChimeSound();
+            } catch (err) {
+                console.error('Lỗi khi xuất file HTML:', err);
+                showToast('Có lỗi khi tạo file, vui lòng thử lại!');
+            }
+        }
+
+        function applyGiftModeUI() {
+            if (!EMBEDDED_GIFT_MODE) return;
+            ['header-customize-btn', 'header-export-btn', 'header-share-btn', 'room-badge-btn', 'box-add-wish-btn', 'summary-customize-btn'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+        }
+
+        /* -----------------------------------------------------------
+         * 12. TIỆN ÍCH PHỤ TRỢ & KHỞI TẠO
+         * ----------------------------------------------------------- */
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast-msg');
+            document.getElementById('toast-text').textContent = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2800);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        window.onload = function() {
+            initRoomCodeFromUrl();
+            loadWishesLocalFallback();
+            applyGiftModeUI();
+            updateCountersUI();
+            renderPresetStickers();
+        };
+    </script>
+
+    <!-- ================= MODULE ĐỒNG BỘ ĐÁM MÂY FIREBASE REALTIME ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        let unsubscribeSnapshot = null;
+        let appId = typeof __app_id !== 'undefined' ? __app_id : 'default-sweetbox-app';
+
+        function setCloudIndicator(status, text) {
+            const dot = document.getElementById('cloud-status-dot');
+            const badge = document.getElementById('cloud-connection-badge');
+            if (!dot || !badge) return;
+
+            if (status === 'connected') {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+                badge.className = 'text-xs font-semibold text-emerald-600';
+                badge.textContent = '● ' + text;
+            } else if (status === 'offline') {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-gray-400';
+                badge.className = 'text-xs font-semibold text-gray-500';
+                badge.textContent = '○ ' + text;
+            } else {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+                badge.className = 'text-xs font-semibold text-amber-600';
+                badge.textContent = '● ' + text;
+            }
+        }
+
+        function getWishesCollectionRef() {
+            return collection(db, 'artifacts', appId, 'public', 'data', 'sweetbox_wishes');
+        }
+
+        function getRoomDocId(roomCode, wishId) {
+            return `${roomCode}__${wishId}`;
+        }
+
+        function subscribeToRoomWishes(roomCode) {
+            if (!db || !currentUser) return;
+            if (unsubscribeSnapshot) {
+                unsubscribeSnapshot();
+                unsubscribeSnapshot = null;
+            }
+
+            const colRef = getWishesCollectionRef();
+            unsubscribeSnapshot = onSnapshot(colRef, async (snapshot) => {
+                const roomItems = [];
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data && data.roomCode === roomCode) {
+                        roomItems.push({
+                            id: data.id,
+                            sender: data.sender,
+                            message: data.message,
+                            color: data.color || 'pink',
+                            image: data.image || PRESET_ILLUSTRATIONS[0].url,
+                            createdAt: data.createdAt || 1000
+                        });
+                    }
+                });
+
+                roomItems.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+                if (roomItems.length === 0) {
+                    const defaults = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+                    applyRealtimeWishesUpdate(defaults);
+                    for (const w of defaults) {
+                        try {
+                            await setDoc(doc(colRef, getRoomDocId(roomCode, w.id)), {
+                                ...w,
+                                roomCode
+                            });
+                        } catch (e) {}
+                    }
+                } else {
+                    applyRealtimeWishesUpdate(roomItems);
+                }
+            }, (error) => {
+                console.warn('Firestore listener error:', error);
+                setCloudIndicator('offline', 'Đang dùng bộ nhớ trên máy');
+            });
+        }
+
+        async function initFirebaseCloudSync() {
+            if (EMBEDDED_GIFT_MODE) {
+                setCloudIndicator('offline', 'Bản quà tặng cố định');
+                return;
+            }
+
+            try {
+                if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+                    setCloudIndicator('offline', 'Chế độ lưu trên trình duyệt');
+                    return;
+                }
+
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    currentUser = user;
+                    if (user) {
+                        const uidEl = document.getElementById('current-user-uid');
+                        if (uidEl) uidEl.textContent = user.uid;
+
+                        window.cloudSyncBridge.isConnected = true;
+                        window.cloudSyncBridge.userId = user.uid;
+
+                        window.cloudSyncBridge.saveWishToCloud = async (wishObj) => {
+                            const colRef = getWishesCollectionRef();
+                            await setDoc(doc(colRef, getRoomDocId(currentRoomCode, wishObj.id)), {
+                                ...wishObj,
+                                roomCode: currentRoomCode,
+                                updatedBy: user.uid
+                            });
+                        };
+
+                        window.cloudSyncBridge.deleteWishFromCloud = async (wishId) => {
+                            const colRef = getWishesCollectionRef();
+                            await deleteDoc(doc(colRef, getRoomDocId(currentRoomCode, wishId)));
+                        };
+
+                        window.cloudSyncBridge.seedDefaultToCloud = async (defaultList) => {
+                            const colRef = getWishesCollectionRef();
+                            for (const w of defaultList) {
+                                await setDoc(doc(colRef, getRoomDocId(currentRoomCode, w.id)), {
+                                    ...w,
+                                    roomCode: currentRoomCode
+                                });
+                            }
+                        };
+
+                        window.cloudSyncBridge.switchRoomListener = (newRoomCode) => {
+                            subscribeToRoomWishes(newRoomCode);
+                        };
+
+                        setCloudIndicator('connected', 'Đã kết nối Đám mây thời gian thực');
+                        subscribeToRoomWishes(currentRoomCode);
+                    }
+                });
+            } catch (err) {
+                console.warn('Khởi tạo Cloud Sync không khả dụng:', err);
+                setCloudIndicator('offline', 'Chế độ lưu trên trình duyệt');
+            }
+        }
+
+        initFirebaseCloudSync();
+    </script>
+</body>
+</html>
