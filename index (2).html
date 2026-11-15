@@ -1,0 +1,2737 @@
+<!DOCTYPE html>
+<html lang="vi"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
+        window.__firebase_config = firebaseConfig;
+        window.__initial_auth_token = initialAuthToken;
+        window.__app_id = appId;
+            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxODMyMTcyMDIyMjYyNjgxMDM1MiIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjXzkzYWM1NzVmNGE5NTM3YjhfaW5kZXguaHRtbC05NzQifSwiZXhwIjoxNzk0NzY1MzI0LCJpYXQiOjE3OTQ3NjE3MjQsImFsZyI6IlJTMjU2In0.elCtkn_IWtcpmJwGeeu3AlxQS5AEaLmkPal9mbHt_IIO2AG2JurS1ztToqzASkd5zv7__3GF035rJQjwJVFBupFpIKZrxi1oxbD3S9tcEf7bw0t8GLpvTEqdiNUaAad1rEgfUivEbFLLbpk9AasoRGFZeSznbKi9RakpXGdJP-lYvz74o1Q8gMQ3XwqAWrRJ2OETVE4lCkwNnoUt65ge_ENPss8hixXWpurlaYu8Ep6RuqdSgzlKcwSRUUiAoWrFAF9rgHD_pdv7jQadsPXbfXtX8xjwLPQrz17qX1iWVUIIMo8gpytawHkzWxx8dsClvoZ5sDeBh9K-kDY6AKDbdA","c_93ac575f4a9537b8_index.html-974")</script><script data-bard-client-injected="true">
+  document.addEventListener('input', (event) => {
+    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
+      const clonedDoc = document.cloneNode(true);
+      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
+      injectedScripts.forEach(el => el.remove());
+      window.parent.postMessage({
+        type: 'inlineEdit',
+        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
+      }, '*');
+    }
+  });
+</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const SCROLL_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
+  ]);
+  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
+
+  function isTextEntryTarget(target) {
+    if (!target) return false;
+    const tagName = target.tagName;
+    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
+        tagName === 'SELECT' || target.isContentEditable === true;
+  }
+
+  // An element absorbs the key only if it both overflows on the axis being
+  // scrolled and is configured to scroll on that axis. The cheap dimension
+  // test runs first because getComputedStyle forces a style recalc, and this
+  // runs on every keypress. Each axis is read from its own longhand: the
+  // 'overflow' shorthand serializes as two values when the axes differ, which
+  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
+  function canScroll(node, horizontal) {
+    const overflows = horizontal ? node.scrollWidth > node.clientWidth
+                                 : node.scrollHeight > node.clientHeight;
+    if (!overflows) return false;
+    const style = window.getComputedStyle(node);
+    const overflow = horizontal ? style.overflowX : style.overflowY;
+    return overflow === 'auto' || overflow === 'scroll';
+  }
+
+  // Walks up from the event target so nested scrollers keep their behavior.
+  // <body> is included because pages that pin the root height make it the
+  // scroll container.
+  function hasScrollableAncestor(target, horizontal) {
+    let node = target;
+    while (node && node !== document.documentElement) {
+      if (canScroll(node, horizontal)) return true;
+      node = node.parentElement;
+    }
+    return false;
+  }
+
+  function rootCanScroll(horizontal) {
+    const scroller = document.scrollingElement || document.documentElement;
+    if (!scroller) return false;
+    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
+    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
+                      : scroller.scrollHeight > window.innerHeight + 1;
+  }
+
+  window.addEventListener('keydown', function(event) {
+    if (!SCROLL_KEYS.has(event.key)) return;
+    if (event.defaultPrevented) return;
+    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
+    // reserved for shortcuts, so none of them are scroll intent.
+    if (event.altKey || event.metaKey || event.ctrlKey) return;
+
+    const target = event.target;
+    if (isTextEntryTarget(target)) return;
+
+    // Anything that can still absorb the scroll gets to keep it.
+    const horizontal = HORIZONTAL_KEYS.has(event.key);
+    if (rootCanScroll(horizontal)) return;
+    if (hasScrollableAncestor(target, horizontal)) return;
+
+    event.preventDefault();
+  }, {capture: true, passive: false});
+})();</script><script data-bard-client-injected="true">(function() {
+  // Ensure this script is executed only once
+  if (window.firebaseAuthBridgeScriptLoaded) {
+    return;
+  }
+  window.firebaseAuthBridgeScriptLoaded = true;
+
+  let nextTokenPromiseId = 0;
+
+  // Stores { resolve, reject } for ongoing token requests
+  const pendingTokenPromises = {};
+
+  // Listen for messages from the Host Application
+  window.addEventListener('message', function(event) {
+
+    const messageData = event.data;
+
+  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
+      const { success, token, error, promiseId } = messageData ?? {};
+      if (pendingTokenPromises[promiseId]) {
+        if (success) {
+          pendingTokenPromises[promiseId].resolve(token);
+        } else {
+          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
+        }
+        delete pendingTokenPromises[promiseId];
+      }
+    }
+  });
+
+  // Expose a function for the Generated App to request a new Firebase token
+  window.requestNewFirebaseToken = function() {
+    const currentPromiseId = nextTokenPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingTokenPromises[currentPromiseId] = { resolve, reject };
+    });
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'REQUEST_NEW_FIREBASE_TOKEN',
+        promiseId: currentPromiseId
+      }, '*');
+    } else {
+      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
+      delete pendingTokenPromises[currentPromiseId];
+    }
+    return promise;
+  };
+})();</script><script data-bard-client-injected="true">
+let realOriginalGetUserMedia = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+}
+
+(function() {
+  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
+    try {
+      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
+        get: function() {
+          return undefined; // Or throw an error
+        },
+        configurable: false
+      });
+    } catch (error) {
+      console.error("Error defining prototype getter:", error);
+    }
+  }
+})();
+
+(function() {
+  const pendingMediaResolvers = {};
+  let nextMediaPromiseId = 0;
+
+  function requestMediaPermissions(constraints) {
+    const mediaPromiseId = nextMediaPromiseId++;
+    const promise = new Promise((resolve, reject) => {
+      pendingMediaResolvers[mediaPromiseId] = (granted) => {
+        delete pendingMediaResolvers[mediaPromiseId];
+        resolve(granted);
+      };
+    });
+
+    window.parent.postMessage({
+      type: 'requestMediaPermission',
+      constraints: constraints,
+      promiseId: mediaPromiseId,
+    }, '*');
+
+    return promise;
+  }
+
+  let originalGetUserMedia = realOriginalGetUserMedia;
+
+  function interceptGetUserMedia() {
+    if (navigator.mediaDevices) {
+      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
+        value: function(constraints) {
+          return requestMediaPermissions(constraints).then((granted) => {
+            if (granted) {
+              if (originalGetUserMedia) {
+                return originalGetUserMedia(constraints);
+              } else {
+                throw new Error("Original getUserMedia not available.");
+              }
+            } else {
+              throw new DOMException('Permission denied', 'NotAllowedError');
+            }
+          });
+        },
+        writable: false,
+        configurable: false
+      });
+    }
+  }
+
+  interceptGetUserMedia();
+
+  const observer = new MutationObserver(function(mutationsList, observer) {
+    for (const mutation of mutationsList) {
+      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
+        interceptGetUserMedia();
+      } else if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(node => {
+          if (node === navigator.mediaDevices) {
+            interceptGetUserMedia();
+          }
+        });
+      }
+    }
+  });
+
+  function interceptSpeechRecognition() {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
+      return;
+    }
+
+    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const SpeechRecognitionWrapper = function(...args) {
+      const recognizer = new OriginalSpeechRecognition(...args);
+      const originalStart = recognizer.start.bind(recognizer);
+
+      recognizer.start = function() {
+        requestMediaPermissions({ audio: true }).then(granted => {
+          if (granted) {
+            originalStart();
+          } else {
+            const errorEvent = new SpeechRecognitionErrorEvent('error');
+            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
+            recognizer.dispatchEvent(errorEvent);
+          }
+        });
+      };
+
+      return recognizer;
+    };
+
+    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
+    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
+
+    if (window.SpeechRecognition) {
+      window.SpeechRecognition = SpeechRecognitionWrapper;
+    }
+    if (window.webkitSpeechRecognition) {
+      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
+    }
+  }
+
+  interceptSpeechRecognition();
+
+  window.addEventListener('message', function(event) {
+    if (event.data) {
+      if (event.data.type === 'resolveMediaPermission') {
+        const { promiseId, granted } = event.data;
+        if (pendingMediaResolvers[promiseId]) {
+          pendingMediaResolvers[promiseId](granted);
+        }
+      }
+    }
+  });
+
+})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
+function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
+
+ Copyright The Closure Library Authors.
+ SPDX-License-Identifier: Apache-2.0
+*/
+function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
+let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
+null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
+c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
+"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
+Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
+(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
+url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
+</script><script data-bard-client-injected="true">((function(modelInformation) {
+  const originalFetch = window.fetch;
+  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
+  let googleLlmBaseApiUrls = [
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
+    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
+  ];
+  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+    );
+  });
+  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
+    googleLlmBaseApiUrls.push(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
+    );
+  });
+
+  const pendingFetchResolvers = {};
+  let nextPromiseId = 0;
+
+  function handleStringInput(input, optionsArgument) {
+    const actualUrl = input;
+    const fetchCallArgs = [actualUrl, optionsArgument];
+    const effectiveOptions = optionsArgument || {};
+    const bodyForApiKeyCheck = effectiveOptions.body;
+    const bodyForPostMessage = effectiveOptions.body;
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  function handleRequestInput(input, optionsArgument) {
+    const actualUrl = input.url;
+    const fetchCallArgs = [input, optionsArgument];
+    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (optionsArgument) {
+      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
+      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
+      if ('body' in optionsArgument) {
+        bodyForApiKeyCheck = optionsArgument.body;
+        bodyForPostMessage = optionsArgument.body;
+      } else {
+        bodyForApiKeyCheck = undefined;
+        bodyForPostMessage = input.body;
+      }
+    } else {
+      bodyForApiKeyCheck = undefined;
+      bodyForPostMessage = input.body;
+    }
+    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
+  }
+
+  window.fetch = function(input, optionsArgument) {
+    let actualUrl;
+    let fetchCallArgs;
+    let effectiveOptions = {};
+    let bodyForApiKeyCheck;
+    let bodyForPostMessage;
+
+    if (typeof input === 'string') {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
+    } else if (input instanceof Request) {
+      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
+    } else {
+      return originalFetch.apply(window, [input, optionsArgument]);
+    }
+
+    effectiveOptions.method = effectiveOptions.method || 'GET';
+    if (!effectiveOptions.headers) {
+      effectiveOptions.headers = new Headers();
+    }
+
+
+    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
+      let apiKeyIsNull = true;
+
+      const regex = new RegExp("models/([^:]+)");
+      const modelNameMatch = actualUrl.match(regex);
+      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
+
+
+      try {
+        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
+        const apiKeyParam = urlObject.searchParams.get('key');
+        if (apiKeyParam) {
+          apiKeyIsNull = false;
+        }
+      } catch (e) {
+        // Continue checks even if URL parsing fails
+      }
+
+      if (apiKeyIsNull && effectiveOptions.headers) {
+        const h = new Headers(effectiveOptions.headers);
+        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
+        if (apiKeyHeaderValue) {
+          apiKeyIsNull = false;
+          return originalFetch.apply(window, fetchCallArgs);
+        }
+      }
+
+      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
+        try {
+          const bodyData = JSON.parse(bodyForApiKeyCheck);
+          if (bodyData && bodyData.apiKey) {
+            apiKeyIsNull = false;
+            return originalFetch.apply(window, fetchCallArgs);
+          }
+        } catch (e) {
+          // Ignore JSON parsing errors
+        }
+      }
+
+      if(apiKeyIsNull) {
+        const promiseId = nextPromiseId++;
+        const promise = new Promise((resolve) => {
+          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
+            delete pendingFetchResolvers[promiseId];
+            resolve(resolvedResponse);
+          };
+        });
+
+        let serializedBodyForPostMessage;
+        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
+            serializedBodyForPostMessage = bodyForPostMessage;
+        } else if (bodyForPostMessage instanceof ReadableStream) {
+            serializedBodyForPostMessage = null;
+        } else {
+            try {
+                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
+            } catch (e) {
+                serializedBodyForPostMessage = null;
+            }
+        }
+
+        const messageOptions = {
+            method: effectiveOptions.method,
+            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
+            body: serializedBodyForPostMessage
+        };
+
+        window.parent.postMessage({
+          type: 'requestFetch',
+          url: actualUrl,
+          modelName: modelName,
+          options: messageOptions,
+          promiseId: promiseId,
+        }, '*');
+
+        return promise;
+      }
+      return originalFetch.apply(window, fetchCallArgs);
+    }
+    return originalFetch.apply(window, fetchCallArgs);
+  };
+
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'resolveFetch') {
+      const { promiseId, response } = event.data;
+      if (pendingFetchResolvers[promiseId]) {
+        try {
+          const reconstructedResponse = new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: new Headers(response.headers),
+          });
+          pendingFetchResolvers[promiseId](reconstructedResponse);
+        } catch (error) {
+          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
+        }
+      }
+    }
+  });
+
+}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function() {
+  function normalizeSlug(str) {
+    try {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^p{L}p{N}s_-]/gu, '')
+        .replace(/s+/g, '-');
+    } catch (e) {
+      return str
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9s_-]/g, '')
+        .replace(/s+/g, '-');
+    }
+  }
+
+  function findTargetElement(hash) {
+    if (!hash || hash === '#') {
+      return null;
+    }
+    const rawId = hash.startsWith('#') ? hash.slice(1) : hash;
+    let decodedId = rawId;
+    try {
+      decodedId = decodeURIComponent(rawId);
+    } catch (e) {
+      // Ignore URI malformed errors.
+    }
+
+    // 1. Direct ID match (raw and decoded).
+    let target = document.getElementById(rawId) || document.getElementById(decodedId);
+    if (target) {
+      return target;
+    }
+
+    // 2. Name attribute match (<a name="...">).
+    try {
+      if (typeof CSS !== 'undefined' && CSS.escape) {
+        target =
+          document.querySelector('[name="' + CSS.escape(rawId) + '"]') ||
+          document.querySelector('[name="' + CSS.escape(decodedId) + '"]');
+      } else {
+        const namedElements = document.getElementsByName(rawId);
+        if (namedElements && namedElements.length > 0) {
+          return namedElements[0];
+        }
+      }
+    } catch (e) {
+      // Ignore querySelector syntax errors.
+    }
+    if (target) {
+      return target;
+    }
+
+    // 3. Match heading text by slug (for Markdown TOCs where headings lack explicit IDs).
+    const targetSlug = normalizeSlug(decodedId);
+    if (targetSlug) {
+      for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
+        if (normalizeSlug(heading.textContent || '') === targetSlug) {
+          return heading;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    const anchor = target && typeof target.closest === 'function' ? target.closest('a') : null;
+    if (!anchor) {
+      return;
+    }
+
+    const href = anchor.getAttribute('href');
+    if (
+      !href ||
+      href.trim().toLowerCase().startsWith('javascript:') ||
+      anchor.hasAttribute('download')
+    ) {
+      return;
+    }
+
+    // Check if the link is an in-page hash / anchor link.
+    if (href.startsWith('#')) {
+      event.preventDefault();
+      const targetElement = findTargetElement(href);
+      if (targetElement) {
+        targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+      }
+      return;
+    }
+
+    // Check if the URL has the same origin/pathname but with a hash.
+    try {
+      const url = new URL(anchor.href, window.location.href);
+      if (
+        url.hash &&
+        url.origin === window.location.origin &&
+        url.pathname === window.location.pathname
+      ) {
+        event.preventDefault();
+        const targetElement = findTargetElement(url.hash);
+        if (targetElement) {
+          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+        return;
+      }
+    } catch (e) {
+      // Fall through if URL parsing fails.
+    }
+
+    // For all external or full navigation links, prevent iframe-level navigation
+    // (which breaks in AGSA WebView or sandboxed iframes) and ensure they open
+    // safely in a new tab/window.
+    if (anchor.target !== '_blank') {
+      event.preventDefault();
+      window.open(anchor.href, '_blank', 'noopener,noreferrer');
+    }
+  }, {capture: true});
+})();</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
+</script><script data-bard-client-injected="true">(function() {
+  const originalConsoleLog = console.log;
+  const originalConsoleError = console.error;
+
+    /**
+   * Normalizes an error event or a promise rejection reason into a structured error object.
+   * @param {*} errorEventOrReason The error object or reason.
+   * @return {object} Structured error data { message, name, stack }.
+   */
+  function getErrorObject(errorEventOrReason) {
+    if (errorEventOrReason instanceof Error) {
+      return {
+        message: errorEventOrReason.message,
+        name: errorEventOrReason.name,
+        stack: errorEventOrReason.stack,
+      };
+    }
+    // Fallback for non-Error objects.
+    try {
+      return {
+        message: JSON.stringify(errorEventOrReason),
+        name: 'UnknownErrorType',
+        stack: null,
+      };
+    } catch (e) {
+      return {
+        message: String(errorEventOrReason),
+        name: 'UnknownErrorTypeNonStringifiable',
+        stack: null,
+      };
+    }
+  }
+
+  /**
+   * Converts an array of arguments (from log/error) into a single string.
+   * Handles Error objects specially to include their message and stack.
+   * @param {Array<*>} args - Arguments passed to console methods.
+   * @return {string} A string representation of the arguments.
+   */
+  function stringifyArgs(args) {
+    return args
+      .map((arg) => {
+        if (arg instanceof Error) {
+          const {message, stack} = arg;
+          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
+        }
+        if (typeof arg === 'object' && arg !== null) {
+          try {
+            return JSON.stringify(arg);
+          } catch (error) {
+            return '[Circular Object]';
+          }
+        } else {
+          return String(arg);
+        }
+      })
+      .join(' ');
+  }
+
+  console.log = function(...args) {
+    const logString = stringifyArgs(args);
+    window.parent.postMessage({ type: 'log', message: logString }, '*');
+    originalConsoleLog.apply(console, args);
+  };
+
+  console.error = function(...args) {
+    let errorData;
+    if (args.length > 0 && args[0] instanceof Error) {
+      const err = args[0];
+      // If the first arg is an Error, capture its details.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        ...getErrorObject(err),
+        rawArgsString: stringifyArgs(args.slice(1)),
+        timestamp: new Date().toISOString(),
+      };
+    } else {
+      // If not an Error object, treat all args as a general error message.
+      errorData = {
+        type: 'error',
+        source: 'CONSOLE_ERROR',
+        message: stringifyArgs(args),
+        name: 'ConsoleLoggedError',
+        stack: null,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    window.parent.postMessage(errorData, '*');
+    originalConsoleError.apply(console, args);
+  };
+
+  // Listen for global unhandled synchronous errors.
+  window.addEventListener('error', function(event) {
+    const errorDetails = event.error ? getErrorObject(event.error) : {
+      message: event.message,
+      name: 'GlobalError',
+      stack: null,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    };
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'global',
+      ...errorDetails,
+      message: errorDetails.message || event.message,
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+  // Listen for unhandled promise rejections (asynchronous errors).
+  window.addEventListener('unhandledrejection', function(event) {
+    const errorDetails = getErrorObject(event.reason);
+
+    window.parent.postMessage({
+      type: 'error',
+      source: 'unhandledrejection',
+      ...errorDetails,
+      message: errorDetails.message || 'Unhandled Promise Rejection',
+      timestamp: new Date().toISOString(),
+    }, '*');
+  });
+
+})();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hộp Quà Bong Bóng Yêu Thương ✨</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand & Comfortaa cho phong cách dễ thương, tròn trịa -->
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&amp;family=Quicksand:wght@500;600;700&amp;display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                        display: ['Comfortaa', 'cursive'],
+                    },
+                    colors: {
+                        pastel: {
+                            bg1: '#FFF5F7',
+                            bg2: '#F3E8FF',
+                            bg3: '#E0F2FE',
+                            pink: '#FFB5C2',
+                            pinkDark: '#FF8DA1',
+                            lavender: '#D8B4F8',
+                            lavenderDark: '#B784F0',
+                            mint: '#A8E6CF',
+                            mintDark: '#76D7B4',
+                            blue: '#A0C4FF',
+                            blueDark: '#74A8FF',
+                            peach: '#FFD3B6',
+                            peachDark: '#FFB085',
+                            yellow: '#FDFFB6',
+                            text: '#5A4A66'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: #5A4A66;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #FFF0F5 0%, #F3E8FF 50%, #E0F7FA 100%);
+            min-height: 100vh;
+        }
+
+        /* Hiệu ứng nền mây & sao lấp lánh */
+        .dreamy-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.6;
+            animation: floatSlow 14s infinite ease-in-out alternate;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -40px) scale(1.12); }
+        }
+
+        /* ================= HỘP QUÀ 3D PASTEL ================= */
+        .gift-container {
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-container:hover {
+            transform: scale(1.04);
+        }
+
+        .gift-bounce {
+            animation: giftShake 2.4s infinite ease-in-out;
+            transform-origin: bottom center;
+        }
+
+        @keyframes giftShake {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+            15% { transform: translateY(-14px) rotate(-4deg) scale(0.96, 1.05); }
+            30% { transform: translateY(0) rotate(4deg) scale(1.04, 0.96); }
+            45% { transform: translateY(-7px) rotate(-2deg) scale(0.98, 1.02); }
+            60% { transform: translateY(0) rotate(0deg) scale(1, 1); }
+        }
+
+        .gift-lid {
+            transition: all 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: top right;
+        }
+
+        .gift-opened .gift-lid {
+            transform: translateY(-130px) translateX(45px) rotate(28deg) scale(0.9);
+            opacity: 0;
+        }
+
+        .gift-opened .gift-body {
+            transform: scale(0.88) translateY(30px);
+            opacity: 0;
+            transition: all 0.9s ease 0.25s;
+        }
+
+        .gift-glow {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255,181,194,0.65) 0%, rgba(216,180,248,0.3) 50%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.25); opacity: 1; }
+        }
+
+        /* ================= BONG BÓNG 3D PASTEL ================= */
+        .wish-bubble {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                inset -10px -10px 24px rgba(255, 255, 255, 0.85),
+                inset 10px 10px 20px rgba(255, 255, 255, 0.6),
+                0 12px 28px -6px rgba(149, 117, 205, 0.28);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+            will-change: transform, left, top;
+            z-index: 20;
+        }
+
+        .wish-bubble:hover {
+            transform: scale(1.12) !important;
+            box-shadow: 
+                inset -10px -10px 26px rgba(255, 255, 255, 0.95),
+                0 16px 32px -4px rgba(255, 141, 161, 0.45);
+            z-index: 30;
+        }
+
+        /* Vệt sáng bóng gương trên bong bóng */
+        .wish-bubble::before {
+            content: '';
+            position: absolute;
+            top: 14%;
+            left: 18%;
+            width: 26%;
+            height: 14%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            transform: rotate(-35deg);
+            pointer-events: none;
+        }
+
+        .wish-bubble::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 12%;
+            width: 8%;
+            height: 6%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            transform: rotate(-35deg);
+            pointer-events: none;
+        }
+
+        /* Nút thắt đuôi bóng bay nhỏ xinh bên dưới */
+        .bubble-knot {
+            position: absolute;
+            bottom: -7px;
+            width: 12px;
+            height: 8px;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .bubble-string {
+            position: absolute;
+            bottom: -36px;
+            width: 1.5px;
+            height: 30px;
+            background: rgba(160, 140, 180, 0.35);
+            transform-origin: top center;
+            animation: stringWave 3s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes stringWave {
+            0%, 100% { transform: rotate(-6deg); }
+            50% { transform: rotate(6deg); }
+        }
+
+        /* Hiệu ứng khi bóng xuất hiện từ hộp quà */
+        @keyframes spawnFromBox {
+            0% {
+                transform: translate(-50%, -50%) scale(0.1);
+                opacity: 0;
+            }
+            70% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Hiệu ứng bóng vỡ (Pop) */
+        .bubble-popping {
+            animation: popBurst 0.42s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+            pointer-events: none !important;
+        }
+
+        @keyframes popBurst {
+            0% { transform: scale(1); opacity: 1; }
+            40% { transform: scale(1.38); opacity: 0.9; filter: brightness(1.2); }
+            100% { transform: scale(1.75); opacity: 0; }
+        }
+
+        /* ================= THẺ POLAROID TRANG TỔNG HỢP ================= */
+        .polaroid-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            box-shadow: 0 12px 30px -8px rgba(130, 105, 160, 0.15);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .polaroid-card:hover {
+            transform: translateY(-8px) rotate(0deg) !important;
+            box-shadow: 0 20px 38px -8px rgba(255, 141, 161, 0.28);
+        }
+
+        /* Thanh cuộn tùy chỉnh dịu mắt */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 240, 245, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FFB5C2;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF8DA1;
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            animation: modalPop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.8) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Quicksand, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.bottom-4{bottom:1rem}.bottom-5{bottom:1.25rem}.bottom-\[-10\%\]{bottom:-10%}.bottom-\[20\%\]{bottom:20%}.left-0{left:0px}.left-1\/2{left:50%}.left-3{left:0.75rem}.left-\[-5\%\]{left:-5%}.left-\[12\%\]{left:12%}.right-4{right:1rem}.right-\[-5\%\]{right:-5%}.right-\[15\%\]{right:15%}.top-0{top:0px}.top-3{top:0.75rem}.top-\[-5\%\]{top:-5%}.top-\[35\%\]{top:35%}.z-10{z-index:10}.z-20{z-index:20}.z-30{z-index:30}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.-mb-3{margin-bottom:-0.75rem}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-4{margin-top:1rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.aspect-\[4\/3\]{aspect-ratio:4/3}.h-12{height:3rem}.h-2\.5{height:0.625rem}.h-3{height:0.75rem}.h-4{height:1rem}.h-48{height:12rem}.h-64{height:16rem}.h-7{height:1.75rem}.h-72{height:18rem}.h-8{height:2rem}.h-80{height:20rem}.h-9{height:2.25rem}.h-96{height:24rem}.h-\[calc\(100vh-145px\)\]{height:calc(100vh - 145px)}.h-auto{height:auto}.h-full{height:100%}.max-h-60{max-height:15rem}.max-h-\[90vh\]{max-height:90vh}.min-h-screen{min-height:100vh}.w-16{width:4rem}.w-2\.5{width:0.625rem}.w-4{width:1rem}.w-44{width:11rem}.w-48{width:12rem}.w-52{width:13rem}.w-64{width:16rem}.w-7{width:1.75rem}.w-72{width:18rem}.w-8{width:2rem}.w-80{width:20rem}.w-9{width:2.25rem}.w-96{width:24rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-6xl{max-width:72rem}.max-w-lg{max-width:32rem}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.flex-\[2\]{flex:2}.shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-y-4{--tw-translate-y:1rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-110{--tw-scale-x:1.1;--tw-scale-y:1.1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}@keyframes ping{75%, 100%{transform:scale(2);opacity:0}}.animate-ping{animation:ping 1s cubic-bezier(0, 0, 0.2, 1) infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.select-all{-webkit-user-select:all;user-select:all}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-visible{overflow:visible}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-gray-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-pink-100{--tw-border-opacity:1;border-color:rgb(252 231 243 / var(--tw-border-opacity, 1))}.border-pink-100\/80{border-color:rgb(252 231 243 / 0.8)}.border-pink-200{--tw-border-opacity:1;border-color:rgb(251 207 232 / var(--tw-border-opacity, 1))}.border-purple-100{--tw-border-opacity:1;border-color:rgb(243 232 255 / var(--tw-border-opacity, 1))}.border-purple-200{--tw-border-opacity:1;border-color:rgb(233 213 255 / var(--tw-border-opacity, 1))}.border-white{--tw-border-opacity:1;border-color:rgb(255 255 255 / var(--tw-border-opacity, 1))}.bg-\[\#A0C4FF\]{--tw-bg-opacity:1;background-color:rgb(160 196 255 / var(--tw-bg-opacity, 1))}.bg-\[\#A8E6CF\]{--tw-bg-opacity:1;background-color:rgb(168 230 207 / var(--tw-bg-opacity, 1))}.bg-\[\#D8B4F8\]{--tw-bg-opacity:1;background-color:rgb(216 180 248 / var(--tw-bg-opacity, 1))}.bg-\[\#FDF0A6\]{--tw-bg-opacity:1;background-color:rgb(253 240 166 / var(--tw-bg-opacity, 1))}.bg-\[\#FFB5C2\]{--tw-bg-opacity:1;background-color:rgb(255 181 194 / var(--tw-bg-opacity, 1))}.bg-\[\#FFD3B6\]{--tw-bg-opacity:1;background-color:rgb(255 211 182 / var(--tw-bg-opacity, 1))}.bg-amber-400{--tw-bg-opacity:1;background-color:rgb(251 191 36 / var(--tw-bg-opacity, 1))}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-pastel-text{--tw-bg-opacity:1;background-color:rgb(90 74 102 / var(--tw-bg-opacity, 1))}.bg-pink-100{--tw-bg-opacity:1;background-color:rgb(252 231 243 / var(--tw-bg-opacity, 1))}.bg-pink-100\/90{background-color:rgb(252 231 243 / 0.9)}.bg-pink-200{--tw-bg-opacity:1;background-color:rgb(251 207 232 / var(--tw-bg-opacity, 1))}.bg-pink-300{--tw-bg-opacity:1;background-color:rgb(249 168 212 / var(--tw-bg-opacity, 1))}.bg-pink-50{--tw-bg-opacity:1;background-color:rgb(253 242 248 / var(--tw-bg-opacity, 1))}.bg-pink-50\/50{background-color:rgb(253 242 248 / 0.5)}.bg-pink-50\/60{background-color:rgb(253 242 248 / 0.6)}.bg-purple-100{--tw-bg-opacity:1;background-color:rgb(243 232 255 / var(--tw-bg-opacity, 1))}.bg-purple-200{--tw-bg-opacity:1;background-color:rgb(233 213 255 / var(--tw-bg-opacity, 1))}.bg-purple-50{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.bg-purple-50\/70{background-color:rgb(250 245 255 / 0.7)}.bg-purple-500{--tw-bg-opacity:1;background-color:rgb(168 85 247 / var(--tw-bg-opacity, 1))}.bg-purple-950\/30{background-color:rgb(59 7 100 / 0.3)}.bg-purple-950\/35{background-color:rgb(59 7 100 / 0.35)}.bg-purple-950\/40{background-color:rgb(59 7 100 / 0.4)}.bg-teal-100{--tw-bg-opacity:1;background-color:rgb(204 251 241 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/75{background-color:rgb(255 255 255 / 0.75)}.bg-white\/80{background-color:rgb(255 255 255 / 0.8)}.bg-white\/85{background-color:rgb(255 255 255 / 0.85)}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-white\/95{background-color:rgb(255 255 255 / 0.95)}.bg-pink-400{--tw-bg-opacity:1;background-color:rgb(244 114 182 / var(--tw-bg-opacity, 1))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-pink-100{--tw-gradient-from:#fce7f3 var(--tw-gradient-from-position);--tw-gradient-to:rgb(252 231 243 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-pink-300{--tw-gradient-from:#f9a8d4 var(--tw-gradient-from-position);--tw-gradient-to:rgb(249 168 212 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-pink-400{--tw-gradient-from:#f472b6 var(--tw-gradient-from-position);--tw-gradient-to:rgb(244 114 182 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-pink-50\/90{--tw-gradient-from:rgb(253 242 248 / 0.9) var(--tw-gradient-from-position);--tw-gradient-to:rgb(253 242 248 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-pink-500{--tw-gradient-from:#ec4899 var(--tw-gradient-from-position);--tw-gradient-to:rgb(236 72 153 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-teal-400{--tw-gradient-from:#2dd4bf var(--tw-gradient-from-position);--tw-gradient-to:rgb(45 212 191 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-blue-400{--tw-gradient-to:rgb(96 165 250 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #60a5fa var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-purple-100{--tw-gradient-to:rgb(243 232 255 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #f3e8ff var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-purple-300{--tw-gradient-to:rgb(216 180 254 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #d8b4fe var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-purple-400{--tw-gradient-to:rgb(192 132 252 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #c084fc var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-purple-500{--tw-gradient-to:rgb(168 85 247 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #a855f7 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-blue-100{--tw-gradient-to:#dbeafe var(--tw-gradient-to-position)}.to-blue-300{--tw-gradient-to:#93c5fd var(--tw-gradient-to-position)}.to-blue-400{--tw-gradient-to:#60a5fa var(--tw-gradient-to-position)}.to-indigo-400{--tw-gradient-to:#818cf8 var(--tw-gradient-to-position)}.to-purple-100{--tw-gradient-to:#f3e8ff var(--tw-gradient-to-position)}.to-purple-400{--tw-gradient-to:#c084fc var(--tw-gradient-to-position)}.to-purple-50\/90{--tw-gradient-to:rgb(250 245 255 / 0.9) var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.object-cover{object-fit:cover}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-3\.5{padding:0.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.pb-1{padding-bottom:0.25rem}.pb-12{padding-bottom:3rem}.pb-2{padding-bottom:0.5rem}.pb-3{padding-bottom:0.75rem}.pr-1{padding-right:0.25rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.pt-4{padding-top:1rem}.text-center{text-align:center}.font-display{font-family:Comfortaa, cursive}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[11px\]{font-size:11px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-wide{letter-spacing:0.025em}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-pastel-text{--tw-text-opacity:1;color:rgb(90 74 102 / var(--tw-text-opacity, 1))}.text-pink-500{--tw-text-opacity:1;color:rgb(236 72 153 / var(--tw-text-opacity, 1))}.text-pink-600{--tw-text-opacity:1;color:rgb(219 39 119 / var(--tw-text-opacity, 1))}.text-pink-700{--tw-text-opacity:1;color:rgb(190 24 93 / var(--tw-text-opacity, 1))}.text-purple-500{--tw-text-opacity:1;color:rgb(168 85 247 / var(--tw-text-opacity, 1))}.text-purple-600{--tw-text-opacity:1;color:rgb(147 51 234 / var(--tw-text-opacity, 1))}.text-purple-700{--tw-text-opacity:1;color:rgb(126 34 206 / var(--tw-text-opacity, 1))}.text-purple-700\/70{color:rgb(126 34 206 / 0.7)}.text-purple-700\/80{color:rgb(126 34 206 / 0.8)}.text-purple-800{--tw-text-opacity:1;color:rgb(107 33 168 / var(--tw-text-opacity, 1))}.text-purple-800\/80{color:rgb(107 33 168 / 0.8)}.text-purple-900\/70{color:rgb(88 28 135 / 0.7)}.text-purple-900\/75{color:rgb(88 28 135 / 0.75)}.text-purple-900\/80{color:rgb(88 28 135 / 0.8)}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.accent-pink-500{accent-color:#ec4899}.opacity-0{opacity:0}.opacity-25{opacity:0.25}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-2{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-pink-400{--tw-ring-opacity:1;--tw-ring-color:rgb(244 114 182 / var(--tw-ring-opacity, 1))}.ring-offset-2{--tw-ring-offset-width:2px}.drop-shadow-md{--tw-drop-shadow:drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.drop-shadow-xl{--tw-drop-shadow:drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-300{transition-duration:300ms}.duration-500{transition-duration:500ms}.selection\:bg-pastel-pink *::selection{--tw-bg-opacity:1;background-color:rgb(255 181 194 / var(--tw-bg-opacity, 1))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.selection\:bg-pastel-pink::selection{--tw-bg-opacity:1;background-color:rgb(255 181 194 / var(--tw-bg-opacity, 1))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-gray-200:hover{--tw-bg-opacity:1;background-color:rgb(229 231 235 / var(--tw-bg-opacity, 1))}.hover\:bg-pink-100:hover{--tw-bg-opacity:1;background-color:rgb(252 231 243 / var(--tw-bg-opacity, 1))}.hover\:bg-pink-200:hover{--tw-bg-opacity:1;background-color:rgb(251 207 232 / var(--tw-bg-opacity, 1))}.hover\:bg-pink-50:hover{--tw-bg-opacity:1;background-color:rgb(253 242 248 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-200:hover{--tw-bg-opacity:1;background-color:rgb(233 213 255 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-50:hover{--tw-bg-opacity:1;background-color:rgb(250 245 255 / var(--tw-bg-opacity, 1))}.hover\:bg-purple-600:hover{--tw-bg-opacity:1;background-color:rgb(147 51 234 / var(--tw-bg-opacity, 1))}.hover\:bg-white:hover{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.hover\:from-pink-500:hover{--tw-gradient-from:#ec4899 var(--tw-gradient-from-position);--tw-gradient-to:rgb(236 72 153 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.hover\:from-teal-500:hover{--tw-gradient-from:#14b8a6 var(--tw-gradient-from-position);--tw-gradient-to:rgb(20 184 166 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.hover\:to-blue-500:hover{--tw-gradient-to:#3b82f6 var(--tw-gradient-to-position)}.hover\:to-purple-500:hover{--tw-gradient-to:#a855f7 var(--tw-gradient-to-position)}.hover\:text-pink-500:hover{--tw-text-opacity:1;color:rgb(236 72 153 / var(--tw-text-opacity, 1))}.hover\:opacity-90:hover{opacity:0.9}.hover\:opacity-95:hover{opacity:0.95}.hover\:shadow-lg:hover{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.hover\:shadow-xl:hover{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-pink-300:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(249 168 212 / var(--tw-ring-opacity, 1))}.active\:scale-90:active{--tw-scale-x:.9;--tw-scale-y:.9;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:rotate-12{--tw-rotate:12deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@media (min-width: 640px){.sm\:inline{display:inline}.sm\:h-10{height:2.5rem}.sm\:h-56{height:14rem}.sm\:w-10{width:2.5rem}.sm\:w-52{width:13rem}.sm\:w-56{width:14rem}.sm\:w-60{width:15rem}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:gap-2{gap:0.5rem}.sm\:p-4{padding:1rem}.sm\:p-5{padding:1.25rem}.sm\:p-6{padding:1.5rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 768px){.md\:inline{display:inline}}@media (min-width: 1024px){.lg\:inline{display:inline}.lg\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}</style></head>
+<body class="relative min-h-screen flex flex-col justify-between selection:bg-pastel-pink selection:text-white">
+
+    <!-- NỀN MÂY PASTEL MỘNG MƠ -->
+    <div class="dreamy-bg">
+        <div class="bg-blob w-80 h-80 bg-pink-200 top-[-5%] left-[-5%]"></div>
+        <div class="bg-blob w-96 h-96 bg-purple-200 bottom-[-10%] right-[-5%]" style="animation-delay: -5s;"></div>
+        <div class="bg-blob w-72 h-72 bg-teal-100 top-[35%] right-[15%]" style="animation-delay: -9s;"></div>
+        <div class="bg-blob w-64 h-64 bg-blue-100 bottom-[20%] left-[12%]" style="animation-delay: -3s;"></div>
+    </div>
+
+    <!-- CANVAS HẠT PHÁO GIẤY & BÓNG VỠ -->
+    <canvas id="fx-canvas" class="fixed inset-0 pointer-events-none z-50" width="1066" height="931"></canvas>
+
+    <!-- THANH ĐIỀU KHIỂN TRÊN CÙNG (HEADER) -->
+    <header class="relative z-40 w-full max-w-6xl mx-auto px-4 pt-4 pb-2 flex flex-wrap items-center justify-between gap-2">
+        <!-- Logo & Trạng thái Phòng Đám Mây -->
+        <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 bg-white/80 backdrop-blur-md px-3.5 py-2 rounded-full shadow-sm border border-white">
+                <span class="text-lg sm:text-xl animate-bounce">🎁</span>
+                <span class="font-display font-bold text-xs sm:text-sm bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 bg-clip-text text-transparent">
+                    SweetBox
+                </span>
+            </div>
+
+            <!-- Nút Mã Hộp Quà & Trạng thái Cloud Sync -->
+            <button id="room-badge-btn" onclick="openShareRoomModal()" title="Đổi Mã Hộp Quà hoặc Chia sẻ Link cho bạn bè" class="flex items-center gap-2 bg-white/85 hover:bg-white backdrop-blur-md px-3.5 py-2 rounded-full shadow-sm border border-pink-100 transition-all active:scale-95">
+                <span id="cloud-status-dot" class="w-2.5 h-2.5 rounded-full bg-pink-400"></span>
+                <span class="text-xs font-bold text-pastel-text">
+                    Mã hộp: <span id="current-room-label" class="text-pink-500 font-extrabold uppercase">CHUNG</span>
+                </span>
+                <i class="fa-solid fa-share-nodes text-xs text-purple-500"></i>
+            </button>
+        </div>
+
+        <!-- Bộ đếm tiến độ bong bóng (Chỉ hiện ở màn hình 2) -->
+        <div id="progress-badge" class="hidden items-center gap-2 bg-white/85 backdrop-blur-md px-4 py-2 rounded-full shadow-sm border border-pink-100 transition-all">
+            <span class="text-base">🎈</span>
+            <span class="font-bold text-xs sm:text-sm text-pastel-text">
+                Đã mở: <span id="opened-count" class="text-pink-500 font-extrabold">0</span> / <span id="total-count">6</span>
+            </span>
+        </div>
+
+        <!-- Cụm nút công cụ góc phải -->
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            <!-- Nút Gửi lời chúc mới vào hộp chung -->
+            <button id="header-customize-btn" onclick="openCustomizeModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm px-3.5 py-2 rounded-full shadow-md hover:shadow-lg transition-all active:scale-95">
+                <i class="fa-solid fa-plus"></i>
+                <span>Gửi lời chúc mới</span>
+                <span class="hidden sm:inline">🎈</span>
+            </button>
+
+            <!-- Nút Chia sẻ Link Mời Bạn Bè -->
+            <button id="header-share-btn" onclick="openShareRoomModal()" title="Lấy link gửi cho mọi người cùng thêm lời chúc" class="flex items-center gap-1.5 bg-white/90 hover:bg-white text-purple-600 border border-purple-200 font-bold text-xs sm:text-sm px-3 py-2 rounded-full shadow-sm hover:shadow-md transition-all active:scale-95">
+                <i class="fa-solid fa-link"></i>
+                <span class="hidden lg:inline">Chia sẻ Link</span>
+            </button>
+
+            <!-- Nút Xuất file HTML độc lập -->
+            <button id="header-export-btn" onclick="openExportDialog()" title="Tải về file HTML chứa sẵn toàn bộ lời chúc &amp; ảnh" class="flex items-center gap-1.5 bg-gradient-to-r from-teal-400 to-blue-400 hover:from-teal-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm px-3 py-2 rounded-full shadow-md hover:shadow-lg transition-all active:scale-95">
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span class="hidden md:inline">Xuất HTML</span>
+            </button>
+
+            <!-- Nút bật/tắt âm thanh -->
+            <button id="sound-btn" onclick="toggleSound()" title="Bật/Tắt âm thanh" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/80 backdrop-blur-md border border-white shadow-sm flex items-center justify-center text-pink-500 hover:bg-pink-50 transition-all active:scale-90">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-sm sm:text-base"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= MÀN HÌNH 1: HỘP QUÀ BÍ MẬT ================= -->
+    <main id="stage-box" class="relative z-20 flex-1 flex flex-col items-center justify-center px-4 text-center select-none">
+        <div class="mb-6 space-y-2 max-w-md mx-auto">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-pink-100/90 text-pink-600 font-bold text-xs tracking-wide uppercase shadow-sm">
+                <span>✨ Hộp quà trực tuyến thời gian thực ✨</span>
+            </span>
+            <h1 class="font-display text-2xl sm:text-4xl font-bold text-pastel-text leading-tight">
+                Một Hộp Quà Chứa Đầy Yêu Thương
+            </h1>
+            <p class="text-sm sm:text-base text-purple-900/70 font-medium">
+                Bên trong đang có <span id="intro-bubble-count" class="font-bold text-pink-500">6</span> bong bóng lời chúc từ mọi người gửi tặng!
+            </p>
+        </div>
+
+        <!-- Hộp quà 3D SVG Tương Tác -->
+        <div id="gift-box-wrapper" onclick="openGiftBox()" class="gift-container relative my-4 p-6">
+            <div class="gift-glow"></div>
+            
+            <div id="gift-anim-box" class="gift-bounce relative w-48 h-48 sm:w-56 sm:h-56 mx-auto flex flex-col items-center justify-end">
+                
+                <!-- Nắp hộp quà + Nơ Ruy Băng -->
+                <div class="gift-lid relative z-20 w-52 sm:w-60 -mb-3">
+                    <svg viewBox="0 0 240 95" class="w-full h-auto drop-shadow-md overflow-visible">
+                        <!-- Nơ trái & phải -->
+                        <path d="M120 42 C90 5, 45 15, 65 45 C80 62, 110 48, 120 42 Z" fill="#FF8DA1" stroke="#FFF" stroke-width="3"></path>
+                        <path d="M120 42 C150 5, 195 15, 175 45 C160 62, 130 48, 120 42 Z" fill="#FF8DA1" stroke="#FFF" stroke-width="3"></path>
+                        <!-- Dải ruy băng rủ xuống -->
+                        <path d="M112 44 L92 72 L106 75 L118 48 Z" fill="#FF708A"></path>
+                        <path d="M128 44 L148 72 L134 75 L122 48 Z" fill="#FF708A"></path>
+                        <!-- Tâm nút thắt nơ -->
+                        <ellipse cx="120" cy="42" rx="13" ry="11" fill="#FFB5C2" stroke="#FFF" stroke-width="3"></ellipse>
+                        <!-- Thân nắp hộp -->
+                        <rect x="10" y="45" width="220" height="44" rx="12" fill="#FFB5C2" stroke="#FFF" stroke-width="4"></rect>
+                        <!-- Ruy băng dọc nắp hộp -->
+                        <rect x="102" y="45" width="36" height="44" fill="#FF8DA1"></rect>
+                        <!-- Ánh sáng bóng trên nắp -->
+                        <rect x="24" y="53" width="60" height="8" rx="4" fill="#FFF" opacity="0.6"></rect>
+                    </svg>
+                </div>
+
+                <!-- Thân hộp quà -->
+                <div class="gift-body relative z-10 w-44 sm:w-52">
+                    <svg viewBox="0 0 200 155" class="w-full h-auto drop-shadow-xl">
+                        <!-- Thân chính -->
+                        <rect x="10" y="5" width="180" height="142" rx="16" fill="#FCE7F3" stroke="#FFF" stroke-width="4"></rect>
+                        <!-- Họa tiết chấm bi pastel trên hộp -->
+                        <circle cx="45" cy="40" r="8" fill="#FBCFE8"></circle>
+                        <circle cx="155" cy="45" r="10" fill="#E9D5FF"></circle>
+                        <circle cx="55" cy="105" r="11" fill="#DDD6FE"></circle>
+                        <circle cx="150" cy="110" r="8" fill="#FBCFE8"></circle>
+                        <!-- Ruy băng dọc thân hộp -->
+                        <rect x="83" y="5" width="34" height="142" fill="#FF8DA1"></rect>
+                        <!-- Ruy băng ngang thân hộp -->
+                        <rect x="10" y="60" width="180" height="30" fill="#FFB5C2"></rect>
+                        <!-- Điểm giao ruy băng -->
+                        <rect x="83" y="60" width="34" height="30" fill="#FF758F"></rect>
+                        <!-- Khuôn mặt cute trên hộp quà -->
+                        <circle cx="62" cy="50" r="4.5" fill="#5A4A66"></circle>
+                        <circle cx="138" cy="50" r="4.5" fill="#5A4A66"></circle>
+                        <ellipse cx="52" cy="56" rx="6" ry="3.5" fill="#FF8DA1" opacity="0.6"></ellipse>
+                        <ellipse cx="148" cy="56" rx="6" ry="3.5" fill="#FF8DA1" opacity="0.6"></ellipse>
+                        <path d="M93 52 Q100 59 107 52" fill="none" stroke="#5A4A66" stroke-width="3" stroke-linecap="round"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lời nhắc chạm mở hộp & Nút thả nhanh lời chúc -->
+        <div class="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button onclick="openGiftBox()" class="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/95 hover:bg-white text-pink-500 font-bold text-sm sm:text-base shadow-lg hover:shadow-xl border-2 border-pink-200 transition-all active:scale-95">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-300 opacity-25"></span>
+                <span>🎁 Chạm mở hộp quà ngay</span>
+                <span class="text-lg group-hover:rotate-12 transition-transform">✨</span>
+            </button>
+
+            <button id="box-add-wish-btn" onclick="openCustomizeModal()" class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all active:scale-95">
+                <i class="fa-solid fa-plus"></i>
+                <span>Thả thêm bong bóng lời chúc 🎈</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- ================= MÀN HÌNH 2: BONG BÓNG BAY LƠ LỬNG ================= -->
+    <section id="stage-bubbles" class="hidden relative z-20 flex-1 w-full overflow-hidden select-none">
+        <!-- Hướng dẫn nhỏ phía trên -->
+        <div class="relative z-30 text-center pt-2 px-4 pointer-events-none">
+            <p class="inline-block bg-white/75 backdrop-blur-md px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold text-purple-800 shadow-sm border border-white">
+                👆 Chạm vào từng bong bóng để xem lời chúc và làm nổ bóng nhé!
+            </p>
+        </div>
+
+        <!-- Vùng chứa bong bóng bay -->
+        <div id="bubble-arena" class="relative w-full h-[calc(100vh-145px)] overflow-hidden">
+            <!-- Bong bóng sẽ được render tự động bằng JS tại đây -->
+        </div>
+
+        <!-- Nút điều khiển phụ dưới đáy màn hình bong bóng -->
+        <div class="fixed bottom-4 right-4 z-30 flex items-center gap-2">
+            <button onclick="skipToSummary()" class="bg-white/85 hover:bg-white text-purple-600 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-md border border-purple-200 backdrop-blur-md flex items-center gap-1.5 transition-all active:scale-95">
+                <span>Mở nhanh tất cả</span>
+                <i class="fa-solid fa-forward-fast text-xs"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- ================= MÀN HÌNH 3: TRANG TỔNG HỢP LỜI CHÚC & HÌNH ẢNH ================= -->
+    <section id="stage-summary" class="hidden relative z-20 flex-1 w-full max-w-6xl mx-auto px-4 py-6">
+        <!-- Header chúc mừng -->
+        <div class="text-center max-w-2xl mx-auto mb-8 space-y-3">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600 font-bold text-xs sm:text-sm shadow-sm border border-white">
+                <span>🎉 Bạn đã khám phá hết tất cả bong bóng!</span>
+            </div>
+            <h2 class="font-display text-2xl sm:text-4xl font-bold text-pastel-text">
+                Góc Lưu Giữ Yêu Thương 💌
+            </h2>
+            <p class="text-sm sm:text-base text-purple-900/75">
+                Tất cả những lời chúc ngọt ngào và kỷ niệm đẹp nhất đều được lưu giữ tại đây. Bạn có thể thêm lời chúc hoặc hình ảnh mới bất cứ lúc nào!
+            </p>
+
+            <!-- Các nút hành động trên trang tổng hợp -->
+            <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+                <button onclick="replayExperience()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-pink-50 text-pink-500 font-bold text-sm shadow-md border-2 border-pink-200 transition-all active:scale-95">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Đóng hộp &amp; Mở lại từ đầu</span>
+                </button>
+                <button id="summary-customize-btn" onclick="openCustomizeModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm shadow-md transition-all active:scale-95">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Gửi thêm lời chúc mới 🎈</span>
+                </button>
+                <button onclick="openShareRoomModal()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold text-sm shadow-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    <span>Mời bạn bè cùng viết lời chúc</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Lưới Polaroid Tổng Hợp Lời Chúc & Hình Ảnh -->
+        <div id="summary-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-12">
+            <!-- Cards được render tự động bằng JS -->
+        </div>
+    </section>
+
+    <!-- ================= MODAL 1: HIỂN THỊ LỜI CHÚC KHI BẤM VÀO BONG BÓNG ================= -->
+    <div id="wish-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-purple-950/30 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-md rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden p-5 sm:p-6 text-center">
+            <!-- Trang trí góc -->
+            <div id="modal-color-bar" class="h-3 w-full absolute top-0 left-0 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300"></div>
+
+            <!-- Hình ảnh lời chúc -->
+            <div class="relative mt-2 mb-4 rounded-2xl overflow-hidden bg-pink-50/60 border-2 border-pink-100 aspect-[4/3] flex items-center justify-center shadow-inner">
+                <img id="modal-wish-img" src="https://placehold.co/600x450/FFE4E9/FF8DA1?text=Sweet+Wishes+%E2%9C%A8" alt="Hình ảnh lời chúc" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://placehold.co/600x450/FFE4E9/FF8DA1?text=Sweet+Wishes+%E2%9C%A8'">
+                <span id="modal-wish-badge" class="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md text-xs font-bold text-pink-500 shadow-sm">
+                    🎈 Bong bóng #1
+                </span>
+            </div>
+
+            <!-- Nội dung lời chúc -->
+            <div class="space-y-2.5 my-4 px-1">
+                <h3 id="modal-wish-sender" class="font-display text-lg sm:text-xl font-bold text-pink-500">
+                    Gửi bạn yêu thương 💕
+                </h3>
+                <p id="modal-wish-text" class="text-pastel-text text-sm sm:text-base leading-relaxed font-medium bg-pink-50/50 p-4 rounded-2xl border border-pink-100/80">
+                    Lời chúc sẽ hiện ở đây...
+                </p>
+            </div>
+
+            <!-- Nút đóng & làm vỡ bóng -->
+            <button onclick="confirmReadAndPopBubble()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                <span>Nhận lời chúc &amp; Chạm nổ bóng</span>
+                <span class="text-lg">💥✨</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 2: THÊM / QUẢN LÝ LỜI CHÚC, HÌNH ẢNH & BONG BÓNG ================= -->
+    <div id="customize-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-4 bg-purple-950/35 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-2xl max-h-[90vh] flex flex-col rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden">
+            
+            <!-- Header Modal -->
+            <div class="px-6 py-4 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 flex items-center justify-between border-b border-pink-100">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🎈</span>
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text">
+                            Gửi &amp; Quản Lý Bong Bóng Lời Chúc
+                        </h3>
+                        <p id="modal-sync-subtitle" class="text-xs text-purple-700/80 font-medium">
+                            ☁️ Tự động đồng bộ trực tiếp lên Hộp quà chung cho tất cả mọi người cùng xem
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeCustomizeModal()" class="w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-500 hover:text-pink-500 flex items-center justify-center shadow-sm transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Body Modal (Cuộn được) -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
+                
+                <!-- Form thêm lời chúc mới -->
+                <form id="add-wish-form" onsubmit="handleAddWish(event)" class="bg-pink-50/50 border-2 border-pink-100 rounded-2xl p-4 sm:p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 id="form-mode-title" class="font-bold text-sm sm:text-base text-pink-600 flex items-center gap-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Tạo bong bóng lời chúc mới</span>
+                        </h4>
+                        <button type="button" id="cancel-edit-btn" onclick="resetWishForm()" class="hidden text-xs font-bold text-gray-500 hover:text-pink-500 underline">
+                            Hủy chỉnh sửa
+                        </button>
+                    </div>
+
+                    <input type="hidden" id="edit-wish-id" value="">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Người gửi / Tiêu đề -->
+                        <div>
+                            <label class="block text-xs font-bold text-pastel-text mb-1">Tiêu đề / Người gửi 🌸</label>
+                            <input type="text" id="input-sender" required="" placeholder="VD: Từ một người bạn bí mật..." class="w-full px-3.5 py-2 rounded-xl border border-pink-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        </div>
+
+                        <!-- Chọn màu bong bóng Pastel -->
+                        <div>
+                            <label class="block text-xs font-bold text-pastel-text mb-1">Màu sắc bong bóng 🎨</label>
+                            <div id="color-picker-group" class="flex items-center gap-2 pt-1 flex-wrap">
+                                <button type="button" onclick="selectBubbleColor('pink')" data-color="pink" class="color-swatch w-7 h-7 rounded-full bg-[#FFB5C2] ring-2 ring-offset-2 ring-pink-400 transition-transform scale-110" title="Hồng Pastel"></button>
+                                <button type="button" onclick="selectBubbleColor('lavender')" data-color="lavender" class="color-swatch w-7 h-7 rounded-full bg-[#D8B4F8] transition-transform" title="Tím Lavender"></button>
+                                <button type="button" onclick="selectBubbleColor('mint')" data-color="mint" class="color-swatch w-7 h-7 rounded-full bg-[#A8E6CF] transition-transform" title="Xanh Mint"></button>
+                                <button type="button" onclick="selectBubbleColor('blue')" data-color="blue" class="color-swatch w-7 h-7 rounded-full bg-[#A0C4FF] transition-transform" title="Xanh Dương"></button>
+                                <button type="button" onclick="selectBubbleColor('yellow')" data-color="yellow" class="color-swatch w-7 h-7 rounded-full bg-[#FDF0A6] transition-transform" title="Vàng Kem"></button>
+                                <button type="button" onclick="selectBubbleColor('peach')" data-color="peach" class="color-swatch w-7 h-7 rounded-full bg-[#FFD3B6] transition-transform" title="Cam Đào"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nội dung lời chúc -->
+                    <div>
+                        <label class="block text-xs font-bold text-pastel-text mb-1">Nội dung lời chúc 💌</label>
+                        <textarea id="input-message" rows="3" required="" placeholder="Nhập lời chúc ngọt ngào của bạn vào đây..." class="w-full px-3.5 py-2 rounded-xl border border-pink-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"></textarea>
+                    </div>
+
+                    <!-- Tùy chọn hình ảnh: Tải ảnh lên, dán link, hoặc chọn Sticker có sẵn -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-bold text-pastel-text">Hình ảnh đính kèm 📸 (Tải ảnh từ máy, dán Link hoặc chọn mẫu Cute)</label>
+                        
+                        <div class="flex flex-col sm:flex-row gap-2.5">
+                            <!-- Nút tải file ảnh từ thiết bị -->
+                            <label class="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white border border-purple-200 hover:bg-purple-50 text-xs font-bold text-purple-600 shadow-sm transition-all shrink-0">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Chọn ảnh từ máy</span>
+                                <input type="file" id="input-file-img" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
+                            </label>
+
+                            <!-- Hoặc dán URL ảnh -->
+                            <input type="text" id="input-img-url" placeholder="Hoặc dán đường dẫn (URL) hình ảnh..." oninput="previewCustomUrl(this.value)" class="flex-1 px-3.5 py-2 rounded-xl border border-pink-200 bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-pink-300">
+                        </div>
+
+                        <!-- Bộ sưu tập hình minh họa Pastel có sẵn -->
+                        <div class="pt-1">
+                            <span class="block text-[11px] text-purple-700/70 mb-1.5 font-medium">Hoặc chọn nhanh tranh vẽ Pastel dễ thương:</span>
+                            <div id="preset-stickers" class="flex items-center gap-2 overflow-x-auto pb-1">
+                                <!-- Render bằng JS -->
+                            </div>
+                        </div>
+
+                        <!-- Xem trước ảnh nhỏ -->
+                        <div id="img-preview-box" class="flex items-center gap-3 pt-1">
+                            <img id="form-img-preview" src="" alt="Preview" class="w-16 h-12 rounded-lg object-cover border border-pink-200 bg-white shadow-sm">
+                            <span class="text-xs text-gray-500">Hình ảnh sẽ hiển thị cùng lời chúc</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-wish-btn" class="w-full py-2.5 px-5 rounded-xl bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm shadow-md transition-all active:scale-95">
+                        + Thêm Bong Bóng Này Vào Hộp Quà
+                    </button>
+                </form>
+
+                <!-- Danh sách các bong bóng lời chúc hiện có -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-sm text-pastel-text">
+                            Danh sách bong bóng hiện có (<span id="manage-count">6</span>)
+                        </h4>
+                        <button onclick="resetDefaultWishes()" class="text-xs font-semibold text-purple-500 hover:text-pink-500 underline">
+                            Khôi phục mẫu mặc định
+                        </button>
+                    </div>
+
+                    <div id="manage-wish-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                        <!-- Render bằng JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="px-5 sm:px-6 py-3.5 bg-gray-50 border-t border-pink-100 flex flex-wrap items-center justify-between gap-2">
+                <button type="button" onclick="openExportDialog()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-teal-400 to-blue-400 hover:from-teal-500 hover:to-blue-500 text-white text-xs sm:text-sm font-bold shadow-sm transition-all active:scale-95">
+                    <i class="fa-solid fa-file-arrow-down"></i>
+                    <span>Xuất file HTML ⬇️</span>
+                </button>
+                <button onclick="closeCustomizeModal()" class="px-5 py-2 rounded-full bg-pastel-text text-white text-xs sm:text-sm font-bold hover:opacity-90 transition-all">
+                    Hoàn tất
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 3: TÙY CHỌN XUẤT FILE HTML ĐỘC LẬP ================= -->
+    <div id="export-modal" class="fixed inset-0 z-50 items-center justify-center p-4 bg-purple-950/40 backdrop-blur-sm flex">
+        <div class="modal-enter relative w-full max-w-md rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📦</span>
+                    <h3 class="font-display font-bold text-lg text-pastel-text">Xuất File Web Gửi Tặng</h3>
+                </div>
+                <button onclick="closeExportDialog()" class="w-8 h-8 rounded-full bg-pink-50 hover:bg-pink-100 text-gray-500 hover:text-pink-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-xs sm:text-sm text-purple-900/75 leading-relaxed mb-4">
+                Hệ thống sẽ đóng gói toàn bộ <strong><span id="export-wish-count">6</span> lời chúc</strong> và hình ảnh của bạn vào một file <code class="bg-pink-50 text-pink-600 px-1.5 py-0.5 rounded font-bold">hop-qua-loi-chuc.html</code> duy nhất. Khi gửi cho người khác hoặc đăng lên Google Sites / Tiiny.host, mọi nội dung sẽ hiện sẵn ngay lập tức!
+            </p>
+
+            <!-- Tùy chọn chế độ người nhận -->
+            <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-3.5 mb-5 space-y-2.5">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" id="export-hide-edit" checked="" class="mt-1 w-4 h-4 accent-pink-500 rounded">
+                    <div>
+                        <span class="block text-xs sm:text-sm font-bold text-pastel-text">Ẩn các nút chỉnh sửa trên bản gửi tặng 🎁</span>
+                        <span class="block text-[11px] text-gray-500">Giúp giao diện gọn gàng như một món quà hoàn chỉnh (chỉ giữ nút mở lại &amp; âm thanh).</span>
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <button type="button" onclick="closeExportDialog()" class="flex-1 py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold text-xs sm:text-sm transition-all">
+                    Hủy
+                </button>
+                <button type="button" onclick="executeExportHtml()" class="flex-[2] py-2.5 px-4 rounded-xl bg-gradient-to-r from-teal-400 via-blue-400 to-purple-400 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-md flex items-center justify-center gap-2 transition-all active:scale-95">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Tải về hop-qua-loi-chuc.html</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL 4: CHIA SẺ LINK & MÃ PHÒNG HỘP QUÀ (CLOUD ROOM) ================= -->
+    <div id="share-room-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-purple-950/40 backdrop-blur-sm">
+        <div class="modal-enter relative w-full max-w-lg rounded-3xl bg-white/95 border-4 border-white shadow-2xl overflow-hidden p-5 sm:p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-pink-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">☁️</span>
+                    <div>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text">
+                            Chia Sẻ Hộp Quà Trực Tuyến
+                        </h3>
+                        <p id="cloud-connection-badge" class="text-xs font-semibold text-pink-500">● Sẵn sàng lưu &amp; xuất file HTML</p>
+                    </div>
+                </div>
+                <button onclick="closeShareRoomModal()" class="w-8 h-8 rounded-full bg-pink-50 hover:bg-pink-100 text-gray-500 hover:text-pink-500 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Giải thích cách hoạt động -->
+            <div class="bg-gradient-to-r from-pink-50/90 to-purple-50/90 border border-pink-100 rounded-2xl p-3.5 text-xs sm:text-sm text-pastel-text space-y-1.5 leading-relaxed">
+                <p class="font-bold text-pink-600 flex items-center gap-1.5">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Làm sao để mọi người cùng vào thêm lời chúc?</span>
+                </p>
+                <p class="text-xs text-purple-900/80">
+                    1. Mỗi <strong>Mã Hộp Quà</strong> là một phòng lưu trữ đám mây riêng biệt.<br>
+                    2. Khi bạn bè truy cập cùng đường link (hoặc nhập cùng Mã Hộp Quà) và bấm <strong>"+ Gửi lời chúc mới"</strong>, quả bóng của họ sẽ tự động bay vào hộp quà này ngay lập tức!
+                </p>
+            </div>
+
+            <!-- Đổi hoặc Tạo Mã Hộp Quà Riêng -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-pastel-text">
+                    🔑 Mã Hộp Quà hiện tại (Bạn có thể đặt mã riêng cho nhóm/người nhận):
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="room-code-input" placeholder="VD: SINH-NHAT-LINH-2025" class="flex-1 px-3.5 py-2.5 rounded-xl border-2 border-purple-200 bg-white font-bold text-sm uppercase text-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    <button type="button" onclick="switchRoomCode()" class="px-4 py-2.5 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-bold text-xs sm:text-sm shadow-sm transition-all shrink-0 active:scale-95">
+                        Đổi / Tạo Hộp
+                    </button>
+                    <button type="button" onclick="generateRandomRoomCode()" title="Tạo mã ngẫu nhiên mới" class="px-3 py-2.5 rounded-xl bg-pink-100 hover:bg-pink-200 text-pink-600 font-bold text-xs sm:text-sm transition-all shrink-0">
+                        <i class="fa-solid fa-dice"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Copy Link Chia Sẻ -->
+            <div class="space-y-2 pt-1">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold text-pastel-text">
+                        🔗 Link mời bạn bè xem &amp; thêm lời chúc (<span id="share-modal-count" class="text-pink-600">6</span> bóng hiện tại):
+                    </label>
+                    <span id="share-sync-mode-tag" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                        Đã nhúng dữ liệu vào Link ✨
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="share-link-input" readonly="" class="flex-1 px-3.5 py-2 rounded-xl border border-gray-200 bg-gray-50 text-xs text-gray-600 select-all focus:outline-none">
+                    <button type="button" onclick="copyShareRoomLink(false)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 shrink-0 active:scale-95">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Copy Link</span>
+                    </button>
+                </div>
+
+                <label class="block text-xs font-bold text-pastel-text pt-2">
+                    🎁 Link gửi tặng Cô / Người nhận (Hiện đúng <span id="recipient-modal-count" class="text-pink-600">6</span> bóng &amp; ẩn nút sửa):
+                </label>
+                <div class="flex items-center gap-2">
+                    <input type="text" id="recipient-link-input" readonly="" class="flex-1 px-3.5 py-2 rounded-xl border border-pink-200 bg-pink-50/50 text-xs text-pink-700 font-medium select-all focus:outline-none">
+                    <button type="button" onclick="copyShareRoomLink(true)" class="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-blue-400 hover:from-teal-500 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 shrink-0 active:scale-95">
+                        <i class="fa-solid fa-gift"></i>
+                        <span>Copy Gửi Cô</span>
+                    </button>
+                </div>
+                <p class="text-[11px] text-purple-800/80 bg-purple-50 border border-purple-100 rounded-xl p-2.5 leading-relaxed">
+                    💡 <strong>Lưu ý quan trọng:</strong> Mỗi khi bạn thêm/sửa bong bóng, hãy bấm lại <strong>Copy Link</strong> hoặc <strong>Copy Gửi Cô</strong> ở đây. Đường link mới sẽ mang theo toàn bộ số bóng bạn vừa sửa để người nhận mở ra thấy ngay! (Nếu bạn tải nhiều ảnh dung lượng lớn từ máy lên, hãy dùng nút <strong>Xuất HTML ⬇️</strong> để cập nhật lên GitHub nhé).
+                </p>
+            </div>
+
+            <!-- ID phiên kết nối -->
+            <div class="pt-2 border-t border-pink-100 flex items-center justify-between text-[11px] text-gray-400">
+                <span>Trạng thái: <code id="current-user-uid" class="text-purple-500 font-mono">Đồng bộ qua Link &amp; Cloud</code></span>
+                <button onclick="closeShareRoomModal()" class="px-4 py-1.5 rounded-full bg-pastel-text text-white font-bold text-xs hover:opacity-90">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- THÔNG BÁO TOAST NHỎ XINH -->
+    <div id="toast-msg" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-all duration-300 transform translate-y-4">
+        <div class="bg-pastel-text text-white px-5 py-2.5 rounded-full shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2">
+            <span>✨</span>
+            <span id="toast-text">Đã lưu thành công!</span>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        /* -----------------------------------------------------------
+         * 1. BỘ SƯU TẬP TRANH MINH HỌA SVG PASTEL (DATA URI TỰ CHỨA)
+         * Giúp web luôn có hình ảnh siêu nét, đúng chuẩn Pastel mà không sợ lỗi mạng
+         * ----------------------------------------------------------- */
+        function createPastelSvgDataUri(bg1, bg2, iconSvg, label) {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450">
+                <defs>
+                    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="${bg1}"/>
+                        <stop offset="100%" stop-color="${bg2}"/>
+                    </linearGradient>
+                </defs>
+                <rect width="600" height="450" fill="url(#g)"/>
+                <circle cx="90" cy="80" r="55" fill="#FFFFFF" opacity="0.35"/>
+                <circle cx="520" cy="380" r="85" fill="#FFFFFF" opacity="0.35"/>
+                <circle cx="480" cy="90" r="35" fill="#FFFFFF" opacity="0.4"/>
+                <g transform="translate(300, 200)">
+                    ${iconSvg}
+                </g>
+                <rect x="170" y="345" width="260" height="44" rx="22" fill="#FFFFFF" opacity="0.8"/>
+                <text x="300" y="373" font-family="Quicksand, sans-serif" font-size="20" font-weight="bold" fill="#5A4A66" text-anchor="middle">${label}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        const PRESET_ILLUSTRATIONS = [
+            {
+                name: 'Bánh Kem Dâu',
+                url: createPastelSvgDataUri('#FFE4E9', '#FAD0C4', `
+                    <rect x="-70" y="10" width="140" height="75" rx="16" fill="#FFF" stroke="#FF8DA1" stroke-width="5"/>
+                    <path d="M-70 35 Q-52 55 -35 35 Q-17 55 0 35 Q17 55 35 35 Q52 55 70 35" fill="none" stroke="#FFB5C2" stroke-width="8" stroke-linecap="round"/>
+                    <rect x="-10" y="-38" width="20" height="48" rx="6" fill="#A8E6CF"/>
+                    <path d="M0 -62 C-12 -45, 12 -45, 0 -38 C-10 -45, 10 -45, 0 -62 Z" fill="#FFD166"/>
+                    <circle cx="-40" cy="8" r="12" fill="#FF6B8B"/>
+                    <circle cx="40" cy="8" r="12" fill="#FF6B8B"/>
+                `, 'Sweet Wishes ✨')
+            },
+            {
+                name: 'Gấu Bông Ôm Tim',
+                url: createPastelSvgDataUri('#F3E8FF', '#E0C3FC', `
+                    <circle cx="-42" cy="-52" r="22" fill="#D4A373"/>
+                    <circle cx="42" cy="-52" r="22" fill="#D4A373"/>
+                    <circle cx="-42" cy="-52" r="12" fill="#FAEDCD"/>
+                    <circle cx="42" cy="-52" r="12" fill="#FAEDCD"/>
+                    <circle cx="0" cy="-15" r="55" fill="#E6B88A"/>
+                    <ellipse cx="0" cy="-3" rx="22" ry="16" fill="#FFF"/>
+                    <circle cx="-20" cy="-25" r="6" fill="#4A3B32"/>
+                    <circle cx="20" cy="-25" r="6" fill="#4A3B32"/>
+                    <circle cx="0" cy="-8" r="6" fill="#4A3B32"/>
+                    <path d="M0 35 C-35 5, -55 45, 0 78 C55 45, 35 5, 0 35 Z" fill="#FF8DA1" stroke="#FFF" stroke-width="4"/>
+                `, 'Sending Big Hugs 🧸')
+            },
+            {
+                name: 'Cầu Vồng Mây Hồng',
+                url: createPastelSvgDataUri('#E0F2FE', '#FCE7F3', `
+                    <path d="M-95 45 A95 95 0 0 1 95 45" fill="none" stroke="#FFB5C2" stroke-width="16"/>
+                    <path d="M-79 45 A79 79 0 0 1 79 45" fill="none" stroke="#FFD3B6" stroke-width="16"/>
+                    <path d="M-63 45 A63 63 0 0 1 63 45" fill="none" stroke="#FDFFB6" stroke-width="16"/>
+                    <path d="M-47 45 A47 47 0 0 1 47 45" fill="none" stroke="#A8E6CF" stroke-width="16"/>
+                    <circle cx="-75" cy="45" r="28" fill="#FFF"/>
+                    <circle cx="-50" cy="48" r="22" fill="#FFF"/>
+                    <circle cx="75" cy="45" r="28" fill="#FFF"/>
+                    <circle cx="50" cy="48" r="22" fill="#FFF"/>
+                `, 'Always Shine Bright 🌈')
+            },
+            {
+                name: 'Bó Hoa Tulip Pastel',
+                url: createPastelSvgDataUri('#E6FFFA', '#F3E8FF', `
+                    <path d="M0 65 L-35 -20 M0 65 L0 -35 M0 65 L35 -20" stroke="#76D7B4" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M-35 -5 C-55 -5, -55 -45, -35 -35 C-25 -48, -15 -35, -35 -5 Z" fill="#FFB5C2"/>
+                    <path d="M0 -18 C-22 -18, -22 -62, 0 -50 C22 -62, 22 -18, 0 -18 Z" fill="#D8B4F8"/>
+                    <path d="M35 -5 C15 -5, 15 -45, 35 -35 C45 -48, 55 -35, 35 -5 Z" fill="#FFD3B6"/>
+                    <polygon points="-32,55 32,55 18,90 -18,90" fill="#FFF" stroke="#FFB5C2" stroke-width="4"/>
+                `, 'For Someone Special 🌷')
+            },
+            {
+                name: 'Ngôi Sao Ước Nguyện',
+                url: createPastelSvgDataUri('#FFFBEB', '#FCE7F3', `
+                    <polygon points="0,-75 22,-25 76,-18 36,18 47,72 0,45 -47,72 -36,18 -76,-18 -22,-25" fill="#FFE066" stroke="#FFF" stroke-width="5" stroke-linejoin="round"/>
+                    <circle cx="-18" cy="-8" r="5" fill="#5A4A66"/>
+                    <circle cx="18" cy="-8" r="5" fill="#5A4A66"/>
+                    <path d="M-8 8 Q0 16 8 8" fill="none" stroke="#5A4A66" stroke-width="3.5" stroke-linecap="round"/>
+                `, 'Make A Wish ⭐')
+            }
+        ];
+
+        /* -----------------------------------------------------------
+         * 2. DỮ LIỆU LỜI CHÚC MẶC ĐỊNH & CẤU HÌNH MÀU PASTEL
+         * ----------------------------------------------------------- */
+        const BUBBLE_THEMES = {
+            pink: {
+                bg: 'rgba(255, 181, 194, 0.78)',
+                border: '#FFC8D2',
+                knot: '#FF8DA1',
+                badge: 'bg-pink-100 text-pink-600'
+            },
+            lavender: {
+                bg: 'rgba(216, 180, 248, 0.78)',
+                border: '#E5CFFB',
+                knot: '#B784F0',
+                badge: 'bg-purple-100 text-purple-600'
+            },
+            mint: {
+                bg: 'rgba(168, 230, 207, 0.78)',
+                border: '#C4F0DF',
+                knot: '#65C9A8',
+                badge: 'bg-teal-100 text-teal-600'
+            },
+            blue: {
+                bg: 'rgba(160, 196, 255, 0.78)',
+                border: '#C2DAFF',
+                knot: '#74A8FF',
+                badge: 'bg-blue-100 text-blue-600'
+            },
+            yellow: {
+                bg: 'rgba(253, 240, 166, 0.85)',
+                border: '#FEF5C3',
+                knot: '#F2C94C',
+                badge: 'bg-yellow-100 text-yellow-700'
+            },
+            peach: {
+                bg: 'rgba(255, 211, 182, 0.82)',
+                border: '#FFE2CF',
+                knot: '#FFA372',
+                badge: 'bg-orange-100 text-orange-600'
+            }
+        };
+
+        // EMBEDDED_CONFIG_START
+        const EMBEDDED_GIFT_MODE = true;
+        window.EMBEDDED_GIFT_MODE = EMBEDDED_GIFT_MODE;
+        const DEFAULT_WISHES = [
+    {
+        "id": "w1",
+        "sender": "Từ cả lớp yêu quý 🌸",
+        "message": "Chúc Cô luôn rạng rỡ, tràn đầy năng lượng và hạnh phúc trên hành trình gieo mầm tri thức. Chúng em yêu Cô rất nhiều!",
+        "color": "pink",
+        "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20450%22%20width%3D%22600%22%20height%3D%22450%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E6FFFA%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23F3E8FF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%22600%22%20height%3D%22450%22%20fill%3D%22url(%23g)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2280%22%20r%3D%2255%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22520%22%20cy%3D%22380%22%20r%3D%2285%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22480%22%20cy%3D%2290%22%20r%3D%2235%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22translate(300%2C%20200)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%2065%20L-35%20-20%20M0%2065%20L0%20-35%20M0%2065%20L35%20-20%22%20stroke%3D%22%2376D7B4%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-35%20-5%20C-55%20-5%2C%20-55%20-45%2C%20-35%20-35%20C-25%20-48%2C%20-15%20-35%2C%20-35%20-5%20Z%22%20fill%3D%22%23FFB5C2%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%20-18%20C-22%20-18%2C%20-22%20-62%2C%200%20-50%20C22%20-62%2C%2022%20-18%2C%200%20-18%20Z%22%20fill%3D%22%23D8B4F8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M35%20-5%20C15%20-5%2C%2015%20-45%2C%2035%20-35%20C45%20-48%2C%2055%20-35%2C%2035%20-5%20Z%22%20fill%3D%22%23FFD3B6%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%22-32%2C55%2032%2C55%2018%2C90%20-18%2C90%22%20fill%3D%22%23FFF%22%20stroke%3D%22%23FFB5C2%22%20stroke-width%3D%224%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22170%22%20y%3D%22345%22%20width%3D%22260%22%20height%3D%2244%22%20rx%3D%2222%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22300%22%20y%3D%22373%22%20font-family%3D%22Quicksand%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%235A4A66%22%20text-anchor%3D%22middle%22%3EFor%20Someone%20Special%20%F0%9F%8C%B7%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E"
+    },
+    {
+        "id": "w2",
+        "sender": "Một học trò nhỏ 🧸",
+        "message": "Cảm ơn những bài giảng dịu dàng và sự kiên nhẫn của Cô. Chúc Cô mỗi ngày đến trường đều là một ngày vui!",
+        "color": "lavender",
+        "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20450%22%20width%3D%22600%22%20height%3D%22450%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23F3E8FF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23E0C3FC%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%22600%22%20height%3D%22450%22%20fill%3D%22url(%23g)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2280%22%20r%3D%2255%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22520%22%20cy%3D%22380%22%20r%3D%2285%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22480%22%20cy%3D%2290%22%20r%3D%2235%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22translate(300%2C%20200)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-42%22%20cy%3D%22-52%22%20r%3D%2222%22%20fill%3D%22%23D4A373%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2242%22%20cy%3D%22-52%22%20r%3D%2222%22%20fill%3D%22%23D4A373%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-42%22%20cy%3D%22-52%22%20r%3D%2212%22%20fill%3D%22%23FAEDCD%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2242%22%20cy%3D%22-52%22%20r%3D%2212%22%20fill%3D%22%23FAEDCD%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%220%22%20cy%3D%22-15%22%20r%3D%2255%22%20fill%3D%22%23E6B88A%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%220%22%20cy%3D%22-3%22%20rx%3D%2222%22%20ry%3D%2216%22%20fill%3D%22%23FFF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-20%22%20cy%3D%22-25%22%20r%3D%226%22%20fill%3D%22%234A3B32%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2220%22%20cy%3D%22-25%22%20r%3D%226%22%20fill%3D%22%234A3B32%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%220%22%20cy%3D%22-8%22%20r%3D%226%22%20fill%3D%22%234A3B32%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%2035%20C-35%205%2C%20-55%2045%2C%200%2078%20C55%2045%2C%2035%205%2C%200%2035%20Z%22%20fill%3D%22%23FF8DA1%22%20stroke%3D%22%23FFF%22%20stroke-width%3D%224%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22170%22%20y%3D%22345%22%20width%3D%22260%22%20height%3D%2244%22%20rx%3D%2222%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22300%22%20y%3D%22373%22%20font-family%3D%22Quicksand%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%235A4A66%22%20text-anchor%3D%22middle%22%3ESending%20Big%20Hugs%20%F0%9F%A7%B8%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E"
+    },
+    {
+        "id": "w3",
+        "sender": "Lời chúc ngọt ngào 🎂",
+        "message": "Chúc mọi điều tốt đẹp, may mắn và ngọt ngào nhất sẽ luôn mỉm cười với bạn hôm nay và mãi về sau!",
+        "color": "mint",
+        "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20450%22%20width%3D%22600%22%20height%3D%22450%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FFE4E9%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23FAD0C4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%22600%22%20height%3D%22450%22%20fill%3D%22url(%23g)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2280%22%20r%3D%2255%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22520%22%20cy%3D%22380%22%20r%3D%2285%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22480%22%20cy%3D%2290%22%20r%3D%2235%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22translate(300%2C%20200)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22-70%22%20y%3D%2210%22%20width%3D%22140%22%20height%3D%2275%22%20rx%3D%2216%22%20fill%3D%22%23FFF%22%20stroke%3D%22%23FF8DA1%22%20stroke-width%3D%225%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-70%2035%20Q-52%2055%20-35%2035%20Q-17%2055%200%2035%20Q17%2055%2035%2035%20Q52%2055%2070%2035%22%20fill%3D%22none%22%20stroke%3D%22%23FFB5C2%22%20stroke-width%3D%228%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22-10%22%20y%3D%22-38%22%20width%3D%2220%22%20height%3D%2248%22%20rx%3D%226%22%20fill%3D%22%23A8E6CF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%20-62%20C-12%20-45%2C%2012%20-45%2C%200%20-38%20C-10%20-45%2C%2010%20-45%2C%200%20-62%20Z%22%20fill%3D%22%23FFD166%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-40%22%20cy%3D%228%22%20r%3D%2212%22%20fill%3D%22%23FF6B8B%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2240%22%20cy%3D%228%22%20r%3D%2212%22%20fill%3D%22%23FF6B8B%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22170%22%20y%3D%22345%22%20width%3D%22260%22%20height%3D%2244%22%20rx%3D%2222%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22300%22%20y%3D%22373%22%20font-family%3D%22Quicksand%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%235A4A66%22%20text-anchor%3D%22middle%22%3ESweet%20Wishes%20%E2%9C%A8%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E"
+    },
+    {
+        "id": "w4",
+        "sender": "Cầu vồng may mắn 🌈",
+        "message": "Mong bạn luôn giữ vững nụ cười tươi tắn như ánh nắng ban mai, vượt qua mọi thử thách thật nhẹ nhàng!",
+        "color": "blue",
+        "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20450%22%20width%3D%22600%22%20height%3D%22450%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E0F2FE%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23FCE7F3%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%22600%22%20height%3D%22450%22%20fill%3D%22url(%23g)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2280%22%20r%3D%2255%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22520%22%20cy%3D%22380%22%20r%3D%2285%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22480%22%20cy%3D%2290%22%20r%3D%2235%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22translate(300%2C%20200)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-95%2045%20A95%2095%200%200%201%2095%2045%22%20fill%3D%22none%22%20stroke%3D%22%23FFB5C2%22%20stroke-width%3D%2216%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-79%2045%20A79%2079%200%200%201%2079%2045%22%20fill%3D%22none%22%20stroke%3D%22%23FFD3B6%22%20stroke-width%3D%2216%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-63%2045%20A63%2063%200%200%201%2063%2045%22%20fill%3D%22none%22%20stroke%3D%22%23FDFFB6%22%20stroke-width%3D%2216%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-47%2045%20A47%2047%200%200%201%2047%2045%22%20fill%3D%22none%22%20stroke%3D%22%23A8E6CF%22%20stroke-width%3D%2216%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-75%22%20cy%3D%2245%22%20r%3D%2228%22%20fill%3D%22%23FFF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-50%22%20cy%3D%2248%22%20r%3D%2222%22%20fill%3D%22%23FFF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2275%22%20cy%3D%2245%22%20r%3D%2228%22%20fill%3D%22%23FFF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2248%22%20r%3D%2222%22%20fill%3D%22%23FFF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22170%22%20y%3D%22345%22%20width%3D%22260%22%20height%3D%2244%22%20rx%3D%2222%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22300%22%20y%3D%22373%22%20font-family%3D%22Quicksand%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%235A4A66%22%20text-anchor%3D%22middle%22%3EAlways%20Shine%20Bright%20%F0%9F%8C%88%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E"
+    },
+    {
+        "id": "w5",
+        "sender": "Ngôi sao ước nguyện ⭐",
+        "message": "Mọi ước mơ ấp ủ của bạn chắc chắn sẽ sớm nở hoa rực rỡ. Hãy luôn tin vào chính mình nhé!",
+        "color": "yellow",
+        "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20450%22%20width%3D%22600%22%20height%3D%22450%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FFFBEB%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23FCE7F3%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%22600%22%20height%3D%22450%22%20fill%3D%22url(%23g)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2280%22%20r%3D%2255%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22520%22%20cy%3D%22380%22%20r%3D%2285%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22480%22%20cy%3D%2290%22%20r%3D%2235%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22translate(300%2C%20200)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%220%2C-75%2022%2C-25%2076%2C-18%2036%2C18%2047%2C72%200%2C45%20-47%2C72%20-36%2C18%20-76%2C-18%20-22%2C-25%22%20fill%3D%22%23FFE066%22%20stroke%3D%22%23FFF%22%20stroke-width%3D%225%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22-18%22%20cy%3D%22-8%22%20r%3D%225%22%20fill%3D%22%235A4A66%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2218%22%20cy%3D%22-8%22%20r%3D%225%22%20fill%3D%22%235A4A66%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-8%208%20Q0%2016%208%208%22%20fill%3D%22none%22%20stroke%3D%22%235A4A66%22%20stroke-width%3D%223.5%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22170%22%20y%3D%22345%22%20width%3D%22260%22%20height%3D%2244%22%20rx%3D%2222%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22300%22%20y%3D%22373%22%20font-family%3D%22Quicksand%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%235A4A66%22%20text-anchor%3D%22middle%22%3EMake%20A%20Wish%20%E2%AD%90%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E"
+    },
+    {
+        "id": "w6",
+        "sender": "Gửi ngàn yêu thương 💕",
+        "message": "Cảm ơn vì đã luôn là một phần tuyệt vời trong thanh xuân của chúng mình. Mãi bên nhau bạn nhé!",
+        "color": "peach",
+        "image": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20450%22%20width%3D%22600%22%20height%3D%22450%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23E6FFFA%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23F3E8FF%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%22600%22%20height%3D%22450%22%20fill%3D%22url(%23g)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%2280%22%20r%3D%2255%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22520%22%20cy%3D%22380%22%20r%3D%2285%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.35%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22480%22%20cy%3D%2290%22%20r%3D%2235%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.4%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cg%20transform%3D%22translate(300%2C%20200)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%2065%20L-35%20-20%20M0%2065%20L0%20-35%20M0%2065%20L35%20-20%22%20stroke%3D%22%2376D7B4%22%20stroke-width%3D%227%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M-35%20-5%20C-55%20-5%2C%20-55%20-45%2C%20-35%20-35%20C-25%20-48%2C%20-15%20-35%2C%20-35%20-5%20Z%22%20fill%3D%22%23FFB5C2%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M0%20-18%20C-22%20-18%2C%20-22%20-62%2C%200%20-50%20C22%20-62%2C%2022%20-18%2C%200%20-18%20Z%22%20fill%3D%22%23D8B4F8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M35%20-5%20C15%20-5%2C%2015%20-45%2C%2035%20-35%20C45%20-48%2C%2055%20-35%2C%2035%20-5%20Z%22%20fill%3D%22%23FFD3B6%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cpolygon%20points%3D%22-32%2C55%2032%2C55%2018%2C90%20-18%2C90%22%20fill%3D%22%23FFF%22%20stroke%3D%22%23FFB5C2%22%20stroke-width%3D%224%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20x%3D%22170%22%20y%3D%22345%22%20width%3D%22260%22%20height%3D%2244%22%20rx%3D%2222%22%20fill%3D%22%23FFFFFF%22%20opacity%3D%220.8%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22300%22%20y%3D%22373%22%20font-family%3D%22Quicksand%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%235A4A66%22%20text-anchor%3D%22middle%22%3EFor%20Someone%20Special%20%F0%9F%8C%B7%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%2Fsvg%3E"
+    }
+];
+        // EMBEDDED_CONFIG_END
+
+        /* -----------------------------------------------------------
+         * 3. TRẠNG THÁI ỨNG DỤNG & QUẢN LÝ PHÒNG (ROOM CODE / VIEW MODE)
+         * ----------------------------------------------------------- */
+        const urlParams = new URLSearchParams(window.location.search);
+        const IS_VIEW_ONLY_MODE = EMBEDDED_GIFT_MODE || urlParams.get('view') === '1' || urlParams.get('mode') === 'gift';
+        let currentRoomCode = (urlParams.get('box') || 'CHUNG').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '') || 'CHUNG';
+
+        let wishes = [];
+        let poppedIds = new Set();
+        let currentStage = 'box'; // 'box' | 'bubbles' | 'summary'
+        let activeBubbleId = null;
+        let selectedBubbleColor = 'pink';
+        let currentUploadedImgData = PRESET_ILLUSTRATIONS[0].url;
+        let soundEnabled = true;
+        let bubblePhysicsList = [];
+        let animationFrameId = null;
+
+        // Mã hóa & giải mã danh sách lời chúc trực tiếp trên URL để chia sẻ qua GitHub Pages không bị mất dữ liệu đã sửa
+        function encodeWishesToUrlPayload(wishList) {
+            try {
+                const compact = wishList.map(w => {
+                    // Kiểm tra xem ảnh có thuộc bộ Preset không để rút gọn link tối đa
+                    const presetIdx = PRESET_ILLUSTRATIONS.findIndex(p => p.url === w.image);
+                    const isBase64Upload = w.image && w.image.startsWith('data:image/');
+                    return {
+                        i: w.id,
+                        s: w.sender,
+                        m: w.message,
+                        c: w.color,
+                        p: presetIdx !== -1 ? presetIdx : -1,
+                        u: (presetIdx === -1 && !isBase64Upload) ? w.image : ''
+                    };
+                });
+                const jsonStr = JSON.stringify(compact);
+                // Chuyển sang Base64 an toàn với URL (thay +, /, = để không bị trình duyệt làm hỏng)
+                const b64 = btoa(unescape(encodeURIComponent(jsonStr)));
+                return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            } catch (e) {
+                console.warn('Không thể nén dữ liệu vào URL:', e);
+                return '';
+            }
+        }
+
+        function decodeWishesFromUrlPayload(encodedStr) {
+            try {
+                if (!encodedStr) return null;
+                // Khôi phục lại chuẩn Base64 từ chuỗi URL-safe
+                let b64 = encodedStr.trim().replace(/ /g, '+').replace(/-/g, '+').replace(/_/g, '/');
+                while (b64.length % 4 !== 0) {
+                    b64 += '=';
+                }
+                const jsonStr = decodeURIComponent(escape(atob(b64)));
+                const compact = JSON.parse(jsonStr);
+                if (!Array.isArray(compact) || compact.length === 0) return null;
+                return compact.map((item, idx) => {
+                    let imgUrl = PRESET_ILLUSTRATIONS[idx % PRESET_ILLUSTRATIONS.length].url;
+                    if (typeof item.p === 'number' && item.p >= 0 && PRESET_ILLUSTRATIONS[item.p]) {
+                        imgUrl = PRESET_ILLUSTRATIONS[item.p].url;
+                    } else if (item.u) {
+                        imgUrl = item.u;
+                    }
+                    return {
+                        id: item.i || ('w_' + idx),
+                        sender: item.s || 'Lời chúc yêu thương 🌸',
+                        message: item.m || '',
+                        color: item.c || 'pink',
+                        image: imgUrl
+                    };
+                });
+            } catch (e) {
+                console.warn('Lỗi đọc dữ liệu từ URL:', e);
+                return null;
+            }
+        }
+
+        // Cầu nối đồng bộ đám mây (Cloud KvDB miễn phí cho các phòng chung)
+        window.cloudSyncBridge = {
+            isConnected: false,
+            saveWishesToCloud: null,
+            switchRoomListener: null
+        };
+
+        function getStorageKey() {
+            return `SWEETBOX_WISHES_V2_${currentRoomCode}`;
+        }
+
+        function loadWishesLocalFallback() {
+            // 1. Ưu tiên số 1: Đọc dữ liệu lời chúc đính kèm trực tiếp trong Link chia sẻ (?w=... hoặc #w=...)
+            const searchParams = new URLSearchParams(window.location.search);
+            const hashStr = window.location.hash.replace(/^#/, '');
+            const hashParams = new URLSearchParams(hashStr);
+            const urlPayload = searchParams.get('w') || hashParams.get('w');
+
+            if (urlPayload) {
+                const decoded = decodeWishesFromUrlPayload(urlPayload);
+                if (decoded && decoded.length > 0) {
+                    wishes = decoded;
+                    try {
+                        localStorage.setItem(getStorageKey(), JSON.stringify(wishes));
+                    } catch (e) {}
+                    updateUIAllStages();
+                    return;
+                }
+            }
+
+            if (EMBEDDED_GIFT_MODE) {
+                wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+                updateUIAllStages();
+                return;
+            }
+
+            // 2. Nếu không có trong Link thì đọc từ bộ nhớ trình duyệt
+            try {
+                const raw = localStorage.getItem(getStorageKey());
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        wishes = parsed;
+                        updateUIAllStages();
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('LocalStorage bị hạn chế trong khung nhúng:', e);
+            }
+            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+            updateUIAllStages();
+        }
+
+        function saveWishesData() {
+            try {
+                localStorage.setItem(getStorageKey(), JSON.stringify(wishes));
+            } catch (e) {
+                console.warn('Không thể ghi LocalStorage:', e);
+            }
+
+            // Tự động cập nhật luôn thanh địa chỉ (URL) với dữ liệu mới nhất để user copy trên trình duyệt cũng có đủ bóng
+            try {
+                const payload = encodeWishesToUrlPayload(wishes);
+                if (payload && window.location.protocol.startsWith('http')) {
+                    const newUrl = `${window.location.pathname}?box=${encodeURIComponent(currentRoomCode)}&w=${payload}`;
+                    window.history.replaceState({}, '', newUrl);
+                }
+            } catch (e) {}
+
+            if (window.cloudSyncBridge && window.cloudSyncBridge.isConnected && window.cloudSyncBridge.saveWishesToCloud) {
+                window.cloudSyncBridge.saveWishesToCloud(currentRoomCode, wishes);
+            }
+            buildShareUrls();
+            updateUIAllStages();
+        }
+
+        function applyViewOnlyModeUI() {
+            const roomLabel = document.getElementById('current-room-label');
+            if (roomLabel) roomLabel.textContent = currentRoomCode;
+
+            const roomInput = document.getElementById('room-code-input');
+            if (roomInput) roomInput.value = currentRoomCode;
+
+            if (IS_VIEW_ONLY_MODE) {
+                const hideIds = [
+                    'header-customize-btn',
+                    'header-share-btn',
+                    'header-export-btn',
+                    'room-badge-btn',
+                    'box-add-wish-btn',
+                    'summary-customize-btn'
+                ];
+                hideIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+            }
+        }
+
+        function updateUIAllStages() {
+            const introCount = document.getElementById('intro-bubble-count');
+            if (introCount) introCount.textContent = wishes.length;
+
+            const totalCount = document.getElementById('total-count');
+            if (totalCount) totalCount.textContent = wishes.length;
+
+            const openedCount = document.getElementById('opened-count');
+            if (openedCount) openedCount.textContent = poppedIds.size;
+
+            const manageCount = document.getElementById('manage-count');
+            if (manageCount) manageCount.textContent = wishes.length;
+
+            const exportCount = document.getElementById('export-wish-count');
+            if (exportCount) exportCount.textContent = wishes.length;
+
+            const shareModalCount = document.getElementById('share-modal-count');
+            if (shareModalCount) shareModalCount.textContent = wishes.length;
+
+            const recipientModalCount = document.getElementById('recipient-modal-count');
+            if (recipientModalCount) recipientModalCount.textContent = wishes.length;
+        }
+
+        /* -----------------------------------------------------------
+         * 4. HỆ THỐNG ÂM THANH TỔNG HỢP WEB AUDIO API (KHÔNG CẦN FILE MP3)
+         * ----------------------------------------------------------- */
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('sound-icon');
+            if (icon) {
+                icon.className = soundEnabled
+                    ? 'fa-solid fa-volume-high text-sm sm:text-base'
+                    : 'fa-solid fa-volume-xmark text-sm sm:text-base text-gray-400';
+            }
+            showToast(soundEnabled ? 'Đã bật hiệu ứng âm thanh 🔊' : 'Đã tắt âm thanh 🔇');
+        }
+
+        function playSoundEffect(type) {
+            if (!soundEnabled) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+
+            if (type === 'open') {
+                // Âm thanh lấp lánh mở hộp quà
+                const notes = [523.25, 659.25, 783.99, 1046.5];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                    gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.08);
+                    osc.stop(now + idx * 0.08 + 0.46);
+                });
+            } else if (type === 'chime') {
+                // Âm thanh chạm vào bong bóng
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(587.33, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+                gain.gain.setValueAtTime(0.14, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.26);
+            } else if (type === 'pop') {
+                // Âm thanh nổ bóng "Bụp!"
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.exponentialRampToValueAtTime(60, now + 0.14);
+                gain.gain.setValueAtTime(0.28, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.16);
+            } else if (type === 'fanfare') {
+                // Âm thanh hoàn thành mở hết bóng
+                const chord = [523.25, 659.25, 783.99, 987.77, 1046.5];
+                chord.forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + i * 0.09);
+                    gain.gain.setValueAtTime(0.14, now + i * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.65);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i * 0.09);
+                    osc.stop(now + i * 0.09 + 0.66);
+                });
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 5. HIỆU ỨNG HẠT PHÁO GIẤY & BÓNG NỔ (CANVAS FX)
+         * ----------------------------------------------------------- */
+        const fxCanvas = document.getElementById('fx-canvas');
+        const fxCtx = fxCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeFxCanvas() {
+            fxCanvas.width = window.innerWidth;
+            fxCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeFxCanvas);
+        resizeFxCanvas();
+
+        function createBurstParticles(x, y, count = 32, customColor = null) {
+            const palette = ['#FFB5C2', '#D8B4F8', '#A8E6CF', '#A0C4FF', '#FFD3B6', '#FDFFB6'];
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+                const speed = 2.5 + Math.random() * 6.5;
+                particles.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 1.5,
+                    radius: 4 + Math.random() * 5,
+                    color: customColor || palette[Math.floor(Math.random() * palette.length)],
+                    alpha: 1,
+                    decay: 0.016 + Math.random() * 0.015,
+                    shape: Math.random() > 0.4 ? 'circle' : 'star'
+                });
+            }
+        }
+
+        function updateAndDrawParticles() {
+            fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.14; // Trọng lực nhẹ
+                p.vx *= 0.98;
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                fxCtx.save();
+                fxCtx.globalAlpha = Math.max(0, p.alpha);
+                fxCtx.fillStyle = p.color;
+                fxCtx.beginPath();
+                fxCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                fxCtx.fill();
+                fxCtx.restore();
+            }
+            requestAnimationFrame(updateAndDrawParticles);
+        }
+        requestAnimationFrame(updateAndDrawParticles);
+
+        /* -----------------------------------------------------------
+         * 6. LUỒNG TƯƠNG TÁC MỞ HỘP QUÀ -> BONG BÓNG BAY -> NỔ BÓNG -> TỔNG HỢP
+         * ----------------------------------------------------------- */
+        function openGiftBox() {
+            if (currentStage !== 'box') return;
+            playSoundEffect('open');
+
+            const animBox = document.getElementById('gift-anim-box');
+            if (animBox) {
+                animBox.classList.remove('gift-bounce');
+                animBox.classList.add('gift-opened');
+            }
+
+            // Pháo giấy tung ra từ giữa màn hình
+            createBurstParticles(window.innerWidth / 2, window.innerHeight / 2, 55);
+
+            setTimeout(() => {
+                currentStage = 'bubbles';
+                document.getElementById('stage-box').classList.add('hidden');
+                document.getElementById('stage-bubbles').classList.remove('hidden');
+                const badge = document.getElementById('progress-badge');
+                badge.classList.remove('hidden');
+                badge.classList.add('flex');
+
+                spawnAllBubbles();
+                startBubbleFloatingLoop();
+            }, 780);
+        }
+
+        function spawnAllBubbles() {
+            const arena = document.getElementById('bubble-arena');
+            if (!arena) return;
+            arena.innerHTML = '';
+            bubblePhysicsList = [];
+
+            const arenaW = arena.clientWidth || window.innerWidth;
+            const arenaH = arena.clientHeight || (window.innerHeight - 150);
+            const isMobile = window.innerWidth < 640;
+            const baseSize = isMobile ? 96 : 122;
+
+            const unpoppedWishes = wishes.filter(w => !poppedIds.has(w.id));
+            updateUIAllStages();
+
+            if (unpoppedWishes.length === 0 && wishes.length > 0) {
+                transitionToSummaryStage();
+                return;
+            }
+
+            unpoppedWishes.forEach((wish, index) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const size = baseSize + (index % 3) * 10;
+
+                const bubbleEl = document.createElement('div');
+                bubbleEl.className = 'wish-bubble';
+                bubbleEl.id = `bubble-el-${wish.id}`;
+                bubbleEl.style.width = `${size}px`;
+                bubbleEl.style.height = `${size}px`;
+                bubbleEl.style.background = theme.bg;
+                bubbleEl.style.borderColor = theme.border;
+                bubbleEl.style.animation = `spawnFromBox 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.08}s backwards`;
+
+                // Nội dung bên trong quả bóng
+                const shortSender = wish.sender.length > 16 ? wish.sender.slice(0, 15) + '…' : wish.sender;
+                bubbleEl.innerHTML = `
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border-2 border-white shadow-sm mb-1 pointer-events-none">
+                        <img src="${wish.image}" alt="" class="w-full h-full object-cover"
+                             onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                    </div>
+                    <span class="px-2 text-[10px] sm:text-xs font-bold text-pastel-text text-center leading-tight line-clamp-2 pointer-events-none">
+                        ${escapeHtml(shortSender)}
+                    </span>
+                    <div class="bubble-knot" style="background: ${theme.knot}"></div>
+                    <div class="bubble-string"></div>
+                `;
+
+                bubbleEl.addEventListener('click', () => openWishModalForBubble(wish.id));
+                arena.appendChild(bubbleEl);
+
+                // Tọa độ khởi tạo phân bổ đều trong vùng bay
+                const pad = 20;
+                const maxX = Math.max(pad + 10, arenaW - size - pad);
+                const maxY = Math.max(pad + 10, arenaH - size - pad - 35);
+                const startX = pad + Math.random() * (maxX - pad);
+                const startY = pad + Math.random() * (maxY - pad);
+
+                bubblePhysicsList.push({
+                    id: wish.id,
+                    el: bubbleEl,
+                    x: startX,
+                    y: startY,
+                    vx: (Math.random() - 0.5) * 1.15,
+                    vy: (Math.random() - 0.5) * 1.05,
+                    size: size,
+                    phase: Math.random() * Math.PI * 2
+                });
+            });
+        }
+
+        function startBubbleFloatingLoop() {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            function step() {
+                if (currentStage !== 'bubbles') return;
+                const arena = document.getElementById('bubble-arena');
+                if (arena) {
+                    const arenaW = arena.clientWidth || window.innerWidth;
+                    const arenaH = arena.clientHeight || (window.innerHeight - 150);
+
+                    bubblePhysicsList.forEach(b => {
+                        b.phase += 0.025;
+                        b.x += b.vx + Math.sin(b.phase) * 0.25;
+                        b.y += b.vy + Math.cos(b.phase) * 0.22;
+
+                        const pad = 12;
+                        const maxX = Math.max(pad, arenaW - b.size - pad);
+                        const maxY = Math.max(pad, arenaH - b.size - 38);
+
+                        if (b.x <= pad) { b.x = pad; b.vx = Math.abs(b.vx); }
+                        if (b.x >= maxX) { b.x = maxX; b.vx = -Math.abs(b.vx); }
+                        if (b.y <= pad) { b.y = pad; b.vy = Math.abs(b.vy); }
+                        if (b.y >= maxY) { b.y = maxY; b.vy = -Math.abs(b.vy); }
+
+                        b.el.style.left = `${b.x}px`;
+                        b.el.style.top = `${b.y}px`;
+                    });
+                }
+                animationFrameId = requestAnimationFrame(step);
+            }
+            animationFrameId = requestAnimationFrame(step);
+        }
+
+        function openWishModalForBubble(wishId) {
+            const wish = wishes.find(w => w.id === wishId);
+            if (!wish) return;
+
+            playSoundEffect('chime');
+            activeBubbleId = wishId;
+
+            const idx = wishes.findIndex(w => w.id === wishId) + 1;
+            document.getElementById('modal-wish-badge').textContent = `🎈 Bong bóng #${idx}`;
+            document.getElementById('modal-wish-sender').textContent = wish.sender;
+            document.getElementById('modal-wish-text').textContent = wish.message;
+            document.getElementById('modal-wish-img').src = wish.image || PRESET_ILLUSTRATIONS[0].url;
+
+            const modal = document.getElementById('wish-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function confirmReadAndPopBubble() {
+            const modal = document.getElementById('wish-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+
+            if (!activeBubbleId) return;
+            const targetId = activeBubbleId;
+            activeBubbleId = null;
+
+            const bubbleObj = bubblePhysicsList.find(b => b.id === targetId);
+            const wish = wishes.find(w => w.id === targetId);
+            const theme = wish ? (BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink) : BUBBLE_THEMES.pink;
+
+            if (bubbleObj && bubbleObj.el) {
+                const rect = bubbleObj.el.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                playSoundEffect('pop');
+                createBurstParticles(centerX, centerY, 36, theme.knot);
+                bubbleObj.el.classList.add('bubble-popping');
+
+                setTimeout(() => {
+                    if (bubbleObj.el && bubbleObj.el.parentNode) {
+                        bubbleObj.el.parentNode.removeChild(bubbleObj.el);
+                    }
+                    bubblePhysicsList = bubblePhysicsList.filter(b => b.id !== targetId);
+                    poppedIds.add(targetId);
+                    updateUIAllStages();
+
+                    // Kiểm tra nếu đã nổ hết tất cả bong bóng
+                    if (bubblePhysicsList.length === 0) {
+                        setTimeout(() => {
+                            transitionToSummaryStage();
+                        }, 450);
+                    }
+                }, 400);
+            } else {
+                poppedIds.add(targetId);
+                updateUIAllStages();
+                if (bubblePhysicsList.length === 0) {
+                    transitionToSummaryStage();
+                }
+            }
+        }
+
+        function skipToSummary() {
+            wishes.forEach(w => poppedIds.add(w.id));
+            updateUIAllStages();
+            transitionToSummaryStage();
+        }
+
+        function transitionToSummaryStage() {
+            currentStage = 'summary';
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+            playSoundEffect('fanfare');
+            createBurstParticles(window.innerWidth * 0.3, window.innerHeight * 0.35, 40);
+            createBurstParticles(window.innerWidth * 0.7, window.innerHeight * 0.35, 40);
+
+            document.getElementById('stage-box').classList.add('hidden');
+            document.getElementById('stage-bubbles').classList.add('hidden');
+            document.getElementById('progress-badge').classList.add('hidden');
+            document.getElementById('progress-badge').classList.remove('flex');
+
+            const summaryEl = document.getElementById('stage-summary');
+            summaryEl.classList.remove('hidden');
+            renderSummaryGrid();
+        }
+
+        function renderSummaryGrid() {
+            const grid = document.getElementById('summary-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            wishes.forEach((wish, idx) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const tiltAngle = (idx % 2 === 0 ? -1.4 : 1.4);
+
+                const card = document.createElement('div');
+                card.className = 'polaroid-card rounded-3xl p-4 sm:p-5 flex flex-col justify-between';
+                card.style.transform = `rotate(${tiltAngle}deg)`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] mb-4 bg-pink-50 border border-pink-100 shadow-inner">
+                            <img src="${wish.image}" alt="${escapeHtml(wish.sender)}"
+                                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                 onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${theme.badge}">
+                                🎈 #${idx + 1}
+                            </span>
+                        </div>
+                        <h3 class="font-display font-bold text-base sm:text-lg text-pastel-text mb-2 flex items-center gap-1.5">
+                            <span>${escapeHtml(wish.sender)}</span>
+                        </h3>
+                        <p class="text-sm text-purple-950/80 leading-relaxed whitespace-pre-line bg-pink-50/40 p-3.5 rounded-2xl border border-pink-100/60">
+                            ${escapeHtml(wish.message)}
+                        </p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function replayExperience() {
+            poppedIds.clear();
+            currentStage = 'box';
+
+            const animBox = document.getElementById('gift-anim-box');
+            if (animBox) {
+                animBox.classList.remove('gift-opened');
+                animBox.classList.add('gift-bounce');
+            }
+
+            document.getElementById('stage-summary').classList.add('hidden');
+            document.getElementById('stage-bubbles').classList.add('hidden');
+            document.getElementById('stage-box').classList.remove('hidden');
+            updateUIAllStages();
+        }
+
+        /* -----------------------------------------------------------
+         * 7. THÊM / SỬA / XÓA LỜI CHÚC & HÌNH ẢNH
+         * ----------------------------------------------------------- */
+        function renderPresetStickers() {
+            const container = document.getElementById('preset-stickers');
+            if (!container) return;
+            container.innerHTML = '';
+
+            PRESET_ILLUSTRATIONS.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'shrink-0 group relative rounded-xl overflow-hidden border-2 border-pink-200 hover:border-pink-400 transition-all focus:outline-none';
+                btn.title = item.name;
+                btn.onclick = () => {
+                    currentUploadedImgData = item.url;
+                    document.getElementById('input-img-url').value = '';
+                    document.getElementById('form-img-preview').src = item.url;
+                    showToast(`Đã chọn tranh: ${item.name} 🎨`);
+                };
+                btn.innerHTML = `
+                    <img src="${item.url}" alt="${item.name}" class="w-16 h-12 object-cover group-hover:scale-110 transition-transform">
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectBubbleColor(colorKey) {
+            selectedBubbleColor = colorKey;
+            document.querySelectorAll('.color-swatch').forEach(btn => {
+                if (btn.getAttribute('data-color') === colorKey) {
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-pink-400', 'scale-110');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-offset-2', 'ring-pink-400', 'scale-110');
+                }
+            });
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            // Nén ảnh nhẹ qua Canvas để lưu trữ và xuất HTML nhẹ nhàng
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxW = 700;
+                    const scale = img.width > maxW ? maxW / img.width : 1;
+                    canvas.width = Math.round(img.width * scale);
+                    canvas.height = Math.round(img.height * scale);
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    currentUploadedImgData = canvas.toDataURL('image/jpeg', 0.82);
+                    document.getElementById('form-img-preview').src = currentUploadedImgData;
+                    showToast('Đã tải ảnh lên thành công 📸');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function previewCustomUrl(url) {
+            const trimmed = url.trim();
+            if (trimmed) {
+                currentUploadedImgData = trimmed;
+                document.getElementById('form-img-preview').src = trimmed;
+            }
+        }
+
+        function openCustomizeModal() {
+            renderPresetStickers();
+            renderManageWishList();
+            resetWishForm();
+            const modal = document.getElementById('customize-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCustomizeModal() {
+            const modal = document.getElementById('customize-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function resetWishForm() {
+            document.getElementById('edit-wish-id').value = '';
+            document.getElementById('input-sender').value = '';
+            document.getElementById('input-message').value = '';
+            document.getElementById('input-img-url').value = '';
+            currentUploadedImgData = PRESET_ILLUSTRATIONS[Math.floor(Math.random() * PRESET_ILLUSTRATIONS.length)].url;
+            document.getElementById('form-img-preview').src = currentUploadedImgData;
+            selectBubbleColor('pink');
+
+            document.getElementById('form-mode-title').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i><span>Tạo bong bóng lời chúc mới</span>';
+            document.getElementById('submit-wish-btn').textContent = '+ Thêm Bong Bóng Này Vào Hộp Quà';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        function handleAddWish(event) {
+            event.preventDefault();
+            const editId = document.getElementById('edit-wish-id').value;
+            const sender = document.getElementById('input-sender').value.trim();
+            const message = document.getElementById('input-message').value.trim();
+            if (!sender || !message) return;
+
+            if (editId) {
+                const idx = wishes.findIndex(w => w.id === editId);
+                if (idx !== -1) {
+                    wishes[idx] = {
+                        ...wishes[idx],
+                        sender,
+                        message,
+                        color: selectedBubbleColor,
+                        image: currentUploadedImgData || PRESET_ILLUSTRATIONS[0].url
+                    };
+                    showToast('Đã cập nhật bong bóng lời chúc ✨');
+                }
+            } else {
+                const newWish = {
+                    id: 'w_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                    sender,
+                    message,
+                    color: selectedBubbleColor,
+                    image: currentUploadedImgData || PRESET_ILLUSTRATIONS[0].url
+                };
+                wishes.push(newWish);
+                showToast('Đã thả thêm bong bóng mới vào hộp quà 🎈');
+            }
+
+            saveWishesData();
+            renderManageWishList();
+            resetWishForm();
+
+            if (currentStage === 'bubbles') spawnAllBubbles();
+            if (currentStage === 'summary') renderSummaryGrid();
+        }
+
+        function startEditWish(id) {
+            const wish = wishes.find(w => w.id === id);
+            if (!wish) return;
+
+            document.getElementById('edit-wish-id').value = wish.id;
+            document.getElementById('input-sender').value = wish.sender;
+            document.getElementById('input-message').value = wish.message;
+            currentUploadedImgData = wish.image;
+            document.getElementById('form-img-preview').src = wish.image;
+            selectBubbleColor(wish.color || 'pink');
+
+            document.getElementById('form-mode-title').innerHTML = '<i class="fa-solid fa-pen-to-square"></i><span>Chỉnh sửa bong bóng lời chúc</span>';
+            document.getElementById('submit-wish-btn').textContent = 'Lưu Thay Đổi Bong Bóng';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+        }
+
+        function deleteWishItem(id) {
+            if (wishes.length <= 1) {
+                showToast('Cần giữ lại ít nhất 1 bong bóng trong hộp quà nhé!');
+                return;
+            }
+            wishes = wishes.filter(w => w.id !== id);
+            poppedIds.delete(id);
+            saveWishesData();
+            renderManageWishList();
+
+            if (currentStage === 'bubbles') spawnAllBubbles();
+            if (currentStage === 'summary') renderSummaryGrid();
+            showToast('Đã xóa bong bóng lời chúc 🗑️');
+        }
+
+        function resetDefaultWishes() {
+            wishes = JSON.parse(JSON.stringify(DEFAULT_WISHES));
+            poppedIds.clear();
+            saveWishesData();
+            renderManageWishList();
+            if (currentStage === 'bubbles') spawnAllBubbles();
+            if (currentStage === 'summary') renderSummaryGrid();
+            showToast('Đã khôi phục danh sách lời chúc mặc định 🌸');
+        }
+
+        function renderManageWishList() {
+            const listEl = document.getElementById('manage-wish-list');
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            updateUIAllStages();
+
+            wishes.forEach((wish, index) => {
+                const theme = BUBBLE_THEMES[wish.color] || BUBBLE_THEMES.pink;
+                const item = document.createElement('div');
+                item.className = 'flex items-center justify-between gap-3 p-2.5 rounded-2xl bg-white border border-pink-100 shadow-sm';
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img src="${wish.image}" alt="" class="w-12 h-10 rounded-xl object-cover border border-pink-100 shrink-0"
+                             onerror="this.src='${PRESET_ILLUSTRATIONS[0].url}'">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${theme.badge}">#${index + 1}</span>
+                                <h5 class="font-bold text-xs sm:text-sm text-pastel-text truncate">${escapeHtml(wish.sender)}</h5>
+                            </div>
+                            <p class="text-xs text-gray-500 truncate">${escapeHtml(wish.message)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="startEditWish('${wish.id}')" title="Sửa"
+                            class="w-8 h-8 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-600 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button" onclick="deleteWishItem('${wish.id}')" title="Xóa"
+                            class="w-8 h-8 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-500 flex items-center justify-center text-xs transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        /* -----------------------------------------------------------
+         * 8. TÍNH NĂNG CHIA SẺ LINK & MÃ HỘP QUÀ (CLOUD ROOM & ?view=1)
+         * ----------------------------------------------------------- */
+        function getEffectiveBaseUrl() {
+            // Nếu đang chạy trên trang GitHub của bạn thì lấy đúng link hiện tại, nếu chạy trong khung xem trước Gemini thì tự điền sẵn link GitHub của bạn
+            const host = window.location.hostname || '';
+            if (host.includes('github.io')) {
+                return window.location.origin + window.location.pathname;
+            }
+            return 'https://tramytramy-blog.github.io/hop-qua-yeu-thuong/';
+        }
+
+        function buildShareUrls() {
+            const baseUrl = getEffectiveBaseUrl();
+            const payload = encodeWishesToUrlPayload(wishes);
+            const wParam = payload ? `&w=${payload}` : '';
+
+            const collabUrl = `${baseUrl}?box=${encodeURIComponent(currentRoomCode)}${wParam}`;
+            const recipientUrl = `${baseUrl}?box=${encodeURIComponent(currentRoomCode)}&view=1${wParam}`;
+
+            const shareInput = document.getElementById('share-link-input');
+            if (shareInput) shareInput.value = collabUrl;
+
+            const recipientInput = document.getElementById('recipient-link-input');
+            if (recipientInput) recipientInput.value = recipientUrl;
+
+            updateUIAllStages();
+        }
+
+        function openShareRoomModal() {
+            buildShareUrls();
+            const modal = document.getElementById('share-room-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeShareRoomModal() {
+            const modal = document.getElementById('share-room-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function generateRandomRoomCode() {
+            const prefixes = ['LOP-12A', 'TANG-CO', 'SINH-NHAT', 'YEU-THUONG', 'KY-NIEM'];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const num = Math.floor(100 + Math.random() * 900);
+            const input = document.getElementById('room-code-input');
+            if (input) input.value = `${prefix}-${num}`;
+        }
+
+        function switchRoomCode() {
+            const input = document.getElementById('room-code-input');
+            if (!input) return;
+            const cleaned = input.value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+            if (!cleaned) {
+                showToast('Vui lòng nhập Mã Hộp Quà hợp lệ!');
+                return;
+            }
+            currentRoomCode = cleaned;
+            input.value = currentRoomCode;
+
+            const label = document.getElementById('current-room-label');
+            if (label) label.textContent = currentRoomCode;
+
+            try {
+                const newUrl = `${window.location.pathname}?box=${encodeURIComponent(currentRoomCode)}`;
+                window.history.replaceState({}, '', newUrl);
+            } catch (e) {}
+
+            buildShareUrls();
+            poppedIds.clear();
+
+            if (window.cloudSyncBridge && window.cloudSyncBridge.isConnected && window.cloudSyncBridge.switchRoomListener) {
+                window.cloudSyncBridge.switchRoomListener(currentRoomCode);
+            } else {
+                loadWishesLocalFallback();
+                if (currentStage === 'bubbles') spawnAllBubbles();
+                if (currentStage === 'summary') renderSummaryGrid();
+            }
+            showToast(`Đã chuyển sang Hộp quà: ${currentRoomCode} 🔑`);
+        }
+
+        function copyShareRoomLink(isRecipientMode = false) {
+            buildShareUrls();
+            const inputId = isRecipientMode ? 'recipient-link-input' : 'share-link-input';
+            const inputEl = document.getElementById(inputId);
+            if (!inputEl) return;
+
+            inputEl.select();
+            inputEl.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                showToast(isRecipientMode
+                    ? 'Đã copy Link gửi tặng Cô (Đã ẩn nút chỉnh sửa) 🎁'
+                    : 'Đã copy Link mời bạn bè cùng thả lời chúc 🔗');
+            } catch (err) {
+                showToast('Hãy bôi đen và nhấn Ctrl+C để copy link nhé!');
+            }
+        }
+
+        /* -----------------------------------------------------------
+         * 9. TÍNH NĂNG XUẤT FILE HTML ĐỘC LẬP (CHỨA SẴN LỜI CHÚC & ẢNH)
+         * ----------------------------------------------------------- */
+        function openExportDialog() {
+            updateUIAllStages();
+            const modal = document.getElementById('export-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeExportDialog() {
+            const modal = document.getElementById('export-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function executeExportHtml() {
+            const hideEdit = document.getElementById('export-hide-edit').checked;
+            const serializedWishes = JSON.stringify(wishes, null, 4);
+
+            // Lấy toàn bộ mã nguồn trang hiện tại và thay thế vùng EMBEDDED_CONFIG
+            let fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const replacementConfig = `// EMBEDDED_CONFIG_START\n        const EMBEDDED_GIFT_MODE = ${hideEdit};\n        window.EMBEDDED_GIFT_MODE = EMBEDDED_GIFT_MODE;\n        const DEFAULT_WISHES = ${serializedWishes};\n        // EMBEDDED_CONFIG_END`;
+
+            fullHtml = fullHtml.replace(
+                /\/\/ EMBEDDED_CONFIG_START[\s\S]*?\/\/ EMBEDDED_CONFIG_END/,
+                replacementConfig
+            );
+
+            const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `index.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            closeExportDialog();
+            showToast('Đã tải xuống file index.html thành công! 🎁');
+        }
+
+        /* -----------------------------------------------------------
+         * 10. TIỆN ÍCH CHUNG & KHỞI CHẠY
+         * ----------------------------------------------------------- */
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        let toastTimer = null;
+        function showToast(message) {
+            const toast = document.getElementById('toast-msg');
+            const text = document.getElementById('toast-text');
+            if (!toast || !text) return;
+
+            text.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2800);
+        }
+
+        function setCloudIndicator(status, labelText) {
+            const dot = document.getElementById('cloud-status-dot');
+            const badge = document.getElementById('cloud-connection-badge');
+            if (!dot || !badge) return;
+
+            if (status === 'online') {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+                badge.textContent = '● ' + (labelText || 'Đã kết nối đám mây thời gian thực');
+                badge.className = 'text-xs font-semibold text-emerald-600';
+            } else {
+                dot.className = 'w-2.5 h-2.5 rounded-full bg-pink-400';
+                badge.textContent = '● ' + (labelText || 'Chế độ lưu trên trình duyệt & Xuất HTML');
+                badge.className = 'text-xs font-semibold text-pink-500';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applyViewOnlyModeUI();
+            loadWishesLocalFallback();
+            setCloudIndicator('local', 'Sẵn sàng lưu & xuất file HTML');
+        });
+    </script>
+
+</body></html>
